@@ -7,10 +7,10 @@ export function PlanningCall({ id }: { id?: string }) {
         <div className="planning-card grid overflow-hidden rounded-[24px] border border-black/15 bg-[#fffbf6] px-6 py-8 lg:min-h-[565px] lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-4 lg:rounded-[50px] lg:px-[51px] lg:pb-[49px] lg:pt-[62px] xl:h-[565px] xl:grid-cols-[580px_390px]">
           <div className="max-w-[580px]">
           <div className="flex items-center gap-4 lg:gap-[23px]">
-            <Image src="/assets/home-consult-img-ellipse4.png" width={79} height={79} alt="Guide Gasper" className="size-16 rounded-full object-cover sm:size-[79px]" />
+            <Image src="/assets/home-consult-samson-simon.png" width={79} height={79} alt="Samson Simon" className="size-16 rounded-full object-cover sm:size-[79px]" />
             <div>
-              <p className="text-xl font-semibold leading-[1.1] text-brand lg:text-[28px]">Guide Gasper</p>
-              <p className="text-sm font-semibold leading-[1.1] text-black/45 lg:text-[20px]">Tanzania Travel expert</p>
+              <p className="text-xl font-semibold leading-[1.1] text-brand lg:text-[28px]">Samson Simon</p>
+              <p className="text-sm font-semibold leading-[1.1] text-black/45 lg:text-[20px]">Tour Consultant and Chairperson</p>
             </div>
           </div>
           <h2 id={`${id ?? "planning"}-title`} className="mt-6 text-3xl font-semibold leading-[1.18] tracking-[-0.04em] lg:mt-[23px] lg:text-[clamp(43px,4.1vw,53px)] lg:leading-[1.04]">
@@ -41,7 +41,7 @@ export function PlanningCall({ id }: { id?: string }) {
               <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" type="tel" name="phone" autoComplete="tel" placeholder="e.g. +1 (555) 019-2834" />
             </label>
           </div>
-          <button type="submit" className="mt-4 min-h-11 w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-sm font-bold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+          <button type="submit" className="mt-4 min-h-11 w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-sm font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
             Start Planning My Family&apos;s Trip
           </button>
         </form>

@@ -161,7 +161,7 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
           onPointerMove={handlePointerMove}
           onPointerUp={stopDragging}
           onPointerCancel={stopDragging}
-          className="h-[432px] cursor-grab overflow-x-auto overflow-y-hidden scroll-smooth pr-4 pt-[19px] [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden sm:h-[522px] sm:pr-0"
+          className="h-[432px] cursor-grab overflow-x-auto overflow-y-hidden scroll-smooth pr-4 pt-[19px] [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden sm:h-[522px] sm:pr-0 lg:h-[441px]"
         >
           <div className="flex w-full snap-x snap-mandatory gap-[21px]">
             {filteredTrips.map((trip) => <TripCard key={trip.title} trip={trip} carousel />)}

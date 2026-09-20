@@ -6,7 +6,7 @@ import { tripHref } from "@/data/trips";
 export function TripCard({ trip, compact = false, carousel = false }: { trip: Trip; compact?: boolean; carousel?: boolean }) {
   const featureCard = carousel || compact;
   const cardClassName = carousel
-    ? "h-[390px] w-[calc(100vw-3rem)] max-w-[341px] shrink-0 snap-start sm:h-[477px] sm:w-[calc((100%-21px)/2)] sm:max-w-none"
+    ? "h-[390px] w-[calc(100vw-3rem)] max-w-[341px] shrink-0 snap-start sm:h-[477px] sm:w-[calc((100%-21px)/2)] sm:max-w-none lg:h-[396px] lg:w-[calc((100%-63px)/4)]"
     : compact
       ? "h-[477px]"
       : "h-[506px]";
@@ -21,7 +21,7 @@ export function TripCard({ trip, compact = false, carousel = false }: { trip: Tr
         src={trip.image}
         alt={trip.title + " in Tanzania"}
         fill
-        sizes={carousel ? "(max-width: 640px) calc(100vw - 3rem), 341px" : compact ? "(max-width: 768px) 88vw, 341px" : "(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 362px"}
+        sizes={carousel ? "(max-width: 640px) calc(100vw - 3rem), (max-width: 1024px) calc((100vw - 21px) / 2), 25vw" : compact ? "(max-width: 768px) 88vw, 341px" : "(max-width: 768px) 90vw, (max-width: 1200px) 45vw, 362px"}
         className="object-cover transition duration-500 group-hover:scale-[1.025]"
       />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(18,22,18,.48)_0%,rgba(18,22,18,.04)_42%,rgba(18,22,18,.75)_100%)]" />

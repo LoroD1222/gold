@@ -255,8 +255,8 @@ export default function HomePage() {
 
         <section id="guides" className="bg-cream py-20 sm:py-28" aria-labelledby="guides-title">
           <div className="site-container">
-            <SectionHeading eyebrow="Meet The Team" title="The Guides Who Make It Personal" id="guides-title" align="center" className="max-w-[980px]" description={<p>Meet the people who turn a safari into a story your family tells for years.</p>} />
-            <div className="mx-auto mt-[62px] grid max-w-[1269px] gap-x-[23px] gap-y-[62px] text-center sm:grid-cols-2 xl:grid-cols-3">
+            <SectionHeading eyebrow="Meet The Team" title="Your ultimate Tanzania vacation experts" id="guides-title" align="center" className="max-w-[980px]" description={<p>Meet the people who turn a safari into a story your family tells for years.</p>} />
+            <div className="mx-auto mt-[62px] grid max-w-[1269px] gap-x-[23px] gap-y-[62px] text-center sm:grid-cols-2 lg:grid-cols-3">
               {guides.map(({ name, role, image, crop }) => (
                 <article key={name} className="mx-auto w-full max-w-[300px]">
                   <div className="relative mx-auto h-[267px] w-[273px] overflow-hidden rounded-[200px]">
