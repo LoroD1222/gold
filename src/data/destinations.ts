@@ -1,0 +1,58 @@
+export const destinations = [
+  {
+    name: "Serengeti National Park",
+    area: "14,750 sq km",
+    image: "/assets/destination-serengeti.jpg",
+    description: "Home to the great wildebeest migration and endless golden plains.",
+    longTitle: false,
+  },
+  {
+    name: "Ngorongoro Crater",
+    area: "260 sq km",
+    image: "/assets/destination-ngorongoro.jpg",
+    description: "The world's largest intact volcanic caldera, dense with wildlife.",
+    longTitle: false,
+  },
+  {
+    name: "Tarangire National Park",
+    area: "2,850 sq km",
+    image: "/assets/destination-tarangire.jpg",
+    description: "Ancient baobab trees and some of Tanzania's largest elephant herds.",
+    longTitle: false,
+  },
+  {
+    name: "Lake Manyara National Park",
+    area: "650 sq km",
+    image: "/assets/destination-lake-manyara.png",
+    description: "Famous for tree climbing lions and flamingo covered lake shores.",
+    longTitle: true,
+  },
+  {
+    name: "Zanzibar Island",
+    area: "1,650 sq km",
+    image: "/assets/destination-zanzibar.jpg",
+    description: "White sand beaches, turquoise waters, and centuries of Swahili history.",
+    longTitle: false,
+  },
+  {
+    name: "Mount Kilimanjaro National Park",
+    area: "1,688 sq km",
+    image: "/assets/destination-kilimanjaro.jpg",
+    description: "Africa's highest peak, rising from forest to snow capped summit.",
+    longTitle: true,
+  },
+  {
+    name: "Arusha National Park",
+    area: "552 sq km",
+    image: "/assets/destination-arusha.jpg",
+    description: "Mount Meru, crater lakes, and free roaming giraffes.",
+    longTitle: false,
+  },
+  {
+    name: "Nyerere National Park",
+    area: "30,893 sq km",
+    image: "/assets/destination-nyerere.jpg",
+    description: "Africa's largest protected park, with the Rufiji River winding through.",
+    longTitle: false,
+  },
+] as const;

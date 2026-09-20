@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-brand: #f5a623;
+  --color-brand-dark: #df8c0d;
+  --color-cream: #fffbf3;
+  --color-sand: #f4ede1;
+  --color-ink: #161713;
+  --color-muted: #665f56;
+  --font-sans: var(--font-poppins);
+}
+
+:root {
+  --site-gutter: clamp(1.25rem, 6.6vw, 7.5rem);
+  --section-space: clamp(5rem, 8vw, 8rem);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+  background: #fffbf3;
+  color: #161713;
+  font-family: var(--font-poppins), Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  text-underline-offset: 3px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.site-container {
+  width: min(100% - (2 * var(--site-gutter)), 1272px);
+  margin-inline: auto;
+}
+
+.narrow-container {
+  width: min(100% - (2 * var(--site-gutter)), 1100px);
+  margin-inline: auto;
+}
+
+.eyebrow {
+  color: #f5a623;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.4rem;
+  color: #322f2a;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  min-height: 42px;
+  width: 100%;
+  border: 1px solid rgba(22, 23, 19, 0.12);
+  border-radius: 3px;
+  background: #fff;
+  padding: 0.7rem 0.85rem;
+  color: #161713;
+  box-shadow: 0 2px 8px rgba(22, 23, 19, 0.04);
+  outline: none;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: #f5a623;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.16);
+}
+
+@keyframes whatsapp-button-pulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(37, 211, 102, 0.38); }
+  50% { box-shadow: 0 8px 24px rgba(37, 211, 102, 0.38), 0 0 0 8px rgba(37, 211, 102, 0.16); }
+}
+
+.home-map-collage {
+  clip-path: polygon(22% 1%, 38% 9%, 55% 6%, 65% 18%, 82% 22%, 76% 36%, 92% 47%, 82% 58%, 85% 76%, 69% 91%, 51% 100%, 38% 90%, 24% 93%, 17% 78%, 8% 64%, 15% 48%, 4% 34%, 17% 22%);
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  :root {
+    --site-gutter: 1rem;
+  }
+
+  .planning-card {
+    border-radius: 24px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
