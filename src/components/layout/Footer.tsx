@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { tripadvisorProfileUrl } from "@/data/externalLinks";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 
 const exploreLinks = [
@@ -29,6 +30,7 @@ export function Footer() {
                 src="/assets/home-footer-img-joeh-wildlifephoto-just-marrired301.jpg"
                 alt="Travelers seated on a Golden Trips Tanzania safari vehicle"
                 fill
+                unoptimized
                 sizes="(max-width: 1023px) calc(100vw - 4rem), (max-width: 1600px) 42vw, 595px"
                 className="object-cover object-[53%_39%] lg:scale-[1.067]"
               />
@@ -83,7 +85,9 @@ export function Footer() {
                 Family safaris designed around your whole group, with private vehicles, flexible pacing, and guides who explain the journey in a way every age can enjoy.
               </p>
               <a
-                href="https://www.tripadvisor.com/"
+                href={tripadvisorProfileUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="mt-4 inline-flex items-center gap-3 text-[16px] font-bold leading-[1.68] text-brand underline decoration-1 underline-offset-2"
               >
                 <Image src="/assets/home-footer-img-ellipse.png" width={47} height={47} alt="" />

@@ -13,7 +13,7 @@ export function PlanningCall({ id }: { id?: string }) {
               <p className="text-sm font-semibold leading-[1.1] text-black/45 lg:text-[20px]">Tour Consultant and Chairperson</p>
             </div>
           </div>
-          <h2 id={`${id ?? "planning"}-title`} className="mt-6 text-3xl font-semibold leading-[1.18] tracking-[-0.04em] lg:mt-[23px] lg:text-[clamp(43px,4.1vw,53px)] lg:leading-[1.04]">
+          <h2 id={`${id ?? "planning"}-title`} className="mt-6 text-3xl font-semibold leading-[1.18] tracking-[-0.04em] lg:mt-[23px] lg:text-[clamp(43px,4.1vw,53px)] lg:leading-[1.15]">
             Free planning call with our Tanzania expert
           </h2>
           <p className="mt-5 text-lg leading-8 text-muted lg:mt-[22px] lg:text-[clamp(18px,1.8vw,23px)] lg:leading-[1.4]">

@@ -6,7 +6,7 @@ import { tripHref } from "@/data/trips";
 export function TripCard({ trip, compact = false, carousel = false }: { trip: Trip; compact?: boolean; carousel?: boolean }) {
   const featureCard = carousel || compact;
   const cardClassName = carousel
-    ? "h-[390px] w-[calc(100vw-3rem)] max-w-[341px] shrink-0 snap-start sm:h-[477px] sm:w-[calc((100%-21px)/2)] sm:max-w-none lg:h-[396px] lg:w-[calc((100%-63px)/4)]"
+    ? "h-[390px] w-[calc(100vw-3rem)] max-w-[341px] shrink-0 snap-start sm:h-[477px] sm:w-[calc((100%_-_21px)_/_2)] sm:max-w-none lg:h-[396px] lg:w-[calc((100%_-_63px)_/_4)]"
     : compact
       ? "h-[477px]"
       : "h-[506px]";

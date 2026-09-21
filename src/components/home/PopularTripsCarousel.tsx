@@ -24,8 +24,7 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
   const [indicatorWidth, setIndicatorWidth] = useState(100);
   const filteredTrips = useMemo(() => trips.filter((trip) => {
     if (filter === "all") return true;
-    if (filter === "safari") return trip.category.includes("Safari");
-    return trip.category.includes("Zanzibar");
+    return trip.category === (filter === "safari" ? "Safari" : "Zanzibar");
   }), [filter, trips]);
   const syncCarouselState = useCallback(() => {
     const track = trackRef.current;

@@ -5,10 +5,9 @@ import { useEffect, useState } from "react";
 
 const links = [
   ["All Trips", "/tanzania-safaris"],
-  ["Safaris", "/tanzania-safaris"],
-  ["Kilimanjaro", "/#destinations"],
+  ["Activities", "/tanzania-safaris"],
+  ["Accommodations", "/#destinations"],
   ["Zanzibar", "/#destinations"],
-  ["Contact", "/#contact"],
 ] as const;
 
 export function MobileMenu({ light = false }: { light?: boolean }) {

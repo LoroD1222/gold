@@ -41,7 +41,7 @@ export default function TanzaniaSafarisPage() {
         <section className="relative -mt-20 pb-8 pt-0" aria-labelledby="listing-title">
           <div className="site-container">
             <div className="relative mx-auto size-[124px] rounded-full bg-brand p-2 shadow-[0_0_0_9px_rgba(245,166,35,.2)]">
-              <Image src="/assets/list-img-image5.png" alt="Tripadvisor Travelers' Choice Awards 2026" fill sizes="124px" className="object-contain p-2" />
+              <Image src="/assets/list-img-image5.png" alt="Tripadvisor Travelers' Choice Awards 2026" fill sizes="124px" className="object-contain p-4" />
             </div>
             <nav aria-label="Breadcrumb" className="mt-16 flex justify-center text-sm font-semibold">
               <ol className="flex items-center gap-3"><li><Link href="/">Tanzania</Link></li><li aria-hidden>›</li><li aria-current="page">Safari</li></ol>

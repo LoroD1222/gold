@@ -4,10 +4,9 @@ import { MobileMenu } from "./MobileMenu";
 
 const links = [
   ["All Trips", "/tanzania-safaris"],
-  ["Safaris", "/tanzania-safaris"],
-  ["Kilimanjaro", "/#destinations"],
+  ["Activities", "/tanzania-safaris"],
+  ["Accommodations", "/#destinations"],
   ["Zanzibar", "/#destinations"],
-  ["Contact", "/#contact"],
 ] as const;
 
 export function Header({ overlay = false }: { overlay?: boolean }) {

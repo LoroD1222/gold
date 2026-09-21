@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { CompactTestimonialsCarousel } from "@/components/home/CompactTestimonialsCarousel";
 import { testimonials } from "@/data/testimonials";
+import { tripadvisorProfileUrl } from "@/data/externalLinks";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 
 export function Testimonials({ compact = false, sectionId }: { compact?: boolean; sectionId?: string }) {
@@ -24,7 +25,7 @@ export function Testimonials({ compact = false, sectionId }: { compact?: boolean
           </div>
           <h3 className="mt-[15px] text-xl font-bold leading-[1.68] text-black/75">{review.title}</h3>
           <p className="mt-[15px] text-base leading-[1.68] text-black/75">{review.text}</p>
-          <a href="https://www.tripadvisor.com/" className="mt-[15px] inline-flex items-center gap-2.5 text-base font-bold leading-[1.68] text-black/75 underline underline-offset-4">
+          <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" className="mt-[15px] inline-flex items-center gap-2.5 text-base font-bold leading-[1.68] text-black/75 underline underline-offset-4">
             <Image src="/assets/home-testimonials-img-ellipse2.png" width={47} height={47} alt="Tripadvisor" className="size-[46.5px]" />
             Read more on Trip Advisor
           </a>
@@ -37,17 +38,11 @@ export function Testimonials({ compact = false, sectionId }: { compact?: boolean
     <section id={sectionId} aria-labelledby="reviews-title" className={`scroll-mt-28 ${compact ? "bg-cream pb-20 pt-12 sm:pb-28 sm:pt-16" : "bg-cream py-20 sm:py-28"}`}>
       <div className="site-container">
         <SectionHeading eyebrow="Verified Family Reviews" title="The trips that became family stories" id="reviews-title" align="center" />
-        <p className="mt-5 text-center text-sm font-semibold"><span className="text-brand">★</span> 191 Verified Reviews on <span className="underline">Trip advisor</span></p>
+        <p className="mt-5 text-center text-sm font-semibold"><span aria-hidden="true" className="mr-1 inline-block align-[-3px] text-[26px] leading-none text-brand">★</span>190 Reviews on <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" className="underline">Trip advisor</a></p>
         {compact ? (
           <CompactTestimonialsCarousel reviews={testimonials} />
         ) : (
-          <>
-            <div className="relative mx-auto mt-14 h-[2400px] max-w-[1061px] overflow-hidden md:h-[1735px]">
-              {reviewCards}
-              <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[440px] bg-gradient-to-b from-cream/0 via-cream/85 to-cream" />
-              <p className="absolute inset-x-0 bottom-12 z-10 text-center text-sm font-semibold"><span className="text-brand">★</span> 191 Verified Reviews on <span className="underline">Trip advisor</span></p>
-            </div>
-          </>
+          <div className="mx-auto mt-14 max-w-[1061px]">{reviewCards}</div>
         )}
       </div>
     </section>

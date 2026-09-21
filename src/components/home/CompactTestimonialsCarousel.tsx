@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useRef, useState, type ChangeEvent, type KeyboardEvent, type PointerEvent } from "react";
+import { tripadvisorProfileUrl } from "@/data/externalLinks";
+import { useCallback, useEffect, useRef, useState, type ChangeEvent, type KeyboardEvent, type PointerEvent } from "react";
 import type { Testimonial } from "@/data/testimonials";
 
 type CompactTestimonialsCarouselProps = {
@@ -12,15 +13,26 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
   const trackRef = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ pointerId: number; x: number; scrollLeft: number } | null>(null);
   const [progress, setProgress] = useState(0);
+  const [canGoBack, setCanGoBack] = useState(false);
+  const [canGoForward, setCanGoForward] = useState(reviews.length > 1);
   const indicatorWidth = 50;
 
-  function updateProgress() {
+  const updateProgress = useCallback(() => {
     const track = trackRef.current;
     if (!track) return;
 
     const maxScroll = track.scrollWidth - track.clientWidth;
-    setProgress(maxScroll > 0 ? track.scrollLeft / maxScroll : 0);
-  }
+    const nextProgress = maxScroll > 0 ? track.scrollLeft / maxScroll : 0;
+    setProgress(nextProgress);
+    setCanGoBack(track.scrollLeft > 1);
+    setCanGoForward(track.scrollLeft < maxScroll - 1);
+  }, []);
+
+  useEffect(() => {
+    updateProgress();
+    window.addEventListener("resize", updateProgress);
+    return () => window.removeEventListener("resize", updateProgress);
+  }, [updateProgress, reviews.length]);
 
   function handleProgressChange(event: ChangeEvent<HTMLInputElement>) {
     const track = trackRef.current;
@@ -29,6 +41,15 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
 
     if (!track) return;
     track.scrollTo({ left: (track.scrollWidth - track.clientWidth) * nextProgress, behavior: "auto" });
+  }
+
+  function moveSlide(direction: -1 | 1) {
+    const track = trackRef.current;
+    const slide = track?.querySelector<HTMLElement>("[data-testimonial-slide]");
+    if (!track || !slide) return;
+
+    const slideGap = parseFloat(getComputedStyle(slide.parentElement as HTMLElement).gap) || 0;
+    track.scrollBy({ left: direction * (slide.getBoundingClientRect().width + slideGap), behavior: "smooth" });
   }
 
   function handleKeyDown(event: KeyboardEvent<HTMLDivElement>) {
@@ -70,6 +91,7 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
     <div className="mx-auto mt-14 max-w-[1061px]">
       <div
         ref={trackRef}
+        id="testimonials-carousel-track"
         role="region"
         aria-label="Family reviews carousel"
         aria-roledescription="carousel"
@@ -84,7 +106,7 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
       >
         <div className="flex w-max snap-x snap-mandatory gap-6 pb-1 md:gap-[27px]">
           {reviews.map((review) => (
-            <article key={review.id} className="w-[min(100vw-2.5rem,530px)] shrink-0 snap-start rounded-[12px] bg-sand p-5 sm:min-h-[669px] sm:p-[30px]">
+            <article key={review.id} data-testimonial-slide className="w-[min(100vw-2.5rem,530px)] shrink-0 snap-start rounded-[12px] bg-sand p-5 sm:min-h-[669px] sm:p-[30px]">
               <div className="grid grid-cols-2 gap-3.5">
                 {review.images.map((src, index) => (
                   <div key={src} className="relative aspect-[1.11] overflow-hidden rounded-lg sm:h-[199px] sm:aspect-auto">
@@ -101,7 +123,7 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
               </div>
               <h3 className="mt-[15px] text-xl font-bold leading-[1.68] text-black/75">{review.title}</h3>
               <p className="mt-[15px] text-base leading-[1.68] text-black/75">{review.text}</p>
-              <a href="https://www.tripadvisor.com/" className="mt-[15px] inline-flex items-center gap-2.5 text-base font-bold leading-[1.68] text-black/75 underline underline-offset-4">
+              <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" className="mt-[15px] inline-flex items-center gap-2.5 text-base font-bold leading-[1.68] text-black/75 underline underline-offset-4">
                 <Image src="/assets/home-testimonials-img-ellipse2.png" width={47} height={47} alt="Tripadvisor" className="size-[46.5px]" />
                 Read more on Trip Advisor
               </a>
@@ -109,25 +131,31 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
           ))}
         </div>
       </div>
-      <div className="relative mt-6 h-[18px]">
-        <div aria-hidden="true" className="absolute inset-x-0 top-1/2 h-[6px] -translate-y-1/2 rounded-full bg-black/[.04]" />
-        <div
-          aria-hidden="true"
-          className="absolute top-1/2 h-[6px] -translate-y-1/2 rounded-full bg-brand transition-[left] duration-150"
-          style={{ left: progress * (100 - indicatorWidth) + "%", width: indicatorWidth + "%" }}
-        />
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.001"
-          value={progress}
-          onChange={handleProgressChange}
-          aria-label="Testimonial carousel position"
-          className="absolute inset-0 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
-        />
+      <div className="mt-6 flex items-center gap-4">
+        <div className="relative h-[18px] flex-1">
+          <div aria-hidden="true" className="absolute inset-x-0 top-1/2 h-[6px] -translate-y-1/2 rounded-full bg-black/[.04]" />
+          <div
+            aria-hidden="true"
+            className="absolute top-1/2 h-[6px] -translate-y-1/2 rounded-full bg-brand transition-[left] duration-150"
+            style={{ left: progress * (100 - indicatorWidth) + "%", width: indicatorWidth + "%" }}
+          />
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.001"
+            value={progress}
+            onChange={handleProgressChange}
+            aria-label="Testimonial carousel position"
+            className="absolute inset-0 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+          />
+        </div>
+        <div className="flex shrink-0 gap-2" aria-label="Testimonial slide controls">
+          <button type="button" aria-controls="testimonials-carousel-track" aria-label="Previous review" onClick={() => moveSlide(-1)} disabled={!canGoBack} className="grid size-10 place-items-center rounded-full border border-brand bg-cream text-xl leading-none text-ink transition hover:bg-brand/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-40">←</button>
+          <button type="button" aria-controls="testimonials-carousel-track" aria-label="Next review" onClick={() => moveSlide(1)} disabled={!canGoForward} className="grid size-10 place-items-center rounded-full border border-brand bg-cream text-xl leading-none text-ink transition hover:bg-brand/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-40">→</button>
+        </div>
       </div>
-      <p className="sr-only">Swipe, drag, or use the left and right arrow keys to browse family reviews.</p>
+      <p className="sr-only">Use the previous and next buttons, swipe, drag, or use the left and right arrow keys to browse family reviews.</p>
     </div>
   );
 }
