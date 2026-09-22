@@ -9,9 +9,11 @@ import { PlanningCall } from "@/components/home/PlanningCall";
 import { PopularTripsCarousel } from "@/components/home/PopularTripsCarousel";
 import { Testimonials } from "@/components/home/Testimonials";
 import { FAQ } from "@/components/home/FAQ";
-import { trips } from "@/data/trips";
 import { destinations } from "@/data/destinations";
 import { faqs } from "@/data/faq";
+import { getSafariTripCards } from "@/lib/safariTrips";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "Private Family Safaris in Tanzania",
@@ -55,7 +57,8 @@ const guides = [
   { name: "Gladness Msela", role: "Accountant", image: "/assets/guide-gladness-msela.png", crop: "!h-[241.33%] !w-[114.73%] !left-[-7.37%] !top-[-28.83%]" },
 ] as const;
 
-export default function HomePage() {
+export default async function HomePage() {
+  const popularTrips = await getSafariTripCards().catch(() => []);
   const structuredData = [
     {
       "@context": "https://schema.org",
@@ -227,7 +230,7 @@ export default function HomePage() {
 
         <section className="bg-sand pb-12 pt-20 sm:pb-16 sm:pt-28" aria-labelledby="popular-title">
           <div className="site-container">
-            <PopularTripsCarousel trips={trips} />
+            <PopularTripsCarousel trips={popularTrips} />
             <div className="mt-10 text-center">
               <Image src="/assets/home-fit-img-path1.svg" width={68} height={42} alt="" className="mx-auto h-[42px] w-[68px]" />
               <p className="mt-4 text-lg font-semibold">Not sure which family journey fits you best?</p>

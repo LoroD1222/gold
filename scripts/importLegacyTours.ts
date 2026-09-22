@@ -51,6 +51,7 @@ type ItineraryDay = {
   dayRange: string;
   title: string;
   description?: PortableTextBlock[];
+  images?: LegacyImage[];
   meals?: string;
   accommodation?: { name: string };
 };
@@ -151,6 +152,46 @@ function imageFromWordPress(tour: WordPressTour): LegacyImage | undefined {
   return { url: media.source_url, alt: cleanText(media.alt_text) || cleanText(tour.title.rendered) };
 }
 
+function sourceImageFromElement($: ReturnType<typeof load>, element: Parameters<ReturnType<typeof load>>[0]): LegacyImage | undefined {
+  const image = $(element);
+  const candidates = [image.attr("data-lzl-srcset"), image.attr("srcset")]
+    .filter((sourceSet): sourceSet is string => Boolean(sourceSet))
+    .flatMap((sourceSet) => sourceSet.split(",").map((candidate) => {
+      const [url, descriptor] = candidate.trim().split(/\s+/, 2);
+      return {url, width: Number.parseInt(descriptor, 10) || 0};
+    }));
+
+  const fallbackUrl = image.attr("data-lzl-src") ?? image.attr("src");
+  if (fallbackUrl) candidates.push({url: fallbackUrl, width: 0});
+
+  const selected = candidates
+    .filter((candidate) => candidate.url.startsWith(`${legacyBaseUrl}/wp-content/uploads/`))
+    .sort((left, right) => right.width - left.width)[0];
+
+  return selected ? {url: selected.url, alt: cleanText(image.attr("alt"))} : undefined;
+}
+
+function extractItineraryImages($: ReturnType<typeof load>) {
+  const imagesByDay = new Map<number, LegacyImage[]>();
+
+  $(".jet-listing-grid__item").each((_, item) => {
+    const itemText = cleanText($(item).text());
+    const dayMatch = itemText.match(/^Day\s+(\d+)(?:\s*[-–]\s*\d+)?\b/i);
+    if (!dayMatch || !/Meals Plan:/i.test(itemText)) return;
+
+    const images = $(item).find("img").toArray()
+      .flatMap((image) => {
+        const extracted = sourceImageFromElement($, image);
+        return extracted ? [extracted] : [];
+      })
+      .filter((image, index, values) => values.findIndex((candidate) => candidate.url === image.url) === index);
+
+    if (images.length) imagesByDay.set(Number.parseInt(dayMatch[1], 10), images);
+  });
+
+  return imagesByDay;
+}
+
 function extractPriceTiers($: ReturnType<typeof load>, sourceKey: string) {
   const table = $("table.jet-table").filter((_, element) => {
     const headers = $(element).find("thead th").map((__, header) => cleanText($(header).text())).get();
@@ -186,6 +227,7 @@ function extractSummaryDays($: ReturnType<typeof load>) {
 
 function extractItinerary($: ReturnType<typeof load>, sourceKey: string) {
   const summaryDays = extractSummaryDays($);
+  const imagesByDay = extractItineraryImages($);
   const body = cleanText($("body").text());
   const priceIndex = body.indexOf("Price Rates");
   const quoteIndex = body.indexOf("Get My Quote", Math.max(priceIndex, 0));
@@ -207,12 +249,14 @@ function extractItinerary($: ReturnType<typeof load>, sourceKey: string) {
       .replace(/Accommodations?:\s*.+?$/i, "")
       .trim();
     const dayRange = match[2] ? `Day ${dayNumber}–${match[2]}` : `Day ${dayNumber}`;
+    const images = imagesByDay.get(dayNumber);
 
     days.push({
       _key: stableKey(`${sourceKey}-${dayRange}-${title}`),
       dayRange,
       title,
       ...(asPortableText([description], `${sourceKey}-${dayRange}-description`) ? { description: asPortableText([description], `${sourceKey}-${dayRange}-description`) } : {}),
+      ...(images?.length ? { images } : {}),
       ...(mealMatch ? { meals: cleanText(mealMatch[1]) } : {}),
       ...(accommodationMatch ? { accommodation: { name: cleanText(accommodationMatch[1]) } } : {}),
     });
@@ -278,6 +322,7 @@ async function extractTour(tour: WordPressTour): Promise<ExtractedTour> {
   if (!inclusions.length) warnings.push("No included-services list was found.");
   if (!exclusions.length) warnings.push("No excluded-services list was found.");
   if (itinerary.some((day) => !day.description?.length)) warnings.push("One or more itinerary days have no usable description.");
+  if (itinerary.some((day) => !day.images?.length)) warnings.push("One or more itinerary days have no source image gallery.");
   if (itinerary.some((day) => !day.meals)) warnings.push("One or more itinerary days have no stated meals.");
   if (itinerary.some((day) => !day.accommodation?.name)) warnings.push("One or more itinerary days have no stated accommodation.");
 
@@ -363,6 +408,19 @@ async function importTour(client: ReturnType<typeof createClient>, tour: Extract
       assetErrors.push(`SEO image skipped (${tour.seo.shareImage.url}): ${error instanceof Error ? error.message : String(error)}`);
     }
   }
+  const itinerary = await Promise.all(tour.itinerary.map(async (day) => {
+    const {images: sourceImages, ...dayFields} = day;
+    const images = [];
+    for (const image of sourceImages ?? []) {
+      try {
+        images.push(await uploadImage(client, image, assetCache));
+      } catch (error) {
+        assetErrors.push(`Itinerary image skipped (${day.dayRange}, ${image.url}): ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+    return {...dayFields, ...(images.length ? {images} : {})};
+  }));
+
   const fields = {
     title: tour.title,
     slug: {_type: "slug", current: tour.slug},
@@ -372,7 +430,7 @@ async function importTour(client: ReturnType<typeof createClient>, tour: Extract
     ...(gallery.length ? {gallery} : {}),
     ...(tour.overview?.length ? {overview: tour.overview} : {}),
     ...(tour.pricingTiers.length ? {pricingTiers: tour.pricingTiers, startingPrice: Math.min(...tour.pricingTiers.map((tier) => tier.pricePerPerson))} : {}),
-    ...(tour.itinerary.length ? {itinerary: tour.itinerary} : {}),
+    ...(itinerary.length ? {itinerary} : {}),
     ...(tour.inclusions.length ? {inclusions: tour.inclusions} : {}),
     ...(tour.exclusions.length ? {exclusions: tour.exclusions} : {}),
     ...(Object.keys(tour.seo).length ? {seo: {...tour.seo, ...(shareImage ? {shareImage} : {})}} : {}),
@@ -409,6 +467,7 @@ function reportTour(tour: ExtractedTour) {
   console.log(`  Duration: ${tour.durationDays ?? "missing"} days`);
   console.log(`  Pricing tiers: ${tour.pricingTiers.length ? tour.pricingTiers.map((tier) => `${tier.groupSize} $${tier.pricePerPerson}`).join(", ") : "none"}`);
   console.log(`  Itinerary days: ${tour.itinerary.length}`);
+  console.log(`  Itinerary images: ${tour.itinerary.reduce((total, day) => total + (day.images?.length ?? 0), 0)}`);
   console.log(`  Images: ${tour.gallery.length}`);
   console.log(`  Included: ${tour.inclusions.length}; excluded: ${tour.exclusions.length}`);
   if (tour.warnings.length) console.log(`  Warnings: ${tour.warnings.join(" | ")}`);
@@ -443,7 +502,7 @@ async function main() {
   await Promise.all([mkdir(extractedDirectory, {recursive: true}), mkdir(reportsDirectory, {recursive: true})]);
   const reportName = options.slug ? options.slug : "family-friendly-safaris";
   await writeFile(path.join(extractedDirectory, `${reportName}.json`), JSON.stringify({retrievedAt: new Date().toISOString(), source: legacyBaseUrl, rawTours, extractionResults}, null, 2));
-  await writeFile(path.join(reportsDirectory, `${reportName}.json`), JSON.stringify({scope: reportName, dryRun: options.dryRun, requested: rawTours.length, extracted: extractedTours.length, failed: failures, warnings: extractedTours.flatMap((tour) => tour.warnings.map((warning) => ({slug: tour.slug, warning}))), tours: extractedTours.map((tour) => ({title: tour.title, url: tour.legacyUrl, slug: tour.slug, durationDays: tour.durationDays, pricingTiers: tour.pricingTiers, itineraryDays: tour.itinerary.length, images: tour.gallery.length, inclusions: tour.inclusions.length, exclusions: tour.exclusions.length, warnings: tour.warnings}))}, null, 2));
+  await writeFile(path.join(reportsDirectory, `${reportName}.json`), JSON.stringify({scope: reportName, dryRun: options.dryRun, requested: rawTours.length, extracted: extractedTours.length, failed: failures, warnings: extractedTours.flatMap((tour) => tour.warnings.map((warning) => ({slug: tour.slug, warning}))), tours: extractedTours.map((tour) => ({title: tour.title, url: tour.legacyUrl, slug: tour.slug, durationDays: tour.durationDays, pricingTiers: tour.pricingTiers, itineraryDays: tour.itinerary.length, images: tour.gallery.length, itineraryImages: tour.itinerary.reduce((total, day) => total + (day.images?.length ?? 0), 0), inclusions: tour.inclusions.length, exclusions: tour.exclusions.length, warnings: tour.warnings}))}, null, 2));
 
   console.log(`${options.dryRun ? "DRY RUN" : "IMPORT"}: ${extractedTours.length}/${rawTours.length} tour(s) extracted in ${reportName}`);
   extractedTours.forEach(reportTour);

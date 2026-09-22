@@ -13,6 +13,7 @@ export function TripHeroGallery({ images, promotionLabel }: TripHeroGalleryProps
   const [activeImage, setActiveImage] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const image = images[activeImage];
+  const thumbnailSlots = Array.from({length: Math.max(4, images.length)}, (_, index) => images[index]);
 
   function openLightbox(index = activeImage) {
     setActiveImage(index);
@@ -43,18 +44,21 @@ export function TripHeroGallery({ images, promotionLabel }: TripHeroGalleryProps
 
   return (
     <section aria-label="Trip photo gallery">
-      <button
-        type="button"
-        onClick={() => openLightbox()}
-        className="relative block w-full aspect-[688/429] overflow-hidden rounded-[10px] text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand xl:h-[429px] xl:aspect-auto"
-        aria-label={`Open photo ${activeImage + 1} in the gallery: ${image.alt ?? "Trip photo"}`}
-      >
-        <Image key={image.url} src={image.url} alt={image.alt ?? "Trip photo"} fill priority sizes="(max-width: 1024px) 100vw, 688px" className="object-cover object-center" />
-        {promotionLabel && <span className="absolute left-5 top-5 rounded-[10px] bg-brand px-4 py-2 text-[20px] font-semibold">{promotionLabel}</span>}
-        <span className="absolute bottom-4 right-4 rounded-full bg-black/60 px-3 py-1.5 text-sm font-semibold text-white">View gallery</span>
-      </button>
+      {image ? (
+        <button
+          type="button"
+          onClick={() => openLightbox()}
+          className="relative block w-full aspect-[688/429] overflow-hidden rounded-[10px] text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand xl:h-[429px] xl:aspect-auto"
+          aria-label={`Open photo ${activeImage + 1} in the gallery: ${image.alt ?? "Trip photo"}`}
+        >
+          <Image key={image.url} src={image.url} alt={image.alt ?? "Trip photo"} fill priority sizes="(max-width: 1024px) 100vw, 688px" className="object-cover object-center" />
+          {promotionLabel && <span className="absolute left-5 top-5 rounded-[10px] bg-brand px-4 py-2 text-[20px] font-semibold">{promotionLabel}</span>}
+          <span className="absolute bottom-4 right-4 rounded-full bg-black/60 px-3 py-1.5 text-sm font-semibold text-white">View gallery</span>
+        </button>
+      ) : <div aria-label="No trip photo supplied" className="aspect-[688/429] w-full rounded-[10px] xl:h-[429px] xl:aspect-auto" />}
       <div role="tablist" aria-label="Choose a trip photo" className="mt-4 grid grid-cols-4 gap-4 xl:mt-[15px] xl:gap-[17px]">
-        {images.map((item, index) => {
+        {thumbnailSlots.map((item, index) => {
+          if (!item) return <div key={`empty-${index}`} aria-hidden className="aspect-[1.47] rounded-[10px] xl:h-[107px] xl:aspect-auto" />;
           const isActive = index === activeImage;
           return (
             <button
@@ -71,8 +75,8 @@ export function TripHeroGallery({ images, promotionLabel }: TripHeroGalleryProps
           );
         })}
       </div>
-      <p className="sr-only" aria-live="polite">Showing photo {activeImage + 1} of {images.length}: {image.alt ?? "Trip photo"}</p>
-      {isLightboxOpen && (
+      {image && <p className="sr-only" aria-live="polite">Showing photo {activeImage + 1} of {images.length}: {image.alt ?? "Trip photo"}</p>}
+      {isLightboxOpen && image && (
         <div
           role="dialog"
           aria-modal="true"
