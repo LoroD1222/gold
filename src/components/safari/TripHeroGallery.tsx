@@ -1,28 +1,27 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import type { SanityImage } from "@/lib/safariTrips";
 
-const galleryImages = [
-  { src: "/assets/trip-hero-img-frame1321315437.png", alt: "Wildebeest moving across the Serengeti during the Great Migration" },
-  { src: "/assets/trip-hero-img-frame1321315438.png", alt: "Elephant seen on the safari route" },
-  { src: "/assets/trip-itinerary-img-frame1321315453.png", alt: "Lioness in Serengeti National Park" },
-  { src: "/assets/trip-itinerary-img-frame1321315454.png", alt: "Sunrise over a Tanzania landscape" },
-] as const;
+type TripHeroGalleryProps = {
+  images: Array<SanityImage & { url: string }>;
+  promotionLabel?: string;
+};
 
-export function TripHeroGallery() {
+export function TripHeroGallery({ images, promotionLabel }: TripHeroGalleryProps) {
   const [activeImage, setActiveImage] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
-  const image = galleryImages[activeImage];
+  const image = images[activeImage];
 
   function openLightbox(index = activeImage) {
     setActiveImage(index);
     setIsLightboxOpen(true);
   }
 
-  function changeImage(direction: -1 | 1) {
-    setActiveImage((current) => (current + direction + galleryImages.length) % galleryImages.length);
-  }
+  const changeImage = useCallback((direction: -1 | 1) => {
+    setActiveImage((current) => (current + direction + images.length) % images.length);
+  }, [images.length]);
 
   useEffect(() => {
     if (!isLightboxOpen) return;
@@ -40,7 +39,7 @@ export function TripHeroGallery() {
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = previousOverflow;
     };
-  }, [isLightboxOpen]);
+  }, [changeImage, isLightboxOpen]);
 
   return (
     <section aria-label="Trip photo gallery">
@@ -48,31 +47,31 @@ export function TripHeroGallery() {
         type="button"
         onClick={() => openLightbox()}
         className="relative block w-full aspect-[688/429] overflow-hidden rounded-[10px] text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand xl:h-[429px] xl:aspect-auto"
-        aria-label={`Open photo ${activeImage + 1} in the gallery: ${image.alt}`}
+        aria-label={`Open photo ${activeImage + 1} in the gallery: ${image.alt ?? "Trip photo"}`}
       >
-        <Image key={image.src} src={image.src} alt={image.alt} fill priority sizes="(max-width: 1024px) 100vw, 688px" className="object-cover object-center" />
-        <span className="absolute left-5 top-5 rounded-[10px] bg-brand px-4 py-2 text-[20px] font-semibold">Top seller</span>
+        <Image key={image.url} src={image.url} alt={image.alt ?? "Trip photo"} fill priority sizes="(max-width: 1024px) 100vw, 688px" className="object-cover object-center" />
+        {promotionLabel && <span className="absolute left-5 top-5 rounded-[10px] bg-brand px-4 py-2 text-[20px] font-semibold">{promotionLabel}</span>}
         <span className="absolute bottom-4 right-4 rounded-full bg-black/60 px-3 py-1.5 text-sm font-semibold text-white">View gallery</span>
       </button>
       <div role="tablist" aria-label="Choose a trip photo" className="mt-4 grid grid-cols-4 gap-4 xl:mt-[15px] xl:gap-[17px]">
-        {galleryImages.map((item, index) => {
+        {images.map((item, index) => {
           const isActive = index === activeImage;
           return (
             <button
-              key={item.src}
+              key={item._key ?? item.url}
               type="button"
               role="tab"
               aria-selected={isActive}
-              aria-label={`Show photo ${index + 1}: ${item.alt}`}
+              aria-label={`Show photo ${index + 1}: ${item.alt ?? "Trip photo"}`}
               onClick={() => openLightbox(index)}
               className={`relative aspect-[1.47] overflow-hidden rounded-[10px] transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand xl:h-[107px] xl:aspect-auto ${isActive ? "ring-3 ring-brand ring-offset-2" : "opacity-75 hover:opacity-100"}`}
             >
-              <Image src={item.src} alt="" fill sizes="180px" className="object-cover" />
+              <Image src={item.url} alt="" fill sizes="180px" className="object-cover" />
             </button>
           );
         })}
       </div>
-      <p className="sr-only" aria-live="polite">Showing photo {activeImage + 1} of {galleryImages.length}: {image.alt}</p>
+      <p className="sr-only" aria-live="polite">Showing photo {activeImage + 1} of {images.length}: {image.alt ?? "Trip photo"}</p>
       {isLightboxOpen && (
         <div
           role="dialog"
@@ -93,7 +92,7 @@ export function TripHeroGallery() {
               ×
             </button>
             <div className="relative h-[min(74dvh,760px)] overflow-hidden rounded-xl bg-black">
-              <Image src={image.src} alt={image.alt} fill priority sizes="90vw" className="object-contain" />
+              <Image src={image.url} alt={image.alt ?? "Trip photo"} fill priority sizes="90vw" className="object-contain" />
             </div>
             <button
               type="button"
@@ -111,7 +110,7 @@ export function TripHeroGallery() {
             >
               →
             </button>
-            <p className="mt-4 text-center text-sm text-white sm:text-base">{activeImage + 1} / {galleryImages.length} · {image.alt}</p>
+            <p className="mt-4 text-center text-sm text-white sm:text-base">{activeImage + 1} / {images.length} · {image.alt ?? "Trip photo"}</p>
           </div>
         </div>
       )}

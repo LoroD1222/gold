@@ -1,9 +1,9 @@
 export type Trip = {
   slug: string;
   title: string;
-  duration: number;
-  priceFrom: number;
-  image: string;
+  duration?: number;
+  priceFrom?: number;
+  image?: string;
   category: string;
   shortDescription: string;
 };

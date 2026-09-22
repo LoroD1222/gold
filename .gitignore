@@ -4,3 +4,6 @@
 .DS_Store
 *.log
 *.tsbuildinfo
+/migration/extracted/
+/migration/reports/
+.env.local

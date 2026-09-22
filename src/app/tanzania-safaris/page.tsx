@@ -5,6 +5,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { SafariListingFilters } from "@/components/safari/SafariListingFilters";
 import { trips } from "@/data/trips";
+import { getSafariTripCards } from "@/lib/safariTrips";
 
 export const metadata: Metadata = {
   title: "Tanzania Safari in 2027–2028",
@@ -18,7 +19,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function TanzaniaSafarisPage() {
+export default async function TanzaniaSafarisPage() {
+  const safariTrips = await getSafariTripCards().catch(() => trips);
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -50,7 +52,7 @@ export default function TanzaniaSafarisPage() {
             <section aria-labelledby="safari-routes-title" className="mx-auto max-w-[1134px]">
               <h2 id="safari-routes-title" className="sr-only">Tanzania safari routes</h2>
               <SafariListingFilters
-                trips={trips}
+                trips={safariTrips.length > 0 ? safariTrips : trips}
                 intro={<p className="mx-auto mt-10 max-w-[820px] text-center text-sm font-medium text-muted">The routes shown are just examples, every safari we create is uniquely built around you</p>}
               />
             </section>

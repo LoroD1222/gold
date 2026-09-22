@@ -2,16 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-const tabs = [
-  { id: "overview", label: "Overview" },
-  { id: "highlights", label: "Highlights" },
-  { id: "itinerary", label: "Itinerary" },
-  { id: "inclusions", label: "Inclusions" },
-  { id: "reviews", label: "Reviews" },
-] as const;
+type TripDetailTab = { id: string; label: string };
 
-export function TripDetailTabs() {
-  const [activeTab, setActiveTab] = useState<(typeof tabs)[number]["id"]>("overview");
+export function TripDetailTabs({ tabs }: { tabs: TripDetailTab[] }) {
+  const [activeTab, setActiveTab] = useState(tabs[0]?.id ?? "");
 
   useEffect(() => {
     const sections = tabs
@@ -24,14 +18,14 @@ export function TripDetailTabs() {
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
 
-        if (visibleSection) setActiveTab(visibleSection.target.id as (typeof tabs)[number]["id"]);
+        if (visibleSection) setActiveTab(visibleSection.target.id);
       },
       { rootMargin: "-22% 0px -65% 0px", threshold: [0, 0.1, 0.3, 0.6] },
     );
 
     sections.forEach((section) => observer.observe(section));
     return () => observer.disconnect();
-  }, []);
+  }, [tabs]);
 
   return (
     <nav aria-label="Trip details" className="mb-12 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">

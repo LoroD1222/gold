@@ -33,7 +33,6 @@ const imageGallery = defineField({
   type: 'array',
   group: 'hero',
   of: [imageWithAlt],
-  validation: (rule) => rule.min(1).error('Add at least one trip photo.'),
 })
 
 const siteSettings = defineType({
@@ -62,6 +61,7 @@ const safariTrip = defineType({
     {name: 'inclusions', title: 'Inclusions'},
     {name: 'related', title: 'Related trips'},
     {name: 'seo', title: 'SEO'},
+    {name: 'migration', title: 'Migration metadata'},
   ],
   fields: [
     defineField({
@@ -177,6 +177,29 @@ const safariTrip = defineType({
       validation: (rule) => rule.min(0),
     }),
     defineField({
+      name: 'pricingTiers',
+      title: 'Price tiers',
+      description: 'Per-person prices by group size, when supplied by the source tour.',
+      type: 'array',
+      group: 'hero',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          icon: DocumentTextIcon,
+          fields: [
+            defineField({name: 'groupSize', title: 'Group size', type: 'string', validation: (rule) => rule.required()}),
+            defineField({name: 'pricePerPerson', title: 'Price per person (USD)', type: 'number', validation: (rule) => rule.required().min(0)}),
+          ],
+          preview: {
+            select: {title: 'groupSize', subtitle: 'pricePerPerson'},
+            prepare({title, subtitle}) {
+              return {title, subtitle: typeof subtitle === 'number' ? `$${subtitle.toLocaleString('en-US')} per person` : undefined}
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: 'priceNote',
       title: 'Price note',
       description: 'Text below the quote button.',
@@ -197,7 +220,6 @@ const safariTrip = defineType({
       type: 'array',
       group: 'overview',
       of: [richText],
-      validation: (rule) => rule.min(1).error('Add the trip overview.'),
     }),
     defineField({
       name: 'overviewHighlights',
@@ -333,8 +355,8 @@ const safariTrip = defineType({
               title: 'Photos',
               type: 'array',
               of: [imageWithAlt],
-              validation: (rule) => rule.min(1).error('Add at least one itinerary photo.'),
             }),
+            defineField({name: 'meals', title: 'Meals', description: 'Only include meals stated for this day.', type: 'string'}),
             defineField({
               name: 'accommodation',
               title: 'Accommodation',
@@ -416,11 +438,27 @@ const safariTrip = defineType({
               title: 'Description',
               type: 'array',
               of: [richText],
-              validation: (rule) => rule.min(1).error('Add the inclusion description.'),
             }),
             defineField({name: 'icon', title: 'Icon', type: 'image', options: {hotspot: true}}),
           ],
           preview: {select: {title: 'title', media: 'icon'}},
+        }),
+      ],
+    }),
+    defineField({
+      name: 'exclusions',
+      title: 'Excluded services',
+      type: 'array',
+      group: 'inclusions',
+      of: [
+        defineArrayMember({
+          type: 'object',
+          icon: DocumentTextIcon,
+          fields: [
+            defineField({name: 'title', title: 'Title', type: 'string', validation: (rule) => rule.required()}),
+            defineField({name: 'description', title: 'Description', type: 'array', of: [richText]}),
+          ],
+          preview: {select: {title: 'title'}},
         }),
       ],
     }),
@@ -443,6 +481,19 @@ const safariTrip = defineType({
         defineField({name: 'title', title: 'SEO title', type: 'string', validation: (rule) => rule.max(60).warning('Aim for 60 characters or fewer.')}),
         defineField({name: 'description', title: 'SEO description', type: 'text', rows: 3, validation: (rule) => rule.max(160).warning('Aim for 160 characters or fewer.')}),
         defineField({name: 'shareImage', title: 'Social share image', type: 'image', options: {hotspot: true}}),
+      ],
+    }),
+    defineField({
+      name: 'legacy',
+      title: 'Legacy source',
+      description: 'Original WordPress identity retained for repeatable imports and future redirects.',
+      type: 'object',
+      group: 'migration',
+      fields: [
+        defineField({name: 'source', title: 'Source system', type: 'string', readOnly: true}),
+        defineField({name: 'sourceId', title: 'WordPress post ID', type: 'string', readOnly: true}),
+        defineField({name: 'url', title: 'Original URL', type: 'url', validation: (rule) => rule.uri({scheme: ['http', 'https']}), readOnly: true}),
+        defineField({name: 'migratedAt', title: 'Last migrated at', type: 'datetime', readOnly: true}),
       ],
     }),
   ],

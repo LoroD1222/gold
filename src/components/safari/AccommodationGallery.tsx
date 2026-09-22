@@ -2,23 +2,14 @@
 
 import Image from "next/image";
 import { useId, useRef } from "react";
+import type { SanityImage } from "@/lib/safariTrips";
 
-const galleryImages = [
-  {
-    src: "/assets/trip-itinerary-img-frame1321315453.png",
-    alt: "Lioness in the Serengeti near the camp",
-  },
-  {
-    src: "/assets/trip-itinerary-img-frame1321315454.png",
-    alt: "Sunrise over the Tanzania landscape",
-  },
-  {
-    src: "/assets/trip-hero-img-frame1321315437.png",
-    alt: "Great Migration wildlife in the Serengeti",
-  },
-] as const;
+type AccommodationGalleryProps = {
+  name: string;
+  images: Array<SanityImage & { url: string }>;
+};
 
-export function AccommodationGallery() {
+export function AccommodationGallery({ name, images }: AccommodationGalleryProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -35,7 +26,7 @@ export function AccommodationGallery() {
         aria-haspopup="dialog"
       >
         <Image src="/assets/trip-itinerary-img-group.svg" width={35} height={23} alt="" className="h-[23px] w-[35px] shrink-0" />
-        Serengeti Sound of Silence Tented Camp
+        {name}
       </button>
 
       <dialog
@@ -57,12 +48,12 @@ export function AccommodationGallery() {
           </button>
           <p className="eyebrow pr-12">Accommodation gallery</p>
           <h2 id={titleId} className="mt-3 pr-12 text-2xl font-semibold tracking-[-0.035em] sm:text-3xl">
-            Serengeti Sound of Silence Tented Camp
+            {name}
           </h2>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {galleryImages.map((image, index) => (
-              <div key={image.src} className={`relative overflow-hidden rounded-xl ${index === 0 ? "aspect-[16/9] sm:col-span-2" : "aspect-[4/3]"}`}>
-                <Image src={image.src} alt={image.alt} fill sizes="(max-width: 640px) calc(100vw - 4.5rem), 400px" className="object-cover" />
+            {images.map((image, index) => (
+              <div key={image._key ?? image.url} className={`relative overflow-hidden rounded-xl ${index === 0 ? "aspect-[16/9] sm:col-span-2" : "aspect-[4/3]"}`}>
+                <Image src={image.url} alt={image.alt ?? name} fill sizes="(max-width: 640px) calc(100vw - 4.5rem), 400px" className="object-cover" />
               </div>
             ))}
           </div>
