@@ -4,10 +4,12 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PlanningCall } from "@/components/home/PlanningCall";
 import { Testimonials } from "@/components/home/Testimonials";
+import { AccommodationGallery } from "@/components/safari/AccommodationGallery";
 import { TripCard } from "@/components/safari/TripCard";
 import { TripHeroGallery } from "@/components/safari/TripHeroGallery";
 import { MiniPlanningForm } from "@/components/safari/MiniPlanningForm";
 import { ButtonLink } from "@/components/ui/ButtonLink";
+import { getSafariAnimal, isSafariAnimalId, type SafariAnimalId } from "@/data/safariAnimals";
 import { trips } from "@/data/trips";
 
 export const metadata: Metadata = {
@@ -32,16 +34,52 @@ const inclusionItems = [
   ["/assets/trip-inclusions-img-group1.svg", "Ambulance & Medical", "Emergency support planning and clear assistance procedures.", "h-[23px] w-[30px]"],
 ] as const;
 
-const wildlife = [
-  { name: "Elephant", availability: "Abundant", src: "/assets/trip-animal-elephant.jpg", imageClass: "h-[165px] max-w-[234px]", availabilityClass: "text-brand" },
-  { name: "Giraffe", availability: "Common", src: "/assets/trip-animal-giraffe.jpg", imageClass: "h-[185px] max-w-[137px]", availabilityClass: "text-brand/60" },
-  { name: "Lion", availability: "Rare", src: "/assets/trip-animal-lion.jpg", imageClass: "h-[136px] max-w-[174px]", availabilityClass: "text-brand/30" },
-  { name: "Cheetah", availability: "Rare", src: "/assets/trip-animal-cheetah.jpg", imageClass: "h-[136px] max-w-[174px]", availabilityClass: "text-brand/30" },
-  { name: "Leopard", availability: "Rare", src: "/assets/trip-animal-leopard.jpg", imageClass: "h-[136px] max-w-[174px]", availabilityClass: "text-brand/30" },
-  { name: "Wildebeest", availability: "Abundant", src: "/assets/trip-animal-wildebeest.jpg", imageClass: "h-[136px] max-w-[174px]", availabilityClass: "text-brand" },
-] as const;
+const availabilityClasses = {
+  Abundant: "text-brand",
+  Common: "text-brand/60",
+  Rare: "text-brand/30",
+} as const;
 
-export default function SafariDetailPage() {
+type WildlifeAvailability = keyof typeof availabilityClasses;
+type WildlifeEntry = { animal: SafariAnimalId; availability: WildlifeAvailability };
+
+const fallbackWildlife: WildlifeEntry[] = [
+  { animal: "elephant", availability: "Abundant" },
+  { animal: "giraffe", availability: "Common" },
+  { animal: "lion", availability: "Rare" },
+  { animal: "cheetah", availability: "Rare" },
+  { animal: "leopard", availability: "Rare" },
+  { animal: "wildebeest", availability: "Abundant" },
+];
+
+const sanityWildlifeQuery = encodeURIComponent(
+  '*[_type == "safariTrip" && slug.current == "great-migration-river-crossing-serengeti"][0]{wildlife[]{animal, availability}}',
+);
+const sanityWildlifeUrl = `https://og32jxcd.api.sanity.io/v2025-02-19/data/query/production?query=${sanityWildlifeQuery}`;
+
+function isWildlifeAvailability(value: unknown): value is WildlifeAvailability {
+  return typeof value === "string" && value in availabilityClasses;
+}
+
+async function getWildlife(): Promise<WildlifeEntry[]> {
+  try {
+    const response = await fetch(sanityWildlifeUrl, { next: { revalidate: 60 } });
+    if (!response.ok) return fallbackWildlife;
+
+    const payload = (await response.json()) as { result?: { wildlife?: Array<{ animal?: unknown; availability?: unknown }> } | null };
+    const configuredWildlife = payload.result?.wildlife?.flatMap((entry) => {
+      if (typeof entry.animal !== "string" || !isSafariAnimalId(entry.animal) || !isWildlifeAvailability(entry.availability)) return [];
+      return [{ animal: entry.animal, availability: entry.availability }];
+    });
+
+    return configuredWildlife?.length ? configuredWildlife : fallbackWildlife;
+  } catch {
+    return fallbackWildlife;
+  }
+}
+
+export default async function SafariDetailPage() {
+  const wildlife = await getWildlife();
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -74,7 +112,7 @@ export default function SafariDetailPage() {
                 </dl>
                 <div className="mt-[33px]">
                   <p className="flex items-center gap-[18px] text-[20px]"><span>Price starts from</span><strong className="text-[32px] font-medium">$1,860</strong></p>
-                  <a href="#planning" className="mt-7 flex min-h-[62px] items-center justify-center rounded-[15px] bg-gradient-to-r from-[#f2a93b] to-[#f4bd2b] px-6 py-4 text-[24px] font-bold text-white transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">REQUEST QUOTE</a>
+                  <a href="#planning" className="mt-7 flex min-h-[62px] items-center justify-center rounded-[15px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-6 py-4 text-[20px] font-bold text-white transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Request Quote</a>
                   <p className="mt-[19px] text-center text-[16px]">view prices that apply to you</p>
                 </div>
               </aside>
@@ -98,7 +136,7 @@ export default function SafariDetailPage() {
                 <div><div className="flex items-center gap-[13px]"><Image src="/assets/trip-overview-img-car-roof-box-svgrepo-com2.svg" width={40} height={40} alt="" className="size-10" /><h3 className="text-[20px] font-bold">Open Vehicle</h3></div><p className="mt-[14px] text-[18px] leading-[1.5] text-black/[.58]">Explore the plains from open-sided 4x4s for unobstructed views</p></div>
               </div>
             </article>
-            <aside><MiniPlanningForm /></aside>
+            <aside className="h-fit xl:sticky xl:top-8 xl:self-start"><MiniPlanningForm /></aside>
           </div>
         </section>
 
@@ -124,17 +162,20 @@ export default function SafariDetailPage() {
         <section className="bg-[linear-gradient(to_bottom,#fffbf3_0%,#fffbf3_54%,#f4ede1_54%,#f4ede1_100%)] pb-24" aria-labelledby="wildlife-title">
           <div className="site-container max-w-[1200px]">
             <div className="rounded-[10px] border border-ink/[.08] bg-[#fffefc] px-5 py-10 sm:px-8 lg:min-h-[440px] lg:px-8 lg:pb-[45px] lg:pt-16">
-              <h2 id="wildlife-title" className="text-center text-[26px] font-semibold leading-tight tracking-[-0.03em]">Wildlife you may encounter</h2>
+              <h2 id="wildlife-title" className="pb-5 text-center text-[26px] font-semibold leading-tight tracking-[-0.03em]">Wildlife you may encounter</h2>
               <div className="mt-8 grid grid-cols-2 items-end gap-8 sm:grid-cols-3 lg:grid-cols-[234px_137px_174px_174px_174px_174px] lg:gap-[11px]">
-                {wildlife.map(({ name, availability, src, imageClass, availabilityClass }) => (
-                  <article key={name} className="text-center">
+                {wildlife.map(({ animal, availability }) => {
+                  const selectedAnimal = getSafariAnimal(animal);
+                  return (
+                  <article key={animal} className="text-center">
                     <div className="flex h-[150px] items-end justify-center sm:h-[170px] lg:h-[185px]">
-                      <Image src={src} width={234} height={185} alt={`${name} silhouette`} sizes="(max-width: 639px) 40vw, 234px" className={`h-auto w-auto object-contain object-bottom mix-blend-multiply ${imageClass}`} />
+                      <Image src={selectedAnimal.src} width={234} height={185} alt={`${selectedAnimal.title} silhouette`} sizes="(max-width: 639px) 40vw, 234px" className={`h-auto w-auto object-contain object-bottom mix-blend-multiply ${selectedAnimal.imageClass}`} />
                     </div>
-                    <h3 className="mt-[9px] text-[24px] font-semibold capitalize leading-none">{name}</h3>
-                    <p className={`mt-5 text-[20px] font-extrabold leading-none ${availabilityClass}`}><span className="mr-2">●</span>{availability}</p>
+                    <h3 className="mt-[9px] text-[24px] font-semibold capitalize leading-none">{selectedAnimal.title}</h3>
+                    <p className={`mt-5 text-[20px] font-extrabold leading-none ${availabilityClasses[availability]}`}><span className="mr-2">●</span>{availability}</p>
                   </article>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -145,7 +186,7 @@ export default function SafariDetailPage() {
             <h2 id="itinerary-title" className="text-[44px] font-semibold leading-[1.12] tracking-[-0.04em] sm:text-[56px] lg:text-[64px]">
               Family itinerary day by day
             </h2>
-            <div className="mt-16 grid gap-12 lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-5 xl:grid-cols-[minmax(0,856px)_337px] xl:gap-[5px]">
+            <div className="mt-16 grid gap-12 lg:items-start lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-5 xl:grid-cols-[minmax(0,856px)_337px] xl:gap-[5px]">
               <div className="space-y-[63px]">
                 {itinerary.map((day) => (
                   <article key={day} className="grid gap-8 md:grid-cols-[299px_minmax(0,1fr)] md:gap-[30px]">
@@ -172,17 +213,14 @@ export default function SafariDetailPage() {
 
                       <div className="mt-[49px]">
                         <h4 className="text-[21px] font-semibold leading-[35px]">Accomodation</h4>
-                        <p className="mt-4 flex items-center gap-5 text-[17px] font-medium leading-[35px] underline underline-offset-2">
-                          <Image src="/assets/trip-itinerary-img-group.svg" width={35} height={35} alt="" className="h-[35px] w-[35px]" />
-                          Serengeti Sound of Silence Tented Camp
-                        </p>
+                        <AccommodationGallery />
                       </div>
                     </div>
                   </article>
                 ))}
               </div>
 
-              <aside className="h-fit rounded-[9px] bg-white p-[18px] lg:sticky lg:top-8 lg:self-start">
+              <aside className="order-first h-fit rounded-[9px] bg-white p-[18px] lg:order-none lg:sticky lg:top-8 lg:z-10">
                 <div className="relative h-[291px] overflow-hidden rounded-[10px]">
                   <Image src="/assets/trip-itinerary-img-image67.png" alt="Map of the Northern Serengeti safari itinerary" fill sizes="302px" className="object-cover" />
                   <p className="absolute bottom-[14px] left-3 flex items-center gap-2 text-[16px] font-semibold leading-[1.28] text-black">

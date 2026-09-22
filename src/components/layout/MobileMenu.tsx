@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 
 const links = [
   ["All Trips", "/tanzania-safaris"],
-  ["Activities", "/tanzania-safaris"],
-  ["Accommodations", "/#destinations"],
-  ["Zanzibar", "/#destinations"],
+  ["Reviews", "/#reviews"],
+  ["Destinations", "/#destinations"],
+  ["Contact", "/#contact"],
 ] as const;
 
 export function MobileMenu({ light = false }: { light?: boolean }) {
@@ -40,8 +40,8 @@ export function MobileMenu({ light = false }: { light?: boolean }) {
                 {label}
               </Link>
             ))}
-            <Link href="/#planning" onClick={() => setOpen(false)} className="mt-6 rounded-md bg-brand px-6 py-4 text-center font-semibold">
-              Plan your trip
+            <Link href="/#planning" onClick={() => setOpen(false)} className="mt-6 rounded-md bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-6 py-4 text-center font-semibold transition hover:brightness-95">
+              Start planning
             </Link>
           </nav>
         </div>

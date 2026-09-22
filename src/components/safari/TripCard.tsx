@@ -13,7 +13,7 @@ export function TripCard({ trip, compact = false, carousel = false }: { trip: Tr
   const headingClassName = (featureCard || !compact ? "text-xl" : "text-base") + " max-w-[290px] font-semibold leading-[1.28]";
   const durationClassName = (featureCard ? "mt-3 sm:mt-[11px]" : "mt-3") + " inline-flex w-fit items-center gap-1 rounded-full bg-ink/35 px-2 py-1 text-[11px] font-semibold uppercase backdrop-blur-sm";
   const priceClassName = (featureCard || !compact ? "text-[27px]" : "text-2xl") + " block font-semibold";
-  const buttonClassName = (featureCard ? "min-h-[46px] px-5 text-[18px]" : "min-h-11 px-5") + " inline-flex shrink-0 items-center rounded-full border border-brand bg-brand/35 py-2 font-semibold backdrop-blur-md transition hover:bg-brand hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white";
+  const buttonClassName = (featureCard ? "min-h-[46px] px-5 text-[18px]" : "min-h-11 px-5") + " inline-flex shrink-0 items-center rounded-full border border-brand py-2 font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white " + (carousel ? "bg-brand/35 text-white backdrop-blur-md hover:bg-brand hover:text-ink" : "bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] text-ink hover:brightness-95");
 
   return (
     <article className={"group relative isolate overflow-hidden rounded-[20px] bg-ink text-white shadow-sm " + cardClassName}>
@@ -28,7 +28,7 @@ export function TripCard({ trip, compact = false, carousel = false }: { trip: Tr
       <div className={"relative flex h-full flex-col " + (featureCard ? "p-4 sm:p-[17px]" : "p-4 sm:p-5")}>
         <h3 className={headingClassName}>{trip.title}</h3>
         <p className={durationClassName}>
-          <span className="text-brand">◷</span> {trip.duration} days
+          <span className="text-[18px] leading-none text-brand">◷</span> {trip.duration} days
         </p>
         <div className="mt-auto flex items-end justify-between gap-3">
           <p className="leading-tight">

@@ -1,0 +1,26 @@
+[
+  {
+    "_id": "siteSettings",
+    "_type": "siteSettings",
+    "siteName": "Golden Trips Tanzania",
+    "email": "info@goldentrips.com",
+    "phone": "+255761575951",
+    "whatsAppNumber": "+255761575951"
+  },
+  {
+    "_id": "safariTrip-great-migration-family-adventure",
+    "_type": "safariTrip",
+    "title": "Great Migration Family Adventure",
+    "slug": {
+      "_type": "slug",
+      "current": "great-migration-river-crossing-serengeti"
+    },
+    "summary": "A front-row family safari timed around the Serengeti migration.",
+    "durationDays": 9,
+    "startingPrice": 2640,
+    "categories": [
+      "Safari"
+    ],
+    "featured": true
+  }
+]

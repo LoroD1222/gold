@@ -13,7 +13,7 @@ export function PlanningCall({ id }: { id?: string }) {
               <p className="text-sm font-semibold leading-[1.1] text-black/45 lg:text-[20px]">Tour Consultant and Chairperson</p>
             </div>
           </div>
-          <h2 id={`${id ?? "planning"}-title`} className="mt-6 text-3xl font-semibold leading-[1.18] tracking-[-0.04em] lg:mt-[23px] lg:text-[clamp(43px,4.1vw,53px)] lg:leading-[1.15]">
+          <h2 id={`${id ?? "planning"}-title`} className="mt-6 text-4xl font-semibold leading-[1.18] tracking-[-0.04em] lg:mt-[23px] lg:text-[clamp(43px,4.1vw,53px)] lg:leading-[1.15]">
             Free planning call with our Tanzania expert
           </h2>
           <p className="mt-5 text-lg leading-8 text-muted lg:mt-[22px] lg:text-[clamp(18px,1.8vw,23px)] lg:leading-[1.4]">
@@ -21,7 +21,7 @@ export function PlanningCall({ id }: { id?: string }) {
           </p>
           <div className="mt-6 flex items-center gap-3 text-sm font-semibold lg:mt-[22px] lg:gap-[13px]">
             <Image src="/assets/home-consult-img-ellipse2.png" width={47} height={47} alt="" className="size-[46.5px]" />
-            <p><span className="block text-[19px] leading-[1.37] tracking-[.13em] text-brand">★★★★★</span><span className="text-[17px] leading-[1.1]">5/5 · Based on 191 verified reviews on Tripadvisor</span></p>
+            <p><span className="block text-[19px] leading-[1.37] tracking-[.13em] text-brand">★★★★★</span><span className="mt-[5px] block text-[17px] leading-[1.4]">191 verified reviews on TripAdvisor</span></p>
           </div>
         </div>
         <form className="mt-8 rounded-[15px] border border-black/20 bg-white p-5 shadow-none lg:mt-0 lg:h-[454px] lg:p-6" action="#" method="post">
@@ -41,7 +41,7 @@ export function PlanningCall({ id }: { id?: string }) {
               <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" type="tel" name="phone" autoComplete="tel" placeholder="e.g. +1 (555) 019-2834" />
             </label>
           </div>
-          <button type="submit" className="mt-4 min-h-11 w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-sm font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+          <button type="submit" className="mt-4 min-h-11 w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-sm !font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
             Start Planning My Family&apos;s Trip
           </button>
         </form>

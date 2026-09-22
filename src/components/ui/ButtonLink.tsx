@@ -10,7 +10,7 @@ type ButtonLinkProps = {
 
 export function ButtonLink({ href, children, variant = "primary", className = "" }: ButtonLinkProps) {
   const styles = {
-    primary: "bg-brand text-ink hover:bg-brand-dark",
+    primary: "bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] text-ink hover:brightness-95",
     outline: "border border-brand bg-white/10 text-white hover:bg-brand/20",
     text: "text-brand underline decoration-1 underline-offset-4 hover:text-brand-dark",
   };

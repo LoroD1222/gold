@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from "next";
-import { Poppins } from "next/font/google";
+import "@fontsource/poppins/latin-400.css";
+import "@fontsource/poppins/latin-500.css";
+import "@fontsource/poppins/latin-600.css";
+import "@fontsource/poppins/latin-700.css";
+import "@fontsource/league-spartan/latin-400.css";
+import "@fontsource/league-spartan/latin-500.css";
+import "@fontsource/league-spartan/latin-600.css";
+import "@fontsource/league-spartan/latin-700.css";
 import { WhatsAppChatWidget } from "@/components/layout/WhatsAppChatWidget";
 import "./globals.css";
-
-const poppins = Poppins({
-  variable: "--font-poppins",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://goldentrips.com"),
@@ -40,7 +40,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>
+      <body className="antialiased">
         {children}
         <WhatsAppChatWidget />
       </body>

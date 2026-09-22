@@ -37,7 +37,7 @@ export function Footer() {
             </div>
 
             <div className="lg:absolute lg:left-[48.025%] lg:top-[19.596%] lg:w-[50.538%]">
-              <h2 id="ready-title" className="text-3xl font-bold leading-[1.2] tracking-[-0.04em] sm:text-4xl lg:text-[37px]">
+              <h2 id="ready-title" className="text-4xl font-bold leading-[1.2] tracking-[-0.04em] lg:text-[37px]">
                 Ready to plan your safari?
               </h2>
               <p className="mt-5 text-lg leading-[1.6] text-black/[.54] lg:mt-7 lg:text-[22px]">
@@ -139,7 +139,7 @@ function ContactMethod({
   detail: string;
 }) {
   return (
-    <div className="flex flex-col gap-[5px]">
+    <div className="flex flex-col items-center gap-[5px] text-center sm:items-start sm:text-left">
       <Image src={icon} width={52} height={52} alt="" />
       <p className="text-[17px] font-semibold leading-[1.68] lg:text-[19px]">{label}</p>
       <a href={href} className="text-[17px] font-bold leading-[1.68] underline decoration-1 underline-offset-2 lg:text-[19px]">{value}</a>

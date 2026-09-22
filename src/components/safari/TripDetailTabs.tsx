@@ -45,9 +45,7 @@ export function TripDetailTabs() {
               href={`#${tab.id}`}
               role="tab"
               aria-selected={isActive}
-              className={`relative px-5 py-4 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand sm:px-6 sm:text-base ${
-                isActive ? "text-brand" : "text-muted hover:text-ink"
-              }`}
+              className="relative px-5 py-4 text-sm font-semibold text-ink transition hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand sm:px-6 sm:text-base"
               onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}

@@ -51,7 +51,7 @@ export default function TanzaniaSafarisPage() {
               <h2 id="safari-routes-title" className="sr-only">Tanzania safari routes</h2>
               <SafariListingFilters
                 trips={trips}
-                intro={<p className="mx-auto mt-10 max-w-[820px] rounded-full border border-brand/40 bg-cream px-7 py-4 text-center text-sm font-medium text-muted">The routes shown are just examples, every safari we create is uniquely built around you</p>}
+                intro={<p className="mx-auto mt-10 max-w-[820px] text-center text-sm font-medium text-muted">The routes shown are just examples, every safari we create is uniquely built around you</p>}
               />
             </section>
           </div>

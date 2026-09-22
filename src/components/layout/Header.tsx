@@ -4,9 +4,9 @@ import { MobileMenu } from "./MobileMenu";
 
 const links = [
   ["All Trips", "/tanzania-safaris"],
-  ["Activities", "/tanzania-safaris"],
-  ["Accommodations", "/#destinations"],
-  ["Zanzibar", "/#destinations"],
+  ["Reviews", "/#reviews"],
+  ["Destinations", "/#destinations"],
+  ["Contact", "/#contact"],
 ] as const;
 
 export function Header({ overlay = false }: { overlay?: boolean }) {
@@ -22,8 +22,8 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
               {label}
             </Link>
           ))}
-          <Link href="/#planning" className="ml-3 rounded-md bg-brand px-7 py-4 font-semibold text-ink transition hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
-            Plan your trip
+          <Link href="/#planning" className="ml-3 rounded-md bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-7 py-4 font-semibold text-ink transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
+            Start planning
           </Link>
         </nav>
         <MobileMenu light={overlay} />

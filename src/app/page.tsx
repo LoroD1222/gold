@@ -55,8 +55,6 @@ const guides = [
   { name: "Gladness Msela", role: "Accountant", image: "/assets/guide-gladness-msela.png", crop: "!h-[241.33%] !w-[114.73%] !left-[-7.37%] !top-[-28.83%]" },
 ] as const;
 
-const guideDescription = "Joseph has a gift for spotting wildlife early and explaining what's happening in a way kids actually follow.";
-
 export default function HomePage() {
   const structuredData = [
     {
@@ -83,13 +81,13 @@ export default function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <main>
-        <section className="relative min-h-[707px] overflow-hidden bg-ink text-white" aria-labelledby="home-title">
-          <Image src="/assets/home-hero.png" alt="Family watching elephants during a private Tanzania safari" fill priority sizes="100vw" className="object-cover object-[56%_center]" />
+        <section className="relative overflow-hidden bg-ink text-white lg:min-h-[707px]" aria-labelledby="home-title">
+          <Image src="/assets/home-hero.png" alt="Family watching elephants during a private Tanzania safari" fill priority sizes="100vw" className="object-cover object-[70%_center] lg:object-[56%_center]" />
           <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,27,20,.94)_0%,rgba(20,27,20,.69)_35%,rgba(20,27,20,.08)_77%),linear-gradient(180deg,rgba(17,23,17,.62)_0%,transparent_42%)]" />
           <Header overlay />
-          <div className="site-container relative z-10 flex min-h-[603px] flex-col justify-center pb-[50px] pt-[100px] lg:pt-[200px]">
+          <div className="site-container relative z-10 flex flex-col justify-start pb-[50px] pt-[100px] lg:min-h-[603px] lg:justify-center lg:pt-[200px]">
             <div className="max-w-[610px]">
-              <h1 id="home-title" className="text-[42px] font-semibold leading-[1.07] tracking-[-0.045em] sm:text-[56px] lg:text-[64px]">
+              <h1 id="home-title" className="mt-[70px] text-[42px] font-semibold leading-[1.07] tracking-[-0.045em] sm:text-[56px] lg:mt-0 lg:text-[64px]">
                 <span className="text-brand">Family safaris</span> in Tanzania, made for every generation.
               </h1>
               <p className="mt-6 max-w-[540px] text-base leading-7 text-white/85 sm:text-lg">See Tanzania together on a private safari designed around the way your family wants to travel.</p>
@@ -119,7 +117,7 @@ export default function HomePage() {
               <p className="eyebrow">Why travel with us</p>
               <h2 id="built-title" className="mt-5 text-4xl font-semibold leading-[1.12] tracking-[-0.045em] sm:text-[52px]">Built around the way your family travels.</h2>
               <p className="mt-7 leading-7 text-muted">The best family trips are not about trying to keep everyone on the same schedule. They are about creating a journey where everyone finds something they love.</p>
-              <div className="mt-6 flex flex-wrap gap-x-9 gap-y-3 text-sm font-medium">
+              <div className="mt-6 flex flex-wrap gap-x-9 gap-y-3 text-sm font-bold">
                 <span className="flex items-center gap-2">
                   <Image src="/assets/home-intro-img-path1.svg" width={22} height={26} alt="" aria-hidden className="h-[19px] w-[16px] shrink-0" />
                   Licensed Tanzania operator
@@ -130,7 +128,10 @@ export default function HomePage() {
                 </span>
               </div>
               <p className="mt-7 leading-7 text-muted">One person may be waiting for their first lion sighting. Someone else may remember breakfast overlooking the Serengeti, watching elephants from the lodge, or the afternoon spent relaxing by the pool. That is why we do not force your family into a standard itinerary. We build the safari around you.</p>
-              <ButtonLink href="#planning" className="mt-8">Plan your family trip</ButtonLink>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <ButtonLink href="#planning">Plan your family trip</ButtonLink>
+                <ButtonLink href="/tanzania-safaris" variant="outline" className="!border-brand !bg-transparent !text-brand hover:!bg-brand/10">View all trips</ButtonLink>
+              </div>
             </div>
             <div className="relative mx-auto aspect-[634/624] w-full max-w-[634px]">
               <Image
@@ -147,7 +148,43 @@ export default function HomePage() {
         <section className="bg-cream py-20 sm:py-28" aria-labelledby="comparison-title">
           <div className="site-container">
             <SectionHeading eyebrow="Made for family travel" title="The safari that fits your whole family" id="comparison-title" description={<p>Every family is different, with different ages, energy levels, and needs, and a standard safari itinerary rarely accounts for that. Golden Trip&apos;s family safari is built from the ground up around your whole group, so grandparents, parents, and children can all enjoy the same adventure, at a pace that works for everyone.</p>} />
-            <div className="mt-12 overflow-x-auto">
+            <div className="mt-10 md:hidden">
+              <table className="w-full table-fixed border-collapse text-left">
+                <colgroup>
+                  <col className="w-[22%]" />
+                  <col className="w-[62%]" />
+                  <col className="w-[16%]" />
+                </colgroup>
+                <thead>
+                  <tr className="border-b border-[#ede9e2]">
+                    <th scope="col" className="pb-3 pr-2 align-middle">
+                      <Image src="/assets/home-compare-img-image1.png" width={214} height={81} alt="Golden Trips Tanzania" className="h-auto w-full" />
+                    </th>
+                    <th scope="col" className="px-1 pb-3 text-center align-middle text-[12px] font-bold leading-4 text-ink">
+                      Family safari with <span className="text-brand">Golden Trips Tanzania</span>
+                    </th>
+                    <th scope="col" className="pb-3 pl-1 text-center align-middle text-[12px] font-bold leading-4 text-ink">Other safari</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisonRows.map((row) => (
+                    <tr key={row.feature} className="border-b border-[#ede9e2]">
+                      <th scope="row" className="py-4 pr-2 text-[14px] font-bold leading-[1.2] text-[#1c1917]/85">{row.feature}</th>
+                      <td className="py-4 pr-1">
+                        <div className="flex items-start gap-2">
+                          <Image src="/assets/home-compare-img-vector.svg" width={35} height={31} alt="Included" className="mt-0.5 h-[16px] w-[18px] shrink-0" />
+                          <p className="text-[12px] font-medium leading-4 text-[#1c1917]/65">{row.golden}</p>
+                        </div>
+                      </td>
+                      <td className="py-4 pl-1 text-center">
+                        <span aria-label="Not included" className="text-[30px] leading-none text-brand">×</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-12 hidden overflow-x-auto md:block">
               <table className="w-full min-w-[1271px] table-fixed border-collapse text-left">
                 <colgroup>
                   <col className="w-[324px]" />
@@ -206,20 +243,22 @@ export default function HomePage() {
           <div className="site-container">
             <div className="mx-auto max-w-[987px] text-center">
               <p className="eyebrow">Tanzania Destinations</p>
-              <h2 id="destinations-title" className="mt-5 text-3xl font-semibold leading-[.95] tracking-[-0.035em] text-ink sm:text-4xl lg:text-[53px]">Iconic destinations in Tanzania</h2>
+              <h2 id="destinations-title" className="mt-5 text-4xl font-semibold leading-[.95] tracking-[-0.035em] text-ink lg:text-[53px]">Iconic destinations in Tanzania</h2>
               <p className="mx-auto mt-5 max-w-[729px] text-base leading-7 text-muted sm:text-lg">From open plains to white sand beaches, Tanzania&apos;s most iconic destinations offer something for every generation to discover together.</p>
             </div>
             <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-[18px]">
               {destinations.map((destination) => (
-                <article key={destination.name} className="group relative isolate aspect-[.773] overflow-hidden rounded-[10px] text-white lg:h-[396px] lg:aspect-auto">
+                <article key={destination.name} className="group relative isolate h-[400px] overflow-hidden rounded-[10px] text-white sm:h-auto sm:aspect-[.773] lg:h-[396px] lg:aspect-auto">
                   <Image src={destination.image} alt={`${destination.name} landscape in Tanzania`} fill sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 306px" className="object-cover transition duration-500 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_39%,rgba(70,48,13,.62)_100%)]" />
                   <p className="absolute right-3 top-[15px] inline-flex h-[26px] items-center gap-1 rounded-[3px] bg-brand px-2 text-xs font-medium leading-none text-black">
                     <DestinationAreaIcon />
                     {destination.area}
                   </p>
-                  <h3 className={`absolute left-[17px] right-11 ${destination.longTitle ? "top-[65%] lg:top-[257px]" : "top-[70%] lg:top-[280px]"} text-lg font-semibold leading-[1.28]`}>{destination.name}</h3>
-                  <p className="absolute left-[17px] top-[78%] w-[68%] text-sm font-medium leading-[1.4] text-white/75 lg:top-[309px] lg:w-[209px]">{destination.description}</p>
+                  <div className={`absolute bottom-6 left-[17px] right-[17px] lg:bottom-auto lg:left-[17px] lg:right-11 ${destination.longTitle ? "lg:top-[257px]" : "lg:top-[280px]"}`}>
+                    <h3 className="text-lg font-semibold leading-[1.28]">{destination.name}</h3>
+                    <p className="mt-1.5 text-sm font-medium leading-[1.4] text-white/75 lg:w-[209px]">{destination.description}</p>
+                  </div>
                 </article>
               ))}
             </div>
@@ -232,9 +271,9 @@ export default function HomePage() {
               <SectionHeading eyebrow="Extra care on safety" title="Safety, built around every generation." id="safety-title" description={<p className="max-w-3xl">Traveling with grandparents and young children means thinking ahead, our team plans every detail with their comfort and wellbeing in mind.</p>} />
               <ButtonLink href="#planning" className="shrink-0">Plan your family trip</ButtonLink>
             </div>
-            <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
               {safetyFeatures.map(({ icon, title, description, iconFrame, iconClass }) => (
-                <article key={title} className="rounded-lg bg-cream p-6">
+                <article key={title} className="rounded-lg bg-cream p-4 sm:p-6">
                   {iconFrame ? (
                     <div className="grid h-[71px] w-[70px] place-items-center rounded-[5px] border border-brand/20 bg-brand/[.17]">
                       <Image src={icon} width={47} height={30} alt="" className={iconClass} />
@@ -250,21 +289,20 @@ export default function HomePage() {
           </div>
         </section>
 
-        <Testimonials />
+        <Testimonials sectionId="reviews" />
         <div className="bg-sand"><PlanningCall id="planning-again" /></div>
 
         <section id="guides" className="bg-cream py-20 sm:py-28" aria-labelledby="guides-title">
           <div className="site-container">
             <SectionHeading eyebrow="Meet The Team" title="Your ultimate Tanzania vacation experts" id="guides-title" align="center" className="max-w-[980px]" description={<p>Meet the people who turn a safari into a story your family tells for years.</p>} />
-            <div className="mx-auto mt-[62px] grid max-w-[1269px] gap-x-[23px] gap-y-[62px] text-center sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mx-auto mt-12 grid max-w-[1269px] grid-cols-2 gap-x-4 gap-y-10 text-center sm:mt-[62px] sm:gap-x-[23px] sm:gap-y-[62px] lg:grid-cols-3">
               {guides.map(({ name, role, image, crop }) => (
                 <article key={name} className="mx-auto w-full max-w-[300px]">
-                  <div className="relative mx-auto h-[267px] w-[273px] overflow-hidden rounded-[200px]">
-                    <Image src={image} alt={`${name}, ${role}`} fill sizes="273px" className={`!bottom-auto !right-auto !max-w-none ${crop}`} />
+                  <div className="relative mx-auto h-[184px] w-[190px] overflow-hidden rounded-[200px] sm:h-[267px] sm:w-[273px]">
+                    <Image src={image} alt={`${name}, ${role}`} fill sizes="(max-width: 639px) 190px, 273px" className={`!bottom-auto !right-auto !max-w-none ${crop}`} />
                   </div>
-                  <h3 className="mt-2 text-[19px] font-bold leading-[1.68] text-black/[.98]">{name}</h3>
-                  <p className="mt-2 text-[15px] font-bold leading-[1.4] text-black/[.28]">{role}</p>
-                  <p className="mx-auto mt-2 max-w-[268px] text-[13px] font-medium leading-[1.68] text-black/[.67]">{guideDescription}</p>
+                  <h3 className="mt-2 text-[17px] font-bold leading-[1.4] text-black/[.98] sm:text-[19px] sm:leading-[1.68]">{name}</h3>
+                  <p className="mt-1 text-[13px] font-bold leading-[1.4] text-black/[.28] sm:mt-2 sm:text-[15px]">{role}</p>
                 </article>
               ))}
             </div>

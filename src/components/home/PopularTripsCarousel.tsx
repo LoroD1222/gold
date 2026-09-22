@@ -24,7 +24,7 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
   const [indicatorWidth, setIndicatorWidth] = useState(100);
   const filteredTrips = useMemo(() => trips.filter((trip) => {
     if (filter === "all") return true;
-    return trip.category === (filter === "safari" ? "Safari" : "Zanzibar");
+    return trip.category.toLowerCase().includes(filter);
   }), [filter, trips]);
   const syncCarouselState = useCallback(() => {
     const track = trackRef.current;
@@ -124,7 +124,7 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
         <div role="tablist" aria-label="Filter popular family adventures" className="flex gap-[15px]">
           {tabs.map((tab, index) => {
             const isActive = tab.id === filter;
-            const tabClassName = (tab.id === "all" ? "w-[67px]" : tab.id === "safari" ? "w-[101px]" : "w-[123px]") + " h-[52px] rounded-[5px] bg-white text-[20px] font-semibold leading-[1.68] transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand " + (isActive ? "border border-brand text-[#ff8d28]" : "border border-transparent text-black hover:border-brand/40");
+            const tabClassName = (tab.id === "all" ? "w-[67px]" : tab.id === "safari" ? "w-[101px]" : "w-[123px]") + " h-[52px] cursor-pointer rounded-[5px] bg-white text-[20px] font-semibold leading-[1.68] transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand " + (isActive ? "border border-brand text-[#ff8d28]" : "border border-transparent text-black hover:border-brand/40");
 
             return (
               <button

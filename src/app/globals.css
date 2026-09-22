@@ -11,6 +11,8 @@
 }
 
 :root {
+  --font-poppins: "Poppins", Arial, sans-serif;
+  --font-league-spartan: "League Spartan", Arial, sans-serif;
   --site-gutter: clamp(1.25rem, 6.6vw, 7.5rem);
   --section-space: clamp(5rem, 8vw, 8rem);
 }
@@ -29,8 +31,13 @@ body {
   overflow-x: hidden;
   background: #fffbf3;
   color: #161713;
-  font-family: var(--font-poppins), Arial, sans-serif;
+  font-family: var(--font-poppins);
   text-rendering: optimizeLegibility;
+}
+
+h1,
+h2 {
+  font-family: var(--font-league-spartan), Arial, sans-serif;
 }
 
 a {
@@ -57,7 +64,7 @@ textarea {
 .eyebrow {
   color: #f5a623;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
