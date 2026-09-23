@@ -10,8 +10,9 @@ import { PortableText } from "@/components/safari/PortableText";
 import { TripCard } from "@/components/safari/TripCard";
 import { TripDetailTabs } from "@/components/safari/TripDetailTabs";
 import { TripHeroGallery } from "@/components/safari/TripHeroGallery";
-import { ButtonLink } from "@/components/ui/ButtonLink";
+import { TripQuoteDialog } from "@/components/safari/TripQuoteDialog";
 import { getSafariAnimal, isSafariAnimalId } from "@/data/safariAnimals";
+import { tripadvisorProfileUrl } from "@/data/externalLinks";
 import { getSafariTrip, getSafariTripCards, type SanityImage } from "@/lib/safariTrips";
 
 type TripPageProps = { params: Promise<{ slug: string }> };
@@ -46,10 +47,14 @@ export default async function SafariTripPage({ params }: TripPageProps) {
   if (!trip) notFound();
 
   const relatedTrips = await getSafariTripCards().catch(() => []);
-  const gallery = usableImages(trip.gallery);
+  const gallery = uniqueImages([
+    ...usableImages(trip.gallery),
+    ...(trip.itinerary?.flatMap((day) => usableImages(day.images)) ?? []),
+  ]);
   const priceFrom = trip.pricingTiers?.reduce<number | undefined>((lowest, tier) => {
     return lowest === undefined || tier.pricePerPerson < lowest ? tier.pricePerPerson : lowest;
   }, undefined) ?? trip.startingPrice;
+  const overviewHighlights = trip.overviewHighlights?.filter((highlight) => highlight?.title || highlight?.description) ?? [];
   const highlights = Array.from({ length: Math.max(3, trip.highlights?.length ?? 0) }, (_, index) => trip.highlights?.[index]);
   const wildlife = Array.from({ length: Math.max(6, trip.wildlife?.length ?? 0) }, (_, index) => trip.wildlife?.[index]);
   const related = relatedTrips.filter((relatedTrip) => relatedTrip.slug !== trip.slug).slice(0, 3);
@@ -77,17 +82,19 @@ export default async function SafariTripPage({ params }: TripPageProps) {
               <TripHeroGallery images={gallery} promotionLabel={trip.promotionLabel} />
 
               <aside id="price" aria-label="Trip facts and price" className="scroll-mt-28 h-fit rounded-[15px] bg-[#faf8f4] p-7 shadow-none xl:h-[552px] xl:p-[31px]">
-                <p className="min-h-[27px] text-[18px] font-semibold text-black/[.7]">
-                  {typeof trip.reviewRating === "number" ? <><span className="mr-2 text-brand">★</span>{trip.reviewRating.toFixed(1)}{trip.reviewCount ? ` - ${trip.reviewCount} Review${trip.reviewCount === 1 ? "" : "s"}` : ""}{trip.reviewSource ? ` about ${trip.reviewSource}` : ""}</> : null}
-                </p>
+                <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" aria-label="190 reviews on TripAdvisor" className="inline-flex min-h-[27px] items-center gap-2 text-[18px] font-semibold text-black/[.7] underline decoration-1 underline-offset-4">
+                  <Image src="/assets/tripadvisor-mark.png" width={27} height={32} alt="" className="h-[27px] w-auto" />
+                  <span aria-hidden="true" className="text-[22px] leading-none text-brand">★</span>
+                  190 Reviews
+                </a>
                 <dl className="mt-7 space-y-[21px] border-b border-ink/[.08] pb-[33px]">
-                  <Fact label="Tour Start" value={trip.tourStart} icon="calendar" />
+                  <Fact label="Best time" value={trip.tourStart} icon="calendar" />
                   <Fact label="Duration" value={trip.durationDays ? `${trip.durationDays} days` : undefined} icon="clock" />
                   <Fact label="Difficulty" value={trip.difficulty} icon="difficulty" />
                 </dl>
                 <div className="mt-[33px]">
                   <p className="flex items-center gap-[18px] text-[20px]"><span>Price starts from</span><strong className="text-[32px] font-medium">{typeof priceFrom === "number" ? `$${priceFrom.toLocaleString("en-US")}` : ""}</strong></p>
-                  <a href="#planning" className="mt-7 flex min-h-[62px] items-center justify-center rounded-[15px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-6 py-4 text-[20px] font-bold text-white transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Request Quote</a>
+                  <TripQuoteDialog className="mt-7 flex min-h-[62px] w-full items-center justify-center rounded-[15px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-6 py-4 text-[20px] font-bold text-white transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Request Quote</TripQuoteDialog>
                   <p className="mt-[19px] min-h-[24px] text-center text-[16px]">{trip.priceNote}</p>
                 </div>
               </aside>
@@ -103,29 +110,29 @@ export default async function SafariTripPage({ params }: TripPageProps) {
           {id: "visa-documents", label: "Visa and Documents"},
         ]} />
 
-        <section id="overview" className="scroll-mt-28 bg-cream py-20 sm:py-24" aria-labelledby="overview-title">
+        <section id="overview" className="scroll-mt-28 bg-cream py-20 sm:py-24" aria-label="Overview">
           <div className="site-container max-w-[1198px]">
-            <article className="max-w-[790px]">
-              <h2 id="overview-title" className="font-sans text-[20px] font-bold">Tour Overview:</h2>
-              <PortableText value={trip.overview} className="mt-[34px] min-h-[96px] space-y-[34px] text-[18px] leading-[1.6] text-black/[.69]" />
-              <div className="mt-[46px] grid gap-8 sm:grid-cols-2 sm:gap-[42px]">
-                {Array.from({ length: 2 }, (_, index) => trip.overviewHighlights?.[index]).map((highlight, index) => (
-                  <div key={highlight?._key ?? `overview-highlight-${index}`}>
-                    <div className="flex min-h-10 items-center gap-[13px]">
-                      <h3 className="text-[20px] font-bold">{highlight?.title}</h3>
+            <article className="max-w-none">
+              <PortableText value={trip.overview} className="min-h-[96px] space-y-[34px] text-[18px] leading-[1.6] text-black/[.69]" />
+              {overviewHighlights.length > 0 && (
+                <div className="mt-[46px] grid gap-8 sm:grid-cols-2 sm:gap-[42px]">
+                  {overviewHighlights.map((highlight) => (
+                    <div key={highlight._key}>
+                      <div className="flex min-h-10 items-center gap-[13px]">
+                        <h3 className="text-[20px] font-bold">{highlight.title}</h3>
+                      </div>
+                      <p className="mt-[14px] min-h-[54px] text-[18px] leading-[1.5] text-black/[.58]">{highlight.description}</p>
                     </div>
-                    <p className="mt-[14px] min-h-[54px] text-[18px] leading-[1.5] text-black/[.58]">{highlight?.description}</p>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </article>
           </div>
         </section>
 
-        <section id="highlights" className="scroll-mt-28 bg-cream pb-20 sm:pb-28" aria-labelledby="highlights-title">
+        <section id="highlights" className="scroll-mt-28 bg-cream pb-20 sm:pb-28" aria-label="Trip highlights">
           <div className="site-container max-w-[1194px]">
-            <h2 id="highlights-title" className="text-[38px] font-semibold tracking-[-0.035em] sm:text-[46px]">{trip.highlightsHeading ?? trip.title}</h2>
-            <div className="mt-[59px] grid gap-5 md:grid-cols-3">
+            <div className="grid gap-5 md:grid-cols-3">
               {highlights.map((highlight, index) => (
                 <article key={highlight?._key ?? `highlight-${index}`} className="min-h-[257px] rounded-[10px] border border-ink/[.15] bg-white p-8">
                   <div className="grid h-[71px] w-[70px] place-items-center rounded-[5px] border border-brand/20 bg-brand/[.17]">
@@ -186,24 +193,26 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                           {day.meals && <p className="mt-5 text-[16px] font-semibold text-black/[.73]">Meals: <span className="font-normal">{day.meals}</span></p>}
                         </div>
 
-                        <div className="mt-[49px]">
-                          <h4 className="text-[21px] font-semibold leading-[35px]">Accommodation</h4>
-                          {day.accommodation?.name ? <AccommodationGallery name={day.accommodation.name} images={accommodationGallery} /> : <div className="mt-4 min-h-[35px]" />}
-                        </div>
+                        {day.accommodation?.name ? (
+                          <div className="mt-[49px]">
+                            <h4 className="text-[21px] font-semibold leading-[35px]">Accommodation</h4>
+                            <AccommodationGallery name={day.accommodation.name} images={accommodationGallery} />
+                          </div>
+                        ) : null}
                       </div>
                     </article>
                   );
                 })}
               </div>
 
-              <aside className="order-first h-fit rounded-[9px] bg-white p-[18px] lg:order-none lg:sticky lg:top-8 lg:z-10 lg:self-start">
-                <div className="relative h-[291px] overflow-hidden rounded-[10px]">
-                  {trip.itineraryMap?.url && <Image src={trip.itineraryMap.url} alt={trip.itineraryMap.alt ?? "Itinerary map"} fill sizes="302px" className="object-cover" />}
-                  <p className="absolute bottom-[14px] left-3 flex min-h-5 items-center gap-2 text-[16px] font-semibold leading-[1.28] text-black">
-                    {trip.durationDays ? <><Image src="/assets/trip-itinerary-img-vector.svg" width={13} height={13} alt="" />{trip.itineraryMapLabel ?? `${trip.durationDays} DAYS`}</> : null}
-                  </p>
+              <aside aria-label="Trip planning" className="order-first h-fit rounded-[9px] bg-white p-[9px_18px_16px] lg:order-none lg:sticky lg:top-8 lg:z-10 lg:self-start">
+                <div className="flex flex-col gap-[14px]">
+                  <Image src="/assets/trip-itinerary-sidebar-logo.png" width={236} height={90} alt="Golden Trips Tanzania" sizes="194px" className="h-auto w-[194px]" />
+                  <div className="relative aspect-[302/262] w-full overflow-hidden rounded-[10px]">
+                    <Image src="/assets/trip-itinerary-sidebar-map.png" width={362} height={272} alt="Illustrated map of Tanzania" sizes="(min-width: 1280px) 302px, 100vw" className="absolute -left-[16.08%] top-0 h-[102.89%] w-[119.01%] max-w-none object-cover" />
+                  </div>
+                  <TripQuoteDialog className="flex min-h-[51px] w-full items-center justify-center rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-2 text-[17px] font-bold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand">Plan your family trip</TripQuoteDialog>
                 </div>
-                <ButtonLink href="#planning" className="mt-[21px] min-h-[51px] w-full rounded-[5px] px-4 py-2 text-[17px]">Plan your family trip</ButtonLink>
               </aside>
             </div>
           </div>
@@ -215,12 +224,12 @@ export default async function SafariTripPage({ params }: TripPageProps) {
             <div className="mt-12 space-y-[29px]">
               {trip.inclusions?.map((item, index) => (
                 <details key={item._key} open={index === 0} className="group rounded-[10px] bg-sand">
-                  <summary className="flex min-h-[77px] cursor-pointer list-none items-center justify-between gap-4 px-[18px] py-4 text-[20px] font-semibold focus-visible:outline-2 focus-visible:outline-brand"><span className="flex items-center gap-6"><span aria-hidden className="text-[30px] font-medium leading-none text-brand">✓</span>{item.title}</span><Image src="/assets/trip-inclusions-img-arrow-drop-down-svgrepo-com1.svg" width={43} height={43} alt="" className="size-[43px] shrink-0 transition group-open:rotate-180" /></summary>
+                  <summary className="flex min-h-[77px] cursor-pointer list-none items-center px-[18px] py-4 text-[20px] font-semibold focus-visible:outline-2 focus-visible:outline-brand"><span className="flex items-center gap-6"><span aria-hidden className="text-[30px] font-medium leading-none text-brand">✓</span>{item.title}</span></summary>
                   <PortableText value={item.description} className="min-h-[1px] px-[18px] pb-6 text-[18px] leading-[1.68] text-black/[.6]" />
                 </details>
               ))}
             </div>
-            {trip.exclusions?.length ? <div className="mt-12"><h3 className="text-[28px] font-semibold tracking-[-0.035em]">Exclusions</h3><div className="mt-7 space-y-[29px]">{trip.exclusions.map((item) => <details key={item._key} className="group rounded-[10px] bg-sand"><summary className="flex min-h-[77px] cursor-pointer list-none items-center justify-between gap-4 px-[18px] py-4 text-[20px] font-semibold focus-visible:outline-2 focus-visible:outline-brand"><span className="flex items-center gap-6"><span aria-hidden className="text-[30px] font-medium leading-none text-brand">×</span>{item.title}</span><Image src="/assets/trip-inclusions-img-arrow-drop-down-svgrepo-com1.svg" width={43} height={43} alt="" className="size-[43px] shrink-0 transition group-open:rotate-180" /></summary><PortableText value={item.description} className="min-h-[1px] px-[18px] pb-6 text-[18px] leading-[1.68] text-black/[.6]" /></details>)}</div></div> : null}
+            {trip.exclusions?.length ? <div className="mt-12"><h3 className="text-[28px] font-semibold tracking-[-0.035em]">Exclusions</h3><div className="mt-7 space-y-[29px]">{trip.exclusions.map((item) => <details key={item._key} className="group rounded-[10px] bg-sand"><summary className="flex min-h-[77px] cursor-pointer list-none items-center px-[18px] py-4 text-[20px] font-semibold focus-visible:outline-2 focus-visible:outline-brand"><span className="flex items-center gap-6"><span aria-hidden className="text-[30px] font-medium leading-none text-brand">×</span>{item.title}</span></summary><PortableText value={item.description} className="min-h-[1px] px-[18px] pb-6 text-[18px] leading-[1.68] text-black/[.6]" /></details>)}</div></div> : null}
           </div>
         </section>
 
@@ -243,12 +252,16 @@ function usableImages(images?: SanityImage[]) {
   return images?.filter((image): image is SanityImage & { url: string } => typeof image.url === "string" && image.url.length > 0) ?? [];
 }
 
+function uniqueImages(images: Array<SanityImage & { url: string }>) {
+  return images.filter((image, index) => images.findIndex((candidate) => candidate.url === image.url) === index);
+}
+
 function Fact({ label, value, icon }: { label: string; value?: string; icon: "calendar" | "clock" | "difficulty" }) {
   return (
     <div className="grid grid-cols-[105px_1fr] items-center gap-4">
       <dt className="text-[20px] font-semibold">{label}:</dt>
       <dd className="flex min-h-[54px] items-center rounded-[15px] bg-sand px-[13px] py-3 text-[20px] font-semibold">
-        {icon === "calendar" ? <Image src="/assets/trip-hero-img-layer8.svg" width={21} height={19} alt="" aria-hidden className="mr-3 h-[19px] w-[21px]" /> : icon === "clock" ? <Image src="/assets/trip-hero-img-vector.svg" width={26} height={26} alt="" aria-hidden className="mr-3 size-6" /> : <span aria-hidden className="mr-3 flex h-6 w-[26px] items-end gap-[3px]"><span className="h-1.5 w-1 rounded-t-sm bg-brand" /><span className="h-4 w-[7px] rounded-t-sm bg-brand/[.28]" /><span className="h-6 w-1 rounded-t-sm bg-brand/[.28]" /></span>}
+        {icon === "calendar" ? <Image src="/assets/trip-hero-img-layer8.svg" width={21} height={19} alt="" aria-hidden className="mr-3 h-[19px] w-[21px]" /> : icon === "clock" ? <Image src="/assets/trip-hero-img-vector.svg" width={26} height={26} alt="" aria-hidden className="mr-3 size-6" /> : <span aria-hidden className="relative mr-[9px] h-6 w-[25px] shrink-0"><span className="absolute bottom-0 left-0 h-[9px] w-[6px] rounded-[1px] bg-brand" /><span className="absolute bottom-0 left-[9px] h-4 w-[7px] rounded-[1px] bg-brand/[.28]" /><span className="absolute bottom-0 left-[19px] h-6 w-[6px] rounded-[1px] bg-brand/[.28]" /></span>}
         {value}
       </dd>
     </div>

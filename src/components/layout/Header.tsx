@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MobileMenu } from "./MobileMenu";
 
 const links = [
-  ["All Trips", "/tanzania-safaris"],
+  ["All family trips", "/tanzania-safaris"],
   ["Reviews", "/#reviews"],
   ["Destinations", "/#destinations"],
   ["Contact", "/#contact"],

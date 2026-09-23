@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const links = [
-  ["All Trips", "/tanzania-safaris"],
+  ["All family trips", "/tanzania-safaris"],
   ["Reviews", "/#reviews"],
   ["Destinations", "/#destinations"],
   ["Contact", "/#contact"],

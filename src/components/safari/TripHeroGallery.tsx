@@ -13,7 +13,11 @@ export function TripHeroGallery({ images, promotionLabel }: TripHeroGalleryProps
   const [activeImage, setActiveImage] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
   const image = images[activeImage];
-  const thumbnailSlots = Array.from({length: Math.max(4, images.length)}, (_, index) => images[index]);
+  const thumbnailStart = Math.min(Math.max(activeImage - 3, 0), Math.max(images.length - 4, 0));
+  const thumbnailSlots = Array.from({length: 4}, (_, index) => ({
+    image: images[thumbnailStart + index],
+    imageIndex: thumbnailStart + index,
+  }));
 
   function openLightbox(index = activeImage) {
     setActiveImage(index);
@@ -57,20 +61,20 @@ export function TripHeroGallery({ images, promotionLabel }: TripHeroGalleryProps
         </button>
       ) : <div aria-label="No trip photo supplied" className="aspect-[688/429] w-full rounded-[10px] xl:h-[429px] xl:aspect-auto" />}
       <div role="tablist" aria-label="Choose a trip photo" className="mt-4 grid grid-cols-4 gap-4 xl:mt-[15px] xl:gap-[17px]">
-        {thumbnailSlots.map((item, index) => {
-          if (!item) return <div key={`empty-${index}`} aria-hidden className="aspect-[1.47] rounded-[10px] xl:h-[107px] xl:aspect-auto" />;
-          const isActive = index === activeImage;
+        {thumbnailSlots.map(({image: thumbnail, imageIndex}, index) => {
+          if (!thumbnail) return <div key={`empty-${index}`} aria-hidden className="aspect-[1.47] rounded-[10px] xl:h-[107px] xl:aspect-auto" />;
+          const isActive = imageIndex === activeImage;
           return (
             <button
-              key={item._key ?? item.url}
+              key={thumbnail._key ?? thumbnail.url}
               type="button"
               role="tab"
               aria-selected={isActive}
-              aria-label={`Show photo ${index + 1}: ${item.alt ?? "Trip photo"}`}
-              onClick={() => openLightbox(index)}
+              aria-label={`Show photo ${imageIndex + 1}: ${thumbnail.alt ?? "Trip photo"}`}
+              onClick={() => openLightbox(imageIndex)}
               className={`relative aspect-[1.47] overflow-hidden rounded-[10px] transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand xl:h-[107px] xl:aspect-auto ${isActive ? "ring-3 ring-brand ring-offset-2" : "opacity-75 hover:opacity-100"}`}
             >
-              <Image src={item.url} alt="" fill sizes="180px" className="object-cover" />
+              <Image src={thumbnail.url} alt="" fill sizes="180px" className="object-cover" />
             </button>
           );
         })}

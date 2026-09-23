@@ -24,9 +24,6 @@ export type SafariTrip = {
   guideLabel?: string;
   gallery?: SanityImage[];
   promotionLabel?: string;
-  reviewRating?: number;
-  reviewCount?: number;
-  reviewSource?: string;
   tourStart?: string;
   durationDays?: number;
   difficulty?: string;
@@ -51,8 +48,6 @@ export type SafariTrip = {
     meals?: string;
     accommodation?: { name?: string; gallery?: SanityImage[] };
   }>;
-  itineraryMap?: SanityImage;
-  itineraryMapLabel?: string;
   itineraryButtonLabel?: string;
   inclusions?: Array<{ _key: string; title: string; description?: PortableTextBlock[]; icon?: SanityImage }>;
   exclusions?: Array<{ _key: string; title: string; description?: PortableTextBlock[] }>;
@@ -92,9 +87,6 @@ const safariTripQuery = `
     guideLabel,
     gallery[]{_key, "url": asset->url, alt},
     promotionLabel,
-    reviewRating,
-    reviewCount,
-    reviewSource,
     tourStart,
     durationDays,
     difficulty,
@@ -119,8 +111,6 @@ const safariTripQuery = `
       meals,
       accommodation{name, gallery[]{_key, "url": asset->url, alt}}
     },
-    itineraryMap{"url": asset->url, alt},
-    itineraryMapLabel,
     itineraryButtonLabel,
     inclusions[]{_key, title, description, icon{_key, "url": asset->url, alt}},
     exclusions[]{_key, title, description},

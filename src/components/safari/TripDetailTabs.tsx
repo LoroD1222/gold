@@ -28,7 +28,7 @@ export function TripDetailTabs({ tabs }: { tabs: TripDetailTab[] }) {
   }, [tabs]);
 
   return (
-    <nav aria-label="Trip details" className="h-[58px] overflow-x-auto bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <nav aria-label="Trip details" className="h-[68px] overflow-x-auto bg-white pt-[10px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
       <div role="tablist" className="site-container flex h-full min-w-max max-w-[1194px] items-stretch gap-16">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;

@@ -32,7 +32,7 @@ export function TripCard({ trip, compact = false, carousel = false }: { trip: Tr
         <h3 className={headingClassName}>{trip.title}</h3>
         {trip.duration && (
           <p className={durationClassName}>
-            <span className="text-[18px] leading-none text-brand">◷</span> {trip.duration} days
+            {trip.duration} days
           </p>
         )}
         <div className="mt-auto flex items-end justify-between gap-3">

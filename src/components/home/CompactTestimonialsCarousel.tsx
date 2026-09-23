@@ -89,49 +89,55 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
 
   return (
     <div className="mx-auto mt-14 max-w-[1061px]">
-      <div
-        ref={trackRef}
-        id="testimonials-carousel-track"
-        role="region"
-        aria-label="Family reviews carousel"
-        aria-roledescription="carousel"
-        tabIndex={0}
-        onScroll={updateProgress}
-        onKeyDown={handleKeyDown}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={stopDragging}
-        onPointerCancel={stopDragging}
-        className="cursor-grab overflow-x-auto scroll-smooth [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
-      >
-        <div className="flex w-max snap-x snap-mandatory gap-6 pb-1 md:gap-[27px]">
-          {reviews.map((review) => (
-            <article key={review.id} data-testimonial-slide className="w-[min(100vw-2.5rem,530px)] shrink-0 snap-start rounded-[12px] bg-sand p-5 sm:min-h-[669px] sm:p-[30px]">
-              <div className="grid grid-cols-2 gap-3.5">
-                {review.images.map((src, index) => (
-                  <div key={src} className="relative aspect-[1.11] overflow-hidden rounded-lg sm:h-[199px] sm:aspect-auto">
-                    <Image src={src} alt={index === 0 ? `Family safari experience shared by ${review.name}` : "Tanzania landscape from a family safari"} fill sizes="(max-width: 640px) 42vw, 221px" className="object-cover" />
-                  </div>
-                ))}
-              </div>
-              <div className="mt-9 flex items-end gap-[13px]">
-                <Image src={review.avatar} alt="" width={65} height={65} className="size-[65px] rounded-full object-cover" />
-                <div>
-                  <Image src="/assets/home-testimonials-img-frame1321315437.svg" width={146} height={26} alt="5 out of 5 stars" className="h-[26px] w-[146px]" />
-                  <p className="mt-[3px] text-base leading-[1.68] text-black/75"><strong>{review.name} / </strong><span className="text-black/30">{review.date}</span></p>
+      <div className="relative">
+        <div
+          ref={trackRef}
+          id="testimonials-carousel-track"
+          role="region"
+          aria-label="Family reviews carousel"
+          aria-roledescription="carousel"
+          tabIndex={0}
+          onScroll={updateProgress}
+          onKeyDown={handleKeyDown}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={stopDragging}
+          onPointerCancel={stopDragging}
+          className="cursor-grab overflow-x-auto scroll-smooth [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden"
+        >
+          <div className="flex w-max snap-x snap-mandatory gap-6 pb-1 md:gap-[27px]">
+            {reviews.map((review) => (
+              <article key={review.id} data-testimonial-slide className="w-[min(100vw-2.5rem,530px)] shrink-0 snap-start rounded-[12px] bg-sand p-5 sm:min-h-[669px] sm:p-[30px]">
+                <div className="grid grid-cols-2 gap-3.5">
+                  {review.images.map((src, index) => (
+                    <div key={src} className="relative aspect-[1.11] overflow-hidden rounded-lg sm:h-[199px] sm:aspect-auto">
+                      <Image src={src} alt={index === 0 ? `Family safari experience shared by ${review.name}` : "Tanzania landscape from a family safari"} fill sizes="(max-width: 640px) 42vw, 221px" className="object-cover" />
+                    </div>
+                  ))}
                 </div>
-              </div>
-              <h3 className="mt-[15px] text-xl font-bold leading-[1.68] text-black/75">{review.title}</h3>
-              <p className="mt-[15px] text-base leading-[1.68] text-black/75">{review.text}</p>
-              <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" className="mt-[15px] inline-flex items-center gap-2.5 text-base font-bold leading-[1.68] text-black/75 underline underline-offset-4">
-                <Image src="/assets/home-testimonials-img-ellipse2.png" width={47} height={47} alt="Tripadvisor" className="size-[46.5px]" />
-                Read more on Trip Advisor
-              </a>
-            </article>
-          ))}
+                <div className="mt-9 flex items-end gap-[13px]">
+                  <Image src={review.avatar} alt="" width={65} height={65} className="size-[65px] rounded-full object-cover" />
+                  <div>
+                    <Image src="/assets/home-testimonials-img-frame1321315437.svg" width={146} height={26} alt="5 out of 5 stars" className="h-[26px] w-[146px]" />
+                    <p className="mt-[3px] text-base leading-[1.68] text-black/75"><strong>{review.name} / </strong><span className="text-black/30">{review.date}</span></p>
+                  </div>
+                </div>
+                <h3 className="mt-[15px] text-xl font-bold leading-[1.68] text-black/75">{review.title}</h3>
+                <p className="mt-[15px] text-base leading-[1.68] text-black/75">{review.text}</p>
+                <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" className="mt-[15px] inline-flex items-center gap-2.5 text-base font-bold leading-[1.68] text-black/75 underline underline-offset-4">
+                  <Image src="/assets/home-testimonials-img-ellipse2.png" width={47} height={47} alt="Tripadvisor" className="size-[46.5px]" />
+                  Read more on Trip Advisor
+                </a>
+              </article>
+            ))}
+          </div>
+        </div>
+        <div className="absolute inset-y-0 left-3 right-3 pointer-events-none flex items-center justify-between lg:-left-14 lg:-right-14">
+          <button type="button" aria-controls="testimonials-carousel-track" aria-label="Previous review" onClick={() => moveSlide(-1)} disabled={!canGoBack} className="pointer-events-auto grid size-10 place-items-center rounded-full border border-brand bg-cream text-xl leading-none text-ink transition hover:bg-brand/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-40">←</button>
+          <button type="button" aria-controls="testimonials-carousel-track" aria-label="Next review" onClick={() => moveSlide(1)} disabled={!canGoForward} className="pointer-events-auto grid size-10 place-items-center rounded-full border border-brand bg-cream text-xl leading-none text-ink transition hover:bg-brand/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-40">→</button>
         </div>
       </div>
-      <div className="mt-6 flex items-center gap-4">
+      <div className="mt-6">
         <div className="relative h-[18px] flex-1">
           <div aria-hidden="true" className="absolute inset-x-0 top-1/2 h-[6px] -translate-y-1/2 rounded-full bg-black/[.04]" />
           <div
@@ -149,10 +155,6 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
             aria-label="Testimonial carousel position"
             className="absolute inset-0 h-full w-full cursor-ew-resize appearance-none bg-transparent opacity-0 focus-visible:opacity-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
           />
-        </div>
-        <div className="flex shrink-0 gap-2" aria-label="Testimonial slide controls">
-          <button type="button" aria-controls="testimonials-carousel-track" aria-label="Previous review" onClick={() => moveSlide(-1)} disabled={!canGoBack} className="grid size-10 place-items-center rounded-full border border-brand bg-cream text-xl leading-none text-ink transition hover:bg-brand/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-40">←</button>
-          <button type="button" aria-controls="testimonials-carousel-track" aria-label="Next review" onClick={() => moveSlide(1)} disabled={!canGoForward} className="grid size-10 place-items-center rounded-full border border-brand bg-cream text-xl leading-none text-ink transition hover:bg-brand/15 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand disabled:cursor-not-allowed disabled:opacity-40">→</button>
         </div>
       </div>
       <p className="sr-only">Use the previous and next buttons, swipe, drag, or use the left and right arrow keys to browse family reviews.</p>
