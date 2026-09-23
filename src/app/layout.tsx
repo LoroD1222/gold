@@ -19,7 +19,8 @@ export const metadata: Metadata = {
   description: "Private Tanzania family safaris designed around every generation, with flexible pacing, local guides, and personal planning.",
   applicationName: "Golden Trips Tanzania",
   icons: {
-    icon: "/assets/home-header-img-image1.png",
+    icon: [{ url: "/favicon.png", type: "image/png", sizes: "32x32" }],
+    shortcut: ["/favicon.png"],
   },
   openGraph: {
     type: "website",

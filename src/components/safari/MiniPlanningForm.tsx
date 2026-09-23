@@ -1,6 +1,6 @@
 export function MiniPlanningForm() {
   return (
-    <form className="min-h-[443px] rounded-[15px] border border-ink/[.09] bg-white p-[26px] shadow-none" action="#" method="post">
+    <form className="min-h-[443px] rounded-[15px] border border-ink/[.09] bg-white p-[26px] shadow-none" action="/api/forms" method="post">
       <p className="text-[18px] font-semibold text-brand">Get Started</p>
       <p className="mt-[10px] text-[23px] font-semibold leading-[1.3]">Tell us about your family,<br />we&apos;ll build the trip</p>
       <div className="mt-6 grid gap-3">

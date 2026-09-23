@@ -6,9 +6,9 @@ import { Header } from "@/components/layout/Header";
 import { PlanningCall } from "@/components/home/PlanningCall";
 import { Testimonials } from "@/components/home/Testimonials";
 import { AccommodationGallery } from "@/components/safari/AccommodationGallery";
-import { MiniPlanningForm } from "@/components/safari/MiniPlanningForm";
 import { PortableText } from "@/components/safari/PortableText";
 import { TripCard } from "@/components/safari/TripCard";
+import { TripDetailTabs } from "@/components/safari/TripDetailTabs";
 import { TripHeroGallery } from "@/components/safari/TripHeroGallery";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { getSafariAnimal, isSafariAnimalId } from "@/data/safariAnimals";
@@ -47,9 +47,9 @@ export default async function SafariTripPage({ params }: TripPageProps) {
 
   const relatedTrips = await getSafariTripCards().catch(() => []);
   const gallery = usableImages(trip.gallery);
-  const priceFrom = trip.startingPrice ?? trip.pricingTiers?.reduce<number | undefined>((lowest, tier) => {
+  const priceFrom = trip.pricingTiers?.reduce<number | undefined>((lowest, tier) => {
     return lowest === undefined || tier.pricePerPerson < lowest ? tier.pricePerPerson : lowest;
-  }, undefined);
+  }, undefined) ?? trip.startingPrice;
   const highlights = Array.from({ length: Math.max(3, trip.highlights?.length ?? 0) }, (_, index) => trip.highlights?.[index]);
   const wildlife = Array.from({ length: Math.max(6, trip.wildlife?.length ?? 0) }, (_, index) => trip.wildlife?.[index]);
   const related = relatedTrips.filter((relatedTrip) => relatedTrip.slug !== trip.slug).slice(0, 3);
@@ -76,7 +76,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
             <div className="mt-9 grid gap-5 xl:grid-cols-[minmax(0,688px)_486px]">
               <TripHeroGallery images={gallery} promotionLabel={trip.promotionLabel} />
 
-              <aside aria-label="Trip facts and price" className="h-fit rounded-[15px] bg-[#faf8f4] p-7 shadow-none xl:h-[552px] xl:p-[31px]">
+              <aside id="price" aria-label="Trip facts and price" className="scroll-mt-28 h-fit rounded-[15px] bg-[#faf8f4] p-7 shadow-none xl:h-[552px] xl:p-[31px]">
                 <p className="min-h-[27px] text-[18px] font-semibold text-black/[.7]">
                   {typeof trip.reviewRating === "number" ? <><span className="mr-2 text-brand">★</span>{trip.reviewRating.toFixed(1)}{trip.reviewCount ? ` - ${trip.reviewCount} Review${trip.reviewCount === 1 ? "" : "s"}` : ""}{trip.reviewSource ? ` about ${trip.reviewSource}` : ""}</> : null}
                 </p>
@@ -95,12 +95,18 @@ export default async function SafariTripPage({ params }: TripPageProps) {
           </div>
         </section>
 
-        <div aria-hidden="true" className="h-[58px] bg-[#faf8f4]"><div className="site-container flex h-full max-w-[1194px] items-end"><div className="h-[6px] w-[127px] bg-brand" /></div></div>
+        <TripDetailTabs tabs={[
+          {id: "overview", label: "Overview"},
+          {id: "price", label: "Price"},
+          {id: "itinerary", label: "Itinerary"},
+          {id: "inclusions", label: "Inclusions"},
+          {id: "visa-documents", label: "Visa and Documents"},
+        ]} />
 
         <section id="overview" className="scroll-mt-28 bg-cream py-20 sm:py-24" aria-labelledby="overview-title">
-          <div className="site-container grid max-w-[1198px] gap-12 xl:grid-cols-[790px_385px] xl:gap-[23px]">
-            <article className="max-w-none">
-              <h2 id="overview-title" className="text-[20px] font-bold">Tour Overview:</h2>
+          <div className="site-container max-w-[1198px]">
+            <article className="max-w-[790px]">
+              <h2 id="overview-title" className="font-sans text-[20px] font-bold">Tour Overview:</h2>
               <PortableText value={trip.overview} className="mt-[34px] min-h-[96px] space-y-[34px] text-[18px] leading-[1.6] text-black/[.69]" />
               <div className="mt-[46px] grid gap-8 sm:grid-cols-2 sm:gap-[42px]">
                 {Array.from({ length: 2 }, (_, index) => trip.overviewHighlights?.[index]).map((highlight, index) => (
@@ -113,7 +119,6 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                 ))}
               </div>
             </article>
-            <aside className="h-fit xl:sticky xl:top-8 xl:self-start"><MiniPlanningForm /></aside>
           </div>
         </section>
 
@@ -160,11 +165,12 @@ export default async function SafariTripPage({ params }: TripPageProps) {
         <section id="itinerary" className="scroll-mt-28 bg-sand py-20 sm:py-24 lg:py-28" aria-labelledby="itinerary-title">
           <div className="site-container max-w-[1200px]">
             <h2 id="itinerary-title" className="text-[44px] font-semibold leading-[1.12] tracking-[-0.04em] sm:text-[56px] lg:text-[64px]">{trip.itineraryHeading ?? "Family itinerary day by day"}</h2>
-            <div className="mt-16 grid gap-12 lg:items-start lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-5 xl:grid-cols-[minmax(0,856px)_337px] xl:gap-[5px]">
+            <div className="mt-16 grid gap-12 lg:items-start lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,856px)_337px] xl:gap-12">
               <div className="space-y-[63px]">
                 {trip.itinerary?.map((day) => {
                   const images = usableImages(day.images);
                   const accommodationImages = usableImages(day.accommodation?.gallery);
+                  const accommodationGallery = accommodationImages.length ? accommodationImages : images;
                   return (
                     <article key={day._key} className="grid gap-8 md:grid-cols-[299px_minmax(0,1fr)] md:gap-[30px]">
                       <div className="grid grid-rows-[254px_243px] gap-[18px]">
@@ -174,15 +180,15 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                       <div className="flex min-w-0 flex-col">
                         <div>
                           <p className="inline-flex h-[35px] items-center rounded-[4px] bg-brand/[.12] px-[18px] text-[18px] font-bold uppercase leading-none text-brand">{day.dayRange}</p>
-                          <h3 className="mt-[21px] text-[32px] font-semibold leading-none tracking-[-0.035em] sm:text-[36px]">{day.title}</h3>
-                          <p className="mt-[21px] min-h-[23px] text-[21px] font-bold leading-none text-black/[.6] sm:text-[23px]">{day.region ? `(${day.region})` : ""}</p>
-                          <PortableText value={day.description} className="mt-[21px] max-w-[487px] min-h-[48px] space-y-4 text-[16px] leading-[1.51] text-black/[.73]" />
+                          <h3 className="mt-[21px] text-[32px] font-semibold leading-[1.3] tracking-[-0.035em] sm:text-[36px]">{day.title}</h3>
+                          {day.region ? <p className="mt-[21px] text-[21px] font-bold leading-none text-black/[.6] sm:text-[23px]">({day.region})</p> : null}
+                          <PortableText value={day.description} className="mt-[25px] max-w-[487px] min-h-[48px] space-y-4 text-[16px] leading-[1.51] text-black/[.73]" />
                           {day.meals && <p className="mt-5 text-[16px] font-semibold text-black/[.73]">Meals: <span className="font-normal">{day.meals}</span></p>}
                         </div>
 
                         <div className="mt-[49px]">
                           <h4 className="text-[21px] font-semibold leading-[35px]">Accommodation</h4>
-                          {day.accommodation?.name ? (accommodationImages.length ? <AccommodationGallery name={day.accommodation.name} images={accommodationImages} /> : <p className="mt-4 min-h-[35px] text-[17px] font-medium leading-[35px] underline underline-offset-2">{day.accommodation.name}</p>) : <div className="mt-4 min-h-[35px]" />}
+                          {day.accommodation?.name ? <AccommodationGallery name={day.accommodation.name} images={accommodationGallery} /> : <div className="mt-4 min-h-[35px]" />}
                         </div>
                       </div>
                     </article>
@@ -190,7 +196,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                 })}
               </div>
 
-              <aside className="order-first h-fit rounded-[9px] bg-white p-[18px] lg:order-none lg:sticky lg:top-8 lg:z-10">
+              <aside className="order-first h-fit rounded-[9px] bg-white p-[18px] lg:order-none lg:sticky lg:top-8 lg:z-10 lg:self-start">
                 <div className="relative h-[291px] overflow-hidden rounded-[10px]">
                   {trip.itineraryMap?.url && <Image src={trip.itineraryMap.url} alt={trip.itineraryMap.alt ?? "Itinerary map"} fill sizes="302px" className="object-cover" />}
                   <p className="absolute bottom-[14px] left-3 flex min-h-5 items-center gap-2 text-[16px] font-semibold leading-[1.28] text-black">
@@ -209,12 +215,12 @@ export default async function SafariTripPage({ params }: TripPageProps) {
             <div className="mt-12 space-y-[29px]">
               {trip.inclusions?.map((item, index) => (
                 <details key={item._key} open={index === 0} className="group rounded-[10px] bg-sand">
-                  <summary className="flex min-h-[77px] cursor-pointer list-none items-center justify-between gap-4 px-[18px] py-4 text-[20px] font-semibold focus-visible:outline-2 focus-visible:outline-brand"><span className="flex items-center gap-6">{item.icon?.url ? <Image src={item.icon.url} width={30} height={30} alt="" className="size-[30px] object-contain" /> : <Image src="/assets/trip-inclusions-img-car-svgrepo-com21.svg" width={20} height={20} alt="" className="size-5" />}{item.title}</span><Image src="/assets/trip-inclusions-img-arrow-drop-down-svgrepo-com1.svg" width={43} height={43} alt="" className="size-[43px] shrink-0 transition group-open:rotate-180" /></summary>
+                  <summary className="flex min-h-[77px] cursor-pointer list-none items-center justify-between gap-4 px-[18px] py-4 text-[20px] font-semibold focus-visible:outline-2 focus-visible:outline-brand"><span className="flex items-center gap-6"><span aria-hidden className="text-[30px] font-medium leading-none text-brand">✓</span>{item.title}</span><Image src="/assets/trip-inclusions-img-arrow-drop-down-svgrepo-com1.svg" width={43} height={43} alt="" className="size-[43px] shrink-0 transition group-open:rotate-180" /></summary>
                   <PortableText value={item.description} className="min-h-[1px] px-[18px] pb-6 text-[18px] leading-[1.68] text-black/[.6]" />
                 </details>
               ))}
             </div>
-            {trip.exclusions?.length ? <div className="mt-12"><h3 className="text-[28px] font-semibold tracking-[-0.035em]">Exclusions</h3><div className="mt-7 space-y-[29px]">{trip.exclusions.map((item) => <details key={item._key} className="group rounded-[10px] bg-sand"><summary className="flex min-h-[77px] cursor-pointer list-none items-center justify-between gap-4 px-[18px] py-4 text-[20px] font-semibold focus-visible:outline-2 focus-visible:outline-brand"><span>{item.title}</span><Image src="/assets/trip-inclusions-img-arrow-drop-down-svgrepo-com1.svg" width={43} height={43} alt="" className="size-[43px] shrink-0 transition group-open:rotate-180" /></summary><PortableText value={item.description} className="min-h-[1px] px-[18px] pb-6 text-[18px] leading-[1.68] text-black/[.6]" /></details>)}</div></div> : null}
+            {trip.exclusions?.length ? <div className="mt-12"><h3 className="text-[28px] font-semibold tracking-[-0.035em]">Exclusions</h3><div className="mt-7 space-y-[29px]">{trip.exclusions.map((item) => <details key={item._key} className="group rounded-[10px] bg-sand"><summary className="flex min-h-[77px] cursor-pointer list-none items-center justify-between gap-4 px-[18px] py-4 text-[20px] font-semibold focus-visible:outline-2 focus-visible:outline-brand"><span className="flex items-center gap-6"><span aria-hidden className="text-[30px] font-medium leading-none text-brand">×</span>{item.title}</span><Image src="/assets/trip-inclusions-img-arrow-drop-down-svgrepo-com1.svg" width={43} height={43} alt="" className="size-[43px] shrink-0 transition group-open:rotate-180" /></summary><PortableText value={item.description} className="min-h-[1px] px-[18px] pb-6 text-[18px] leading-[1.68] text-black/[.6]" /></details>)}</div></div> : null}
           </div>
         </section>
 

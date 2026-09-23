@@ -53,7 +53,7 @@ type ItineraryDay = {
   description?: PortableTextBlock[];
   images?: LegacyImage[];
   meals?: string;
-  accommodation?: { name: string };
+  accommodation?: { name: string; gallery?: LegacyImage[] };
 };
 type LegacyImage = { url: string; alt: string };
 type ExtractedTour = {
@@ -76,6 +76,7 @@ type ExtractedTour = {
 
 type CommandOptions = {
   dryRun: boolean;
+  imagesOnly: boolean;
   slug?: string;
   limit?: number;
 };
@@ -90,6 +91,28 @@ type ExtractionResult = {
 
 type ImportResult = {
   assetErrors: string[];
+  unmatchedItineraryDays: string[];
+};
+
+type SanityImage = {
+  _type: "image";
+  asset: {_type: "reference"; _ref: string};
+  alt?: string;
+  _key?: string;
+};
+
+type ExistingAccommodation = {
+  name?: string;
+  gallery?: SanityImage[];
+  [key: string]: unknown;
+};
+
+type ExistingItineraryDay = {
+  _key?: string;
+  dayRange?: string;
+  images?: SanityImage[];
+  accommodation?: ExistingAccommodation;
+  [key: string]: unknown;
 };
 
 function stableKey(value: string) {
@@ -117,6 +140,18 @@ async function fetchWithRetry(url: string, init?: RequestInit, attempts = 3) {
   }
 
   throw lastError instanceof Error ? lastError : new Error(`Could not fetch ${url}`);
+}
+
+function mergeImages(primary: SanityImage[] | undefined, existing: SanityImage[] | undefined, limit: number) {
+  const assetIds = new Set<string>();
+  return [...(primary ?? []), ...(existing ?? [])]
+    .filter((image) => {
+      const assetId = image.asset?._ref;
+      if (!assetId || assetIds.has(assetId)) return false;
+      assetIds.add(assetId);
+      return true;
+    })
+    .slice(0, limit);
 }
 
 function asPortableText(paragraphs: string[], sourceKey: string): PortableTextBlock[] | undefined {
@@ -258,7 +293,12 @@ function extractItinerary($: ReturnType<typeof load>, sourceKey: string) {
       ...(asPortableText([description], `${sourceKey}-${dayRange}-description`) ? { description: asPortableText([description], `${sourceKey}-${dayRange}-description`) } : {}),
       ...(images?.length ? { images } : {}),
       ...(mealMatch ? { meals: cleanText(mealMatch[1]) } : {}),
-      ...(accommodationMatch ? { accommodation: { name: cleanText(accommodationMatch[1]) } } : {}),
+      ...(accommodationMatch ? {
+        accommodation: {
+          name: cleanText(accommodationMatch[1]),
+          ...(images?.length ? {gallery: images} : {}),
+        },
+      } : {}),
     });
   });
 
@@ -375,11 +415,16 @@ async function mapWithConcurrency<T, R>(items: T[], worker: (item: T) => Promise
   return results;
 }
 
-async function uploadImage(client: ReturnType<typeof createClient>, image: LegacyImage, cache: Map<string, string>) {
+async function uploadImage(client: ReturnType<typeof createClient>, image: LegacyImage, cache: Map<string, string>): Promise<SanityImage> {
   const cached = cache.get(image.url);
   if (cached) return {_type: "image", asset: {_type: "reference", _ref: cached}, alt: image.alt};
 
-  const response = await fetchWithRetry(image.url);
+  const response = await fetchWithRetry(image.url, {
+    headers: {
+      "user-agent": "GoldenTripsSanityMigration/1.0",
+      accept: "image/avif,image/webp,image/*,*/*;q=0.8",
+    },
+  }, 5);
   if (!response.ok) throw new Error(`Could not download image ${image.url}: ${response.status}`);
   const asset = await client.assets.upload("image", Buffer.from(await response.arrayBuffer()), {
     filename: path.basename(new URL(image.url).pathname),
@@ -389,19 +434,21 @@ async function uploadImage(client: ReturnType<typeof createClient>, image: Legac
   return {_type: "image", asset: {_type: "reference", _ref: asset._id}, alt: image.alt};
 }
 
-async function importTour(client: ReturnType<typeof createClient>, tour: ExtractedTour, assetCache: Map<string, string>) {
+async function importTour(client: ReturnType<typeof createClient>, tour: ExtractedTour, assetCache: Map<string, string>, imagesOnly: boolean) {
   const assetErrors: string[] = [];
   const gallery = [];
-  for (const image of tour.gallery) {
-    try {
-      gallery.push(await uploadImage(client, image, assetCache));
-    } catch (error) {
-      assetErrors.push(`Hero image skipped (${image.url}): ${error instanceof Error ? error.message : String(error)}`);
+  if (!imagesOnly) {
+    for (const image of tour.gallery) {
+      try {
+        gallery.push(await uploadImage(client, image, assetCache));
+      } catch (error) {
+        assetErrors.push(`Hero image skipped (${image.url}): ${error instanceof Error ? error.message : String(error)}`);
+      }
     }
   }
 
   let shareImage;
-  if (tour.seo.shareImage) {
+  if (!imagesOnly && tour.seo.shareImage) {
     try {
       shareImage = await uploadImage(client, tour.seo.shareImage, assetCache);
     } catch (error) {
@@ -409,16 +456,26 @@ async function importTour(client: ReturnType<typeof createClient>, tour: Extract
     }
   }
   const itinerary = await Promise.all(tour.itinerary.map(async (day) => {
-    const {images: sourceImages, ...dayFields} = day;
+    const {images: dayImages, accommodation: sourceAccommodation, ...dayFields} = day;
+    const sourceImages = (dayImages ?? sourceAccommodation?.gallery ?? []).slice(0, 5);
     const images = [];
-    for (const image of sourceImages ?? []) {
+    for (const image of sourceImages) {
       try {
         images.push(await uploadImage(client, image, assetCache));
       } catch (error) {
         assetErrors.push(`Itinerary image skipped (${day.dayRange}, ${image.url}): ${error instanceof Error ? error.message : String(error)}`);
       }
     }
-    return {...dayFields, ...(images.length ? {images} : {})};
+    return {
+      ...dayFields,
+      ...(images.length ? {images: images.slice(0, 2)} : {}),
+      ...(sourceAccommodation ? {
+        accommodation: {
+          name: sourceAccommodation.name,
+          ...(images.length ? {gallery: images} : {}),
+        },
+      } : {}),
+    };
   }));
 
   const fields = {
@@ -437,16 +494,51 @@ async function importTour(client: ReturnType<typeof createClient>, tour: Extract
     legacy: {source: "WordPress", sourceId: tour.sourceId, url: tour.legacyUrl, migratedAt: new Date().toISOString()},
   };
   const document = {_type: "safariTrip", ...fields};
-  const existing = await client.fetch<{_id: string} | null>(
-    "*[_type == 'safariTrip' && (legacy.sourceId == $sourceId || slug.current == $slug)][0]{_id}",
+  const existing = await client.fetch<{_id: string; itinerary?: ExistingItineraryDay[]} | null>(
+    "*[_type == 'safariTrip' && (legacy.sourceId == $sourceId || slug.current == $slug)][0]{_id, itinerary}",
     {sourceId: tour.sourceId, slug: tour.slug},
   );
+
   if (existing?._id) {
+    if (imagesOnly) {
+      const matchedSourceKeys = new Set<string>();
+      const mergedItinerary = (existing.itinerary ?? []).map((existingDay) => {
+        const sourceDay = itinerary.find((day) => day._key === existingDay._key || day.dayRange === existingDay.dayRange);
+        if (!sourceDay) return existingDay;
+
+        matchedSourceKeys.add(sourceDay._key);
+        const existingAccommodation = existingDay.accommodation && typeof existingDay.accommodation === "object"
+          ? existingDay.accommodation
+          : {};
+        const sourceAccommodation = sourceDay.accommodation;
+        const images = mergeImages(sourceDay.images, existingDay.images, 2);
+        const accommodationGallery = mergeImages(sourceAccommodation?.gallery, existingAccommodation.gallery, 5);
+        return {
+          ...existingDay,
+          ...(images.length ? {images} : {}),
+          ...(sourceAccommodation ? {
+            accommodation: {
+              ...existingAccommodation,
+              ...(existingAccommodation.name ? {} : {name: sourceAccommodation.name}),
+              ...(accommodationGallery.length ? {gallery: accommodationGallery} : {}),
+            },
+          } : {}),
+        };
+      });
+      const unmatchedItineraryDays = itinerary
+        .filter((day) => !matchedSourceKeys.has(day._key) && (day.images?.length || day.accommodation?.gallery?.length))
+        .map((day) => day.dayRange);
+
+      await client.patch(existing._id).set({itinerary: mergedItinerary}).commit({autoGenerateArrayKeys: true});
+      return {assetErrors, unmatchedItineraryDays} satisfies ImportResult;
+    }
+
     await client.patch(existing._id).set(fields).commit({autoGenerateArrayKeys: true});
   } else {
+    if (imagesOnly) throw new Error("Images-only migration requires an existing safariTrip document.");
     await client.create(document, {autoGenerateArrayKeys: true});
   }
-  return {assetErrors} satisfies ImportResult;
+  return {assetErrors, unmatchedItineraryDays: []} satisfies ImportResult;
 }
 
 function parseOptions(): CommandOptions {
@@ -455,6 +547,7 @@ function parseOptions(): CommandOptions {
   const limitArgument = argumentsList.find((argument) => argument.startsWith("--limit="));
   return {
     dryRun: !argumentsList.includes("--execute"),
+    imagesOnly: argumentsList.includes("--images-only"),
     ...(slugArgument ? {slug: slugArgument.slice("--slug=".length)} : {}),
     ...(limitArgument ? {limit: Number.parseInt(limitArgument.slice("--limit=".length), 10)} : {}),
   };
@@ -467,7 +560,8 @@ function reportTour(tour: ExtractedTour) {
   console.log(`  Duration: ${tour.durationDays ?? "missing"} days`);
   console.log(`  Pricing tiers: ${tour.pricingTiers.length ? tour.pricingTiers.map((tier) => `${tier.groupSize} $${tier.pricePerPerson}`).join(", ") : "none"}`);
   console.log(`  Itinerary days: ${tour.itinerary.length}`);
-  console.log(`  Itinerary images: ${tour.itinerary.reduce((total, day) => total + (day.images?.length ?? 0), 0)}`);
+  console.log(`  Daily images to import: ${tour.itinerary.reduce((total, day) => total + Math.min(day.images?.length ?? 0, 2), 0)}`);
+  console.log(`  Accommodation gallery images to import: ${tour.itinerary.reduce((total, day) => total + Math.min(day.accommodation?.gallery?.length ?? 0, 5), 0)}`);
   console.log(`  Images: ${tour.gallery.length}`);
   console.log(`  Included: ${tour.inclusions.length}; excluded: ${tour.exclusions.length}`);
   if (tour.warnings.length) console.log(`  Warnings: ${tour.warnings.join(" | ")}`);
@@ -502,7 +596,7 @@ async function main() {
   await Promise.all([mkdir(extractedDirectory, {recursive: true}), mkdir(reportsDirectory, {recursive: true})]);
   const reportName = options.slug ? options.slug : "family-friendly-safaris";
   await writeFile(path.join(extractedDirectory, `${reportName}.json`), JSON.stringify({retrievedAt: new Date().toISOString(), source: legacyBaseUrl, rawTours, extractionResults}, null, 2));
-  await writeFile(path.join(reportsDirectory, `${reportName}.json`), JSON.stringify({scope: reportName, dryRun: options.dryRun, requested: rawTours.length, extracted: extractedTours.length, failed: failures, warnings: extractedTours.flatMap((tour) => tour.warnings.map((warning) => ({slug: tour.slug, warning}))), tours: extractedTours.map((tour) => ({title: tour.title, url: tour.legacyUrl, slug: tour.slug, durationDays: tour.durationDays, pricingTiers: tour.pricingTiers, itineraryDays: tour.itinerary.length, images: tour.gallery.length, itineraryImages: tour.itinerary.reduce((total, day) => total + (day.images?.length ?? 0), 0), inclusions: tour.inclusions.length, exclusions: tour.exclusions.length, warnings: tour.warnings}))}, null, 2));
+  await writeFile(path.join(reportsDirectory, `${reportName}.json`), JSON.stringify({scope: reportName, dryRun: options.dryRun, imagesOnly: options.imagesOnly, requested: rawTours.length, extracted: extractedTours.length, failed: failures, warnings: extractedTours.flatMap((tour) => tour.warnings.map((warning) => ({slug: tour.slug, warning}))), tours: extractedTours.map((tour) => ({title: tour.title, url: tour.legacyUrl, slug: tour.slug, durationDays: tour.durationDays, pricingTiers: tour.pricingTiers, itineraryDays: tour.itinerary.length, images: tour.gallery.length, dailyImages: tour.itinerary.reduce((total, day) => total + Math.min(day.images?.length ?? 0, 2), 0), accommodationGalleryImages: tour.itinerary.reduce((total, day) => total + Math.min(day.accommodation?.gallery?.length ?? 0, 5), 0), inclusions: tour.inclusions.length, exclusions: tour.exclusions.length, warnings: tour.warnings}))}, null, 2));
 
   console.log(`${options.dryRun ? "DRY RUN" : "IMPORT"}: ${extractedTours.length}/${rawTours.length} tour(s) extracted in ${reportName}`);
   extractedTours.forEach(reportTour);
@@ -521,9 +615,10 @@ async function main() {
   const importFailures: Array<{slug: string; error: string}> = [];
   for (const tour of extractedTours) {
     try {
-      const result = await importTour(client, tour, assetCache);
-      console.log(`Imported ${tour.title}`);
+      const result = await importTour(client, tour, assetCache, options.imagesOnly);
+      console.log(`${options.imagesOnly ? "Updated images for" : "Imported"} ${tour.title}`);
       result.assetErrors.forEach((assetError) => console.warn(`  ${assetError}`));
+      result.unmatchedItineraryDays.forEach((dayRange) => console.warn(`  Could not match ${dayRange} to an existing itinerary day; no images were written for it.`));
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       importFailures.push({slug: tour.slug, error: message});

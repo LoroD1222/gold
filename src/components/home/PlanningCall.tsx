@@ -24,7 +24,7 @@ export function PlanningCall({ id }: { id?: string }) {
             <p><span className="block text-[19px] leading-[1.37] tracking-[.13em] text-brand">★★★★★</span><span className="mt-[5px] block text-[17px] leading-[1.4]">191 verified reviews on TripAdvisor</span></p>
           </div>
         </div>
-        <form className="mt-8 rounded-[15px] border border-black/20 bg-white p-5 shadow-none lg:mt-0 lg:h-[454px] lg:p-6" action="#" method="post">
+        <form className="mt-8 rounded-[15px] border border-black/20 bg-white p-5 shadow-none lg:mt-0 lg:h-[454px] lg:p-6" action="/api/forms" method="post">
           <p className="text-sm font-semibold text-brand lg:text-[18px]">Get Started</p>
           <p className="mt-3 text-xl font-semibold leading-tight lg:text-[23px] lg:leading-[1.3]">Tell us about your family,<br />we&apos;ll build the trip</p>
           <div className="mt-6 grid gap-3">

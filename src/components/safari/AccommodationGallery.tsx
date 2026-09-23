@@ -32,7 +32,7 @@ export function AccommodationGallery({ name, images }: AccommodationGalleryProps
       <dialog
         ref={dialogRef}
         aria-labelledby={titleId}
-        className="w-[min(100%_-_2rem,900px)] rounded-2xl border-0 bg-transparent p-0 text-ink shadow-2xl backdrop:bg-black/70"
+        className="fixed inset-0 m-auto h-fit w-[min(100%_-_2rem,900px)] rounded-2xl border-0 bg-transparent p-0 text-ink shadow-2xl backdrop:bg-black/70"
         onClick={(event) => {
           if (event.target === event.currentTarget) closeGallery();
         }}

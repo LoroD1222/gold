@@ -28,8 +28,8 @@ export function TripDetailTabs({ tabs }: { tabs: TripDetailTab[] }) {
   }, [tabs]);
 
   return (
-    <nav aria-label="Trip details" className="mb-12 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <div role="tablist" className="flex min-w-max items-center gap-1 border-b border-ink/10">
+    <nav aria-label="Trip details" className="h-[58px] overflow-x-auto bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div role="tablist" className="site-container flex h-full min-w-max max-w-[1194px] items-stretch gap-16">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
 
@@ -39,11 +39,11 @@ export function TripDetailTabs({ tabs }: { tabs: TripDetailTab[] }) {
               href={`#${tab.id}`}
               role="tab"
               aria-selected={isActive}
-              className="relative px-5 py-4 text-sm font-semibold text-ink transition hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand sm:px-6 sm:text-base"
+              className="relative flex h-full shrink-0 items-start justify-center px-0 pt-3 text-[20px] font-semibold leading-none text-black transition hover:text-black focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand first:w-[127px]"
               onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}
-              <span aria-hidden="true" className={`absolute inset-x-5 bottom-0 h-[3px] rounded-t-full bg-brand transition-opacity sm:inset-x-6 ${isActive ? "opacity-100" : "opacity-0"}`} />
+              <span aria-hidden="true" className={`absolute inset-x-0 bottom-0 h-[6px] rounded-t-[8px] bg-brand transition-opacity ${isActive ? "opacity-100" : "opacity-0"}`} />
             </a>
           );
         })}
