@@ -9,6 +9,7 @@ import { AccommodationGallery } from "@/components/safari/AccommodationGallery";
 import { PortableText } from "@/components/safari/PortableText";
 import { TripCard } from "@/components/safari/TripCard";
 import { TripDetailTabs } from "@/components/safari/TripDetailTabs";
+import { TourFeatures } from "@/components/safari/TourFeatures";
 import { TripHeroGallery } from "@/components/safari/TripHeroGallery";
 import { TripQuoteDialog } from "@/components/safari/TripQuoteDialog";
 import { getSafariAnimal, isSafariAnimalId } from "@/data/safariAnimals";
@@ -55,7 +56,6 @@ export default async function SafariTripPage({ params }: TripPageProps) {
     return lowest === undefined || tier.pricePerPerson < lowest ? tier.pricePerPerson : lowest;
   }, undefined) ?? trip.startingPrice;
   const overviewHighlights = trip.overviewHighlights?.filter((highlight) => highlight?.title || highlight?.description) ?? [];
-  const highlights = Array.from({ length: Math.max(3, trip.highlights?.length ?? 0) }, (_, index) => trip.highlights?.[index]);
   const wildlife = Array.from({ length: Math.max(6, trip.wildlife?.length ?? 0) }, (_, index) => trip.wildlife?.[index]);
   const related = relatedTrips.filter((relatedTrip) => relatedTrip.slug !== trip.slug).slice(0, 3);
   const breadcrumbJsonLd = {
@@ -82,9 +82,11 @@ export default async function SafariTripPage({ params }: TripPageProps) {
               <TripHeroGallery images={gallery} promotionLabel={trip.promotionLabel} />
 
               <aside id="price" aria-label="Trip facts and price" className="scroll-mt-28 h-fit rounded-[15px] bg-[#faf8f4] p-7 shadow-none xl:h-[552px] xl:p-[31px]">
-                <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" aria-label="190 reviews on TripAdvisor" className="inline-flex min-h-[27px] items-center gap-2 text-[18px] font-semibold text-black/[.7] underline decoration-1 underline-offset-4">
+                <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" aria-label="5.0 rating from 190 reviews on TripAdvisor" className="inline-flex min-h-[27px] items-center gap-2 text-[18px] font-semibold text-black/[.7] underline decoration-1 underline-offset-4">
                   <Image src="/assets/tripadvisor-mark.png" width={27} height={32} alt="" className="h-[27px] w-auto" />
                   <span aria-hidden="true" className="text-[22px] leading-none text-brand">★</span>
+                  <span>5.0</span>
+                  <span aria-hidden="true">·</span>
                   190 Reviews
                 </a>
                 <dl className="mt-7 space-y-[21px] border-b border-ink/[.08] pb-[33px]">
@@ -107,7 +109,6 @@ export default async function SafariTripPage({ params }: TripPageProps) {
           {id: "price", label: "Price"},
           {id: "itinerary", label: "Itinerary"},
           {id: "inclusions", label: "Inclusions"},
-          {id: "visa-documents", label: "Visa and Documents"},
         ]} />
 
         <section id="overview" className="scroll-mt-28 bg-cream py-20 sm:py-24" aria-label="Overview">
@@ -130,21 +131,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
           </div>
         </section>
 
-        <section id="highlights" className="scroll-mt-28 bg-cream pb-20 sm:pb-28" aria-label="Trip highlights">
-          <div className="site-container max-w-[1194px]">
-            <div className="grid gap-5 md:grid-cols-3">
-              {highlights.map((highlight, index) => (
-                <article key={highlight?._key ?? `highlight-${index}`} className="min-h-[257px] rounded-[10px] border border-ink/[.15] bg-white p-8">
-                  <div className="grid h-[71px] w-[70px] place-items-center rounded-[5px] border border-brand/20 bg-brand/[.17]">
-                    {highlight?.icon?.url && <Image src={highlight.icon.url} width={45} height={38} alt="" className="max-h-[38px] max-w-[45px] object-contain" />}
-                  </div>
-                  <h3 className="mt-[13px] min-h-[27px] text-[18px] font-medium">{highlight?.title}</h3>
-                  <p className="mt-[13px] min-h-[56px] text-[17px] leading-[1.68] text-black/[.6]">{highlight?.description}</p>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
+        <TourFeatures trip={trip} />
 
         <section className="bg-[linear-gradient(to_bottom,#fffbf3_0%,#fffbf3_54%,#f4ede1_54%,#f4ede1_100%)] pb-24" aria-labelledby="wildlife-title">
           <div className="site-container max-w-[1200px]">
@@ -173,7 +160,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
           <div className="site-container max-w-[1200px]">
             <h2 id="itinerary-title" className="text-[44px] font-semibold leading-[1.12] tracking-[-0.04em] sm:text-[56px] lg:text-[64px]">{trip.itineraryHeading ?? "Family itinerary day by day"}</h2>
             <div className="mt-16 grid gap-12 lg:items-start lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,856px)_337px] xl:gap-12">
-              <div className="space-y-[63px]">
+              <div className="flex flex-col gap-[63px]">
                 {trip.itinerary?.map((day) => {
                   const images = usableImages(day.images);
                   const accommodationImages = usableImages(day.accommodation?.gallery);
@@ -207,11 +194,11 @@ export default async function SafariTripPage({ params }: TripPageProps) {
 
               <aside aria-label="Trip planning" className="order-first h-fit rounded-[9px] bg-white p-[9px_18px_16px] lg:order-none lg:sticky lg:top-8 lg:z-10 lg:self-start">
                 <div className="flex flex-col gap-[14px]">
-                  <Image src="/assets/trip-itinerary-sidebar-logo.png" width={236} height={90} alt="Golden Trips Tanzania" sizes="194px" className="h-auto w-[194px]" />
+                  <Image src="/assets/trip-itinerary-sidebar-logo.png" width={236} height={90} alt="Golden Trips Tanzania" sizes="194px" className="mx-auto h-auto w-[194px]" />
                   <div className="relative aspect-[302/262] w-full overflow-hidden rounded-[10px]">
                     <Image src="/assets/trip-itinerary-sidebar-map.png" width={362} height={272} alt="Illustrated map of Tanzania" sizes="(min-width: 1280px) 302px, 100vw" className="absolute -left-[16.08%] top-0 h-[102.89%] w-[119.01%] max-w-none object-cover" />
                   </div>
-                  <TripQuoteDialog className="flex min-h-[51px] w-full items-center justify-center rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-2 text-[17px] font-bold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand">Plan your family trip</TripQuoteDialog>
+                  <TripQuoteDialog className="flex min-h-[51px] w-full items-center justify-center rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-2 text-[17px] font-extrabold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand">Plan your family trip</TripQuoteDialog>
                 </div>
               </aside>
             </div>

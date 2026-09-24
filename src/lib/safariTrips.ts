@@ -33,6 +33,18 @@ export type SafariTrip = {
   pricingTiers?: Array<{ _key: string; groupSize: string; pricePerPerson: number }>;
   overview?: PortableTextBlock[];
   overviewHighlights?: Array<{ _key: string; title: string; description: string }>;
+  tourStyle?: "Budget" | "Mid-range" | "Luxury" | "Budget Camping";
+  accommodationTypes?: string[];
+  tourType?: "Private" | "Shared";
+  maxGroupSize?: number;
+  departureType?: "Any Day" | "Fixed Departure";
+  customization?: "Fully Customizable" | "Minor Changes Allowed" | "Not Customizable";
+  soloTravelers?: "Allowed" | "Not Allowed";
+  minimumAge?: number;
+  activities?: string[];
+  gameDriveVehicles?: string[];
+  transportTypes?: string[];
+  airportTransfer?: "Included" | "Available at Extra Cost" | "Not Included";
   highlightsHeading?: string;
   highlights?: Array<{ _key: string; title: string; description: string; icon?: SanityImage }>;
   wildlifeHeading?: string;
@@ -96,6 +108,18 @@ const safariTripQuery = `
     pricingTiers[]{_key, groupSize, pricePerPerson},
     overview,
     overviewHighlights[]{_key, title, description},
+    tourStyle,
+    accommodationTypes,
+    tourType,
+    maxGroupSize,
+    departureType,
+    customization,
+    soloTravelers,
+    minimumAge,
+    activities,
+    gameDriveVehicles,
+    transportTypes,
+    airportTransfer,
     highlightsHeading,
     highlights[]{_key, title, description, icon{_key, "url": asset->url, alt}},
     wildlifeHeading,

@@ -4,12 +4,14 @@ import { useMemo, useState, type ReactNode } from "react";
 import { TripCard } from "@/components/safari/TripCard";
 import type { Trip } from "@/data/trips";
 
-type RouteFilter = "safari" | "zanzibar";
+type RouteFilter = "safari" | "zanzibar" | "kilimanjaro";
 type PriceFilter = "all" | "up-to-2000" | "2000-to-4000" | "over-4000";
+type DurationFilter = "all" | "2-to-4" | "5-to-7" | "8-to-12" | "13-or-more";
 
-const routeFilters: ReadonlyArray<{ id: RouteFilter; label: string }> = [
-  { id: "safari", label: "Safari" },
-  { id: "zanzibar", label: "Zanzibar" },
+const routeFilters: ReadonlyArray<{ id: RouteFilter; label: string; category: string }> = [
+  { id: "safari", label: "Safari", category: "Safari" },
+  { id: "zanzibar", label: "Zanzibar", category: "Zanzibar" },
+  { id: "kilimanjaro", label: "Kilimanjaro", category: "Kilimanjaro" },
 ];
 
 const priceFilters: ReadonlyArray<{ id: PriceFilter; label: string }> = [
@@ -19,21 +21,25 @@ const priceFilters: ReadonlyArray<{ id: PriceFilter; label: string }> = [
   { id: "over-4000", label: "Over $4,000" },
 ];
 
+const durationFilters: ReadonlyArray<{ id: DurationFilter; label: string }> = [
+  { id: "all", label: "Any duration" },
+  { id: "2-to-4", label: "2–4 days" },
+  { id: "5-to-7", label: "5–7 days" },
+  { id: "8-to-12", label: "8–12 days" },
+  { id: "13-or-more", label: "13+ days" },
+];
+
 export function SafariListingFilters({ trips, intro }: { trips: Trip[]; intro: ReactNode }) {
   const [selectedFilters, setSelectedFilters] = useState<RouteFilter[]>(routeFilters.map((filter) => filter.id));
   const [priceFilter, setPriceFilter] = useState<PriceFilter>("all");
-  const allSelected = selectedFilters.length === routeFilters.length;
+  const [durationFilter, setDurationFilter] = useState<DurationFilter>("all");
 
   const filteredTrips = useMemo(() => {
     return trips.filter((trip) => {
-      const matchesRoute = selectedFilters.some((filter) => trip.category.includes(filter === "safari" ? "Safari" : "Zanzibar"));
-      return matchesRoute && matchesPrice(trip.priceFrom, priceFilter);
+      const matchesRoute = routeFilters.some((filter) => selectedFilters.includes(filter.id) && trip.category.includes(filter.category));
+      return matchesRoute && matchesPrice(trip.priceFrom, priceFilter) && matchesDuration(trip.duration, durationFilter);
     });
-  }, [priceFilter, selectedFilters, trips]);
-
-  function toggleAll(checked: boolean) {
-    setSelectedFilters(checked ? routeFilters.map((filter) => filter.id) : []);
-  }
+  }, [durationFilter, priceFilter, selectedFilters, trips]);
 
   function toggleFilter(filterId: RouteFilter, checked: boolean) {
     setSelectedFilters((currentFilters) => checked
@@ -44,8 +50,7 @@ export function SafariListingFilters({ trips, intro }: { trips: Trip[]; intro: R
   return (
     <>
       <fieldset className="mt-7 flex flex-wrap justify-center gap-4" aria-controls="safari-routes-grid">
-        <legend className="sr-only">Filter Tanzania safari routes and prices</legend>
-        <FilterCheckbox label="All" checked={allSelected} onChange={toggleAll} />
+        <legend className="sr-only">Filter Tanzania safari routes, prices, and durations</legend>
         {routeFilters.map((filter) => (
           <FilterCheckbox
             key={filter.id}
@@ -58,6 +63,12 @@ export function SafariListingFilters({ trips, intro }: { trips: Trip[]; intro: R
           <span>Price:</span>
           <select value={priceFilter} onChange={(event) => setPriceFilter(event.target.value as PriceFilter)} aria-label="Filter by starting price" className="cursor-pointer bg-transparent font-semibold outline-none">
             {priceFilters.map((filter) => <option key={filter.id} value={filter.id}>{filter.label}</option>)}
+          </select>
+        </label>
+        <label className="inline-flex min-h-10 cursor-pointer items-center gap-2 rounded-full border border-brand bg-cream px-5 py-2 text-sm font-semibold text-ink transition hover:bg-brand/10 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-brand">
+          <span>Duration:</span>
+          <select value={durationFilter} onChange={(event) => setDurationFilter(event.target.value as DurationFilter)} aria-label="Filter by trip duration" className="cursor-pointer bg-transparent font-semibold outline-none">
+            {durationFilters.map((filter) => <option key={filter.id} value={filter.id}>{filter.label}</option>)}
           </select>
         </label>
       </fieldset>
@@ -82,6 +93,16 @@ function matchesPrice(price: number | undefined, filter: PriceFilter) {
   if (filter === "up-to-2000") return price <= 2000;
   if (filter === "2000-to-4000") return price > 2000 && price <= 4000;
   return price > 4000;
+}
+
+function matchesDuration(duration: number | undefined, filter: DurationFilter) {
+  if (filter === "all") return true;
+  if (typeof duration !== "number") return false;
+
+  if (filter === "2-to-4") return duration >= 2 && duration <= 4;
+  if (filter === "5-to-7") return duration >= 5 && duration <= 7;
+  if (filter === "8-to-12") return duration >= 8 && duration <= 12;
+  return duration >= 13;
 }
 
 function FilterCheckbox({ label, checked, onChange }: { label: string; checked: boolean; onChange: (checked: boolean) => void }) {

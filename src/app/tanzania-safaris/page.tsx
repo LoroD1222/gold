@@ -8,11 +8,11 @@ import { trips } from "@/data/trips";
 import { getSafariTripCards } from "@/lib/safariTrips";
 
 export const metadata: Metadata = {
-  title: "Tanzania Safari in 2027–2028",
-  description: "Explore private Tanzania safari examples for 2027 and 2028, including family safaris, classic circuits, and Zanzibar extensions.",
+  title: "Tanzania Family Safari 2026–2027",
+  description: "Explore private Tanzania family safari examples for 2026 and 2027, including classic circuits and Zanzibar extensions.",
   alternates: { canonical: "/tanzania-safaris" },
   openGraph: {
-    title: "Tanzania Safari in 2027–2028",
+    title: "Tanzania Family Safari 2026–2027",
     description: "Every safari we create is uniquely built around you.",
     url: "/tanzania-safaris",
     images: [{ url: "/assets/list-img-wanyama-part32810.png", width: 4096, height: 2734, alt: "Elephants beside a safari vehicle in Tanzania" }],
@@ -48,7 +48,7 @@ export default async function TanzaniaSafarisPage() {
             <nav aria-label="Breadcrumb" className="mt-16 flex justify-center text-sm font-semibold">
               <ol className="flex items-center gap-3"><li><Link href="/">Tanzania</Link></li><li aria-hidden>›</li><li aria-current="page">Safari</li></ol>
             </nav>
-            <h1 id="listing-title" className="mt-8 text-center text-[42px] font-semibold leading-tight tracking-[-0.04em] sm:text-[56px]">Tanzania safari in 2027 – 2028</h1>
+            <h1 id="listing-title" className="mt-8 text-center text-[42px] font-semibold leading-tight tracking-[-0.04em] sm:text-[56px]">Tanzania family safari 2026 - 2027</h1>
             <section aria-labelledby="safari-routes-title" className="mx-auto max-w-[1134px]">
               <h2 id="safari-routes-title" className="sr-only">Tanzania safari routes</h2>
               <SafariListingFilters
