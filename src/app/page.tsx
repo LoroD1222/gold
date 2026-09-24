@@ -234,11 +234,11 @@ export default async function HomePage() {
             <div className="mt-10 text-center">
               <Link
                 href="/tanzania-safaris"
-                className="mb-6 inline-flex min-h-12 items-center justify-center rounded-md border border-brand bg-transparent px-6 py-3 text-sm font-semibold text-ink transition hover:bg-brand/10 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand"
+                className="inline-flex min-h-12 items-center justify-center rounded-md border border-brand bg-transparent px-6 py-3 text-sm font-semibold text-brand transition hover:bg-brand/10 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand"
               >
                 View all tours
               </Link>
-              <Image src="/assets/home-fit-img-path1.svg" width={68} height={42} alt="" className="mx-auto h-[42px] w-[68px]" />
+              <Image src="/assets/home-fit-img-path1.svg" width={68} height={42} alt="" className="mx-auto mt-[30px] block h-[42px] w-[68px]" />
               <p className="mt-4 text-lg font-semibold">Not sure which family journey fits you best?</p>
               <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-muted">Tell us when you want to travel, who is coming, how long you have. We&apos;ll recommend the route that makes the most sense.</p>
               <Link href="#planning" className="mt-5 inline-block text-sm font-semibold text-brand underline underline-offset-4">Get our safari recommendation</Link>

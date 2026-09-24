@@ -96,7 +96,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                 </dl>
                 <div className="mt-[33px]">
                   <p className="flex items-center gap-[18px] text-[20px]"><span>Price starts from</span><strong className="text-[32px] font-medium">{typeof priceFrom === "number" ? `$${priceFrom.toLocaleString("en-US")}` : ""}</strong></p>
-                  <TripQuoteDialog className="mt-7 flex min-h-[62px] w-full items-center justify-center rounded-[15px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-6 py-4 text-[20px] font-bold text-white transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Request Quote</TripQuoteDialog>
+                  <TripQuoteDialog className="mt-7 flex min-h-[62px] w-full items-center justify-center rounded-[15px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-6 py-4 text-[24px] font-extrabold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Request Quote</TripQuoteDialog>
                   <p className="mt-[19px] min-h-[24px] text-center text-[16px]">{trip.priceNote}</p>
                 </div>
               </aside>
@@ -137,14 +137,15 @@ export default async function SafariTripPage({ params }: TripPageProps) {
           <div className="site-container max-w-[1200px]">
             <div className="rounded-[10px] border border-ink/[.08] bg-[#fffefc] px-5 py-10 sm:px-8 lg:min-h-[440px] lg:px-8 lg:pb-[45px] lg:pt-16">
               <h2 id="wildlife-title" className="pb-5 text-center text-[26px] font-semibold leading-tight tracking-[-0.03em]">{trip.wildlifeHeading ?? "Wildlife you may encounter"}</h2>
-              <div className="mt-8 grid grid-cols-2 items-end gap-8 sm:grid-cols-3 lg:grid-cols-[234px_137px_174px_174px_174px_174px] lg:gap-[11px]">
+              <div className="mt-8 grid grid-cols-2 items-end gap-8 sm:grid-cols-3 lg:grid-cols-5 lg:gap-[11px]">
                 {wildlife.map((entry, index) => {
                   const animal = entry && isSafariAnimalId(entry.animal) ? getSafariAnimal(entry.animal) : null;
+                  const imageScaleClass = animal?.id === "crocodile" ? "" : ["giraffe", "antelope", "ostrich", "rhinoceros"].includes(animal?.id ?? "") ? "lg:scale-110" : "lg:scale-125";
                   const availabilityClass = entry?.availability === "Abundant" ? "text-brand" : entry?.availability === "Common" ? "text-brand/60" : "text-brand/30";
                   return (
                     <article key={entry?._key ?? `wildlife-${index}`} className="text-center">
-                      <div className="flex h-[150px] items-end justify-center sm:h-[170px] lg:h-[185px]">
-                        {animal && <Image src={animal.src} width={234} height={185} alt={`${animal.title} silhouette`} sizes="(max-width: 639px) 40vw, 234px" className={`h-auto w-auto object-contain object-bottom mix-blend-multiply ${animal.imageClass}`} />}
+                      <div className="flex h-[150px] items-end justify-center sm:h-[170px] lg:h-[210px]">
+                        {animal && <Image src={animal.src} width={234} height={185} alt={`${animal.title} silhouette`} sizes="(max-width: 639px) 40vw, (max-width: 1023px) 30vw, 218px" className={`h-auto w-auto object-contain object-bottom mix-blend-multiply ${animal.imageClass} ${imageScaleClass}`} />}
                       </div>
                       <h3 className="mt-[9px] min-h-[24px] text-[24px] font-semibold capitalize leading-none">{animal?.title}</h3>
                       <p className={`mt-5 min-h-5 text-[20px] font-extrabold leading-none ${availabilityClass}`}>{entry ? <><span className="mr-2">●</span>{entry.availability}</> : null}</p>

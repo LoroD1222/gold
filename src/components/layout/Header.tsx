@@ -4,6 +4,7 @@ import { MobileMenu } from "./MobileMenu";
 
 const links = [
   ["All family trips", "/tanzania-safaris"],
+  ["Join a group", "/tanzania-safaris"],
   ["Reviews", "/#reviews"],
   ["Destinations", "/#destinations"],
   ["Contact", "/#contact"],
