@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent, type PointerEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ChangeEvent, type KeyboardEvent, type MouseEvent, type PointerEvent } from "react";
 import { TripCard } from "@/components/safari/TripCard";
 import type { Trip } from "@/data/trips";
 
@@ -19,6 +19,7 @@ const tabs: ReadonlyArray<{ id: TripFilter; label: string }> = [
 export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const dragStart = useRef<{ pointerId: number; x: number; scrollLeft: number } | null>(null);
+  const didDrag = useRef(false);
   const [filter, setFilter] = useState<TripFilter>("all");
   const [progress, setProgress] = useState(0);
   const [indicatorWidth, setIndicatorWidth] = useState(100);
@@ -95,7 +96,7 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
     if (!track) return;
 
     dragStart.current = { pointerId: event.pointerId, x: event.clientX, scrollLeft: track.scrollLeft };
-    track.setPointerCapture(event.pointerId);
+    didDrag.current = false;
   }
 
   function handlePointerMove(event: PointerEvent<HTMLDivElement>) {
@@ -103,7 +104,12 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
     const start = dragStart.current;
     if (!track || !start || start.pointerId !== event.pointerId) return;
 
-    track.scrollLeft = start.scrollLeft - (event.clientX - start.x);
+    const distance = event.clientX - start.x;
+    if (Math.abs(distance) < 4) return;
+
+    if (!track.hasPointerCapture(event.pointerId)) track.setPointerCapture(event.pointerId);
+    didDrag.current = true;
+    track.scrollLeft = start.scrollLeft - distance;
   }
 
   function stopDragging(event: PointerEvent<HTMLDivElement>) {
@@ -113,6 +119,14 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
 
     if (track.hasPointerCapture(event.pointerId)) track.releasePointerCapture(event.pointerId);
     dragStart.current = null;
+    if (didDrag.current) window.setTimeout(() => { didDrag.current = false; }, 0);
+  }
+
+  function handleClickCapture(event: MouseEvent<HTMLDivElement>) {
+    if (!didDrag.current) return;
+
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   return (
@@ -160,6 +174,7 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
           onPointerMove={handlePointerMove}
           onPointerUp={stopDragging}
           onPointerCancel={stopDragging}
+          onClickCapture={handleClickCapture}
           className="h-[432px] cursor-grab overflow-x-auto overflow-y-hidden scroll-smooth pr-4 pt-[19px] [scrollbar-width:none] active:cursor-grabbing [&::-webkit-scrollbar]:hidden sm:h-[522px] sm:pr-0 lg:h-[441px]"
         >
           <div className="flex w-full snap-x snap-mandatory gap-[21px]">

@@ -96,7 +96,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                 </dl>
                 <div className="mt-[33px]">
                   <p className="flex items-center gap-[18px] text-[20px]"><span>Price starts from</span><strong className="text-[32px] font-medium">{typeof priceFrom === "number" ? `$${priceFrom.toLocaleString("en-US")}` : ""}</strong></p>
-                  <TripQuoteDialog className="mt-7 flex min-h-[62px] w-full items-center justify-center rounded-[15px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-6 py-4 text-[24px] font-extrabold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Request Quote</TripQuoteDialog>
+                  <TripQuoteDialog className="mt-7 flex min-h-[62px] w-full items-center justify-center rounded-[15px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-6 py-4 text-[24px] font-semibold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Request Quote</TripQuoteDialog>
                   <p className="mt-[19px] min-h-[24px] text-center text-[16px]">{trip.priceNote}</p>
                 </div>
               </aside>
@@ -147,7 +147,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                       <div className="flex h-[150px] items-end justify-center sm:h-[170px] lg:h-[210px]">
                         {animal && <Image src={animal.src} width={234} height={185} alt={`${animal.title} silhouette`} sizes="(max-width: 639px) 40vw, (max-width: 1023px) 30vw, 218px" className={`h-auto w-auto object-contain object-bottom mix-blend-multiply ${animal.imageClass} ${imageScaleClass}`} />}
                       </div>
-                      <h3 className="mt-[9px] min-h-[24px] text-[24px] font-semibold capitalize leading-none">{animal?.title}</h3>
+                      <h3 className="mt-5 min-h-[24px] text-[24px] font-semibold capitalize leading-none">{animal?.title}</h3>
                       <p className={`mt-5 min-h-5 text-[20px] font-extrabold leading-none ${availabilityClass}`}>{entry ? <><span className="mr-2">●</span>{entry.availability}</> : null}</p>
                     </article>
                   );
@@ -199,7 +199,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                   <div className="relative aspect-[302/262] w-full overflow-hidden rounded-[10px]">
                     <Image src="/assets/trip-itinerary-sidebar-map.png" width={362} height={272} alt="Illustrated map of Tanzania" sizes="(min-width: 1280px) 302px, 100vw" className="absolute -left-[16.08%] top-0 h-[102.89%] w-[119.01%] max-w-none object-cover" />
                   </div>
-                  <TripQuoteDialog className="flex min-h-[51px] w-full items-center justify-center rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-2 text-[17px] font-extrabold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand">Plan your family trip</TripQuoteDialog>
+                  <TripQuoteDialog className="flex min-h-[51px] w-full items-center justify-center rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-2 text-[17px] font-semibold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand">Plan your family trip</TripQuoteDialog>
                 </div>
               </aside>
             </div>
