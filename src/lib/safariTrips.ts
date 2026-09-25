@@ -21,6 +21,7 @@ export type SafariTrip = {
   slug: string;
   summary?: string;
   categories?: string[];
+  groupTrip?: boolean;
   guideLabel?: string;
   gallery?: SanityImage[];
   promotionLabel?: string;
@@ -73,6 +74,7 @@ export type SafariTripCard = {
   slug: string;
   summary?: string;
   categories?: string[];
+  groupTrip?: boolean;
   durationDays?: number;
   startingPrice?: number;
   image?: string;
@@ -84,6 +86,7 @@ const cardProjection = `{
   "slug": slug.current,
   summary,
   categories,
+  groupTrip,
   durationDays,
   startingPrice,
   "image": gallery[0].asset->url
@@ -96,6 +99,7 @@ const safariTripQuery = `
     "slug": slug.current,
     summary,
     categories,
+    groupTrip,
     guideLabel,
     gallery[]{_key, "url": asset->url, alt},
     promotionLabel,
@@ -147,12 +151,29 @@ const safariTripCardsQuery = `
   *[_type == "safariTrip" && defined(slug.current)] | order(featured desc, title asc) ${cardProjection}
 `;
 
+const groupSafariTripCardsQuery = `
+  *[_type == "safariTrip" && groupTrip == true && defined(slug.current)] | order(featured desc, title asc) ${cardProjection}
+`;
+
 export async function getSafariTrip(slug: string) {
   return sanityFetch<SafariTrip | null>(safariTripQuery, { slug });
 }
 
 export async function getSafariTripCards(): Promise<Trip[]> {
   const trips = await sanityFetch<SafariTripCard[]>(safariTripCardsQuery);
+  return trips.map((trip) => ({
+    slug: trip.slug,
+    title: trip.title,
+    duration: trip.durationDays,
+    priceFrom: trip.startingPrice,
+    image: trip.image,
+    category: trip.categories?.join(" ") ?? "",
+    shortDescription: trip.summary ?? "",
+  }));
+}
+
+export async function getGroupSafariTripCards(): Promise<Trip[]> {
+  const trips = await sanityFetch<SafariTripCard[]>(groupSafariTripCardsQuery);
   return trips.map((trip) => ({
     slug: trip.slug,
     title: trip.title,
