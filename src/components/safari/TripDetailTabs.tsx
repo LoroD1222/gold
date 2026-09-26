@@ -28,8 +28,8 @@ export function TripDetailTabs({ tabs }: { tabs: TripDetailTab[] }) {
   }, [tabs]);
 
   return (
-    <nav aria-label="Trip details" className="h-[68px] overflow-x-auto bg-white pt-[10px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      <div role="tablist" className="site-container flex h-full min-w-max max-w-[1194px] items-stretch gap-16">
+    <nav aria-label="Trip details" className="h-[68px] overflow-hidden bg-white pt-[10px] sm:overflow-x-auto sm:[scrollbar-width:none] sm:[&::-webkit-scrollbar]:hidden">
+      <div role="tablist" className="site-container flex h-full max-w-[1194px] items-stretch gap-0 sm:min-w-max sm:gap-16">
         {tabs.map((tab) => {
           const isActive = activeTab === tab.id;
 
@@ -39,7 +39,7 @@ export function TripDetailTabs({ tabs }: { tabs: TripDetailTab[] }) {
               href={`#${tab.id}`}
               role="tab"
               aria-selected={isActive}
-              className="relative flex h-full shrink-0 items-start justify-center px-0 pt-3 text-[20px] font-semibold leading-none text-black transition hover:text-black focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand first:w-[127px]"
+              className="relative flex h-full min-w-0 flex-1 items-start justify-center px-0 pt-3 text-[16px] font-semibold leading-none text-black transition hover:text-black focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-brand sm:shrink-0 sm:flex-none sm:text-[20px] sm:first:w-[127px]"
               onClick={() => setActiveTab(tab.id)}
             >
               {tab.label}

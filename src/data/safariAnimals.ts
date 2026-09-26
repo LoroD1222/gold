@@ -4,7 +4,7 @@ export const safariAnimals = [
   { id: "lion", title: "Lion", src: "/assets/animals/lion.jpg", imageClass: "h-[136px] max-w-[174px]" },
   { id: "leopard", title: "Leopard", src: "/assets/animals/leopard.jpg", imageClass: "h-[136px] max-w-[174px]" },
   { id: "cheetah", title: "Cheetah", src: "/assets/animals/cheetah.jpg", imageClass: "h-[136px] max-w-[174px]" },
-  { id: "crocodile", title: "Crocodile", src: "/assets/animals/crocodile.jpg", imageClass: "h-auto max-h-[86px] max-w-[150px]" },
+  { id: "crocodile", title: "Crocodile", src: "/assets/animals/crocodile.jpg", imageClass: "h-auto max-h-[108px] !w-[min(185px,100%)] lg:max-h-[86px] lg:!w-auto lg:max-w-[150px]" },
   { id: "baboon", title: "Baboon", src: "/assets/animals/baboon.jpg", imageClass: "h-[144px] max-w-[174px]" },
   { id: "antelope", title: "Impala", src: "/assets/animals/antelope.jpg", imageClass: "h-[175px] max-w-[137px]" },
   { id: "hyena", title: "Spotted hyena", src: "/assets/animals/hyena.jpg", imageClass: "h-[136px] max-w-[174px]" },

@@ -65,7 +65,7 @@ export default async function HomePage() {
       "@type": "TravelAgency",
       name: "Golden Trips Tanzania",
       url: "https://goldentrips.com",
-      email: "info@goldentrips.com",
+      email: "info@goldentrips.co.tz",
       telephone: "+255761575951",
       logo: "https://goldentrips.com/assets/home-header-img-image1.png",
     },
@@ -306,8 +306,8 @@ export default async function HomePage() {
             <SectionHeading eyebrow="Meet The Team" title="Your ultimate Tanzania vacation experts" id="guides-title" align="center" className="max-w-[980px]" description={<p>Meet the people who turn a safari into a story your family tells for years.</p>} />
             <div className="mx-auto mt-12 grid max-w-[1269px] grid-cols-2 gap-x-4 gap-y-10 text-center sm:mt-[62px] sm:gap-x-[23px] sm:gap-y-[62px] lg:grid-cols-3">
               {guides.map(({ name, role, image, crop }) => (
-                <article key={name} className="mx-auto w-full max-w-[300px]">
-                  <div className="relative mx-auto h-[184px] w-[190px] overflow-hidden rounded-[200px] sm:h-[267px] sm:w-[273px]">
+                <article key={name} className="mx-auto min-w-0 w-full max-w-[300px]">
+                  <div className="relative mx-auto aspect-[190/184] w-full max-w-[190px] overflow-hidden rounded-[200px] sm:aspect-[273/267] sm:max-w-[273px]">
                     <Image src={image} alt={`${name}, ${role}`} fill sizes="(max-width: 639px) 190px, 273px" className={`!bottom-auto !right-auto !max-w-none ${crop}`} />
                   </div>
                   <h3 className="mt-2 text-[17px] font-bold leading-[1.4] text-black/[.98] sm:text-[19px] sm:leading-[1.68]">{name}</h3>

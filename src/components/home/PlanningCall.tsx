@@ -4,8 +4,8 @@ export function PlanningCall({ id }: { id?: string }) {
   return (
     <section id={id} aria-labelledby={`${id ?? "planning"}-title`} className="bg-sand py-12 sm:py-20">
       <div className="narrow-container">
-        <div className="planning-card grid overflow-hidden rounded-[24px] border border-black/15 bg-[#fffbf6] px-6 py-8 lg:min-h-[565px] lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-4 lg:rounded-[50px] lg:px-[51px] lg:pb-[49px] lg:pt-[62px] xl:h-[565px] xl:grid-cols-[580px_390px]">
-          <div className="max-w-[580px]">
+        <div className="planning-card grid overflow-hidden rounded-[24px] border border-black/15 bg-[#fffbf6] px-6 py-8 lg:min-h-[565px] lg:grid-cols-[minmax(0,1fr)_390px] lg:gap-4 lg:rounded-[50px] lg:px-[51px] lg:pb-[49px] lg:pt-[62px] xl:min-h-[565px] xl:grid-cols-[580px_390px]">
+          <div className="max-w-[580px] lg:flex lg:flex-col lg:justify-center">
           <div className="flex items-center gap-4 lg:gap-[23px]">
             <Image src="/assets/home-consult-samson-simon.png" width={79} height={79} alt="Samson Simon" className="size-16 rounded-full object-cover sm:size-[79px]" />
             <div>
@@ -24,21 +24,26 @@ export function PlanningCall({ id }: { id?: string }) {
             <p><span className="block text-[19px] leading-[1.37] tracking-[.13em] text-brand">★★★★★</span><span className="mt-[5px] block text-[17px] leading-[1.4]">191 verified reviews on TripAdvisor</span></p>
           </div>
         </div>
-        <form className="mt-8 rounded-[15px] border border-black/20 bg-white p-5 shadow-none lg:mt-0 lg:h-[454px] lg:p-6" action="/api/forms" method="post">
+        <form className="mt-8 rounded-[15px] border border-black/20 bg-white p-5 shadow-none lg:mt-0 lg:min-h-[454px] lg:p-6" action="https://api.web3forms.com/submit" method="post">
+          <input type="hidden" name="access_key" value="9da46659-7080-4382-9076-c9e92dffe2a2" />
           <p className="text-sm font-semibold text-brand lg:text-[18px]">Get Started</p>
           <p className="mt-3 text-xl font-semibold leading-tight lg:text-[23px] lg:leading-[1.3]">Tell us about your family,<br />we&apos;ll build the trip</p>
           <div className="mt-6 grid gap-3">
             <label className="form-field text-[13px] font-semibold">
               <span>First Name</span>
-              <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" name="firstName" autoComplete="given-name" placeholder="e.g. Sofia" />
+              <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" name="firstName" autoComplete="given-name" placeholder="e.g. Sofia" required />
             </label>
             <label className="form-field text-[13px] font-semibold">
               <span>Email Address</span>
-              <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" type="email" name="email" autoComplete="email" placeholder="e.g. sofia@example.com" />
+              <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" type="email" name="email" autoComplete="email" placeholder="e.g. sofia@example.com" required />
             </label>
             <label className="form-field text-[13px] font-semibold">
               <span>WhatsApp Number</span>
               <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" type="tel" name="phone" autoComplete="tel" placeholder="e.g. +1 (555) 019-2834" />
+            </label>
+            <label className="form-field text-[13px] font-semibold">
+              <span>Message</span>
+              <textarea className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" name="message" rows={3} placeholder="Tell us about your ideal trip" required />
             </label>
           </div>
           <button type="submit" className="mt-4 min-h-11 w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-sm !font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">

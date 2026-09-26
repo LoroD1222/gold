@@ -222,7 +222,6 @@ export default async function JoinAGroupPage() {
                   </div>
                   <h3 className="mt-3 text-base font-bold leading-[1.4] text-ink sm:text-lg">{name}</h3>
                   <p className="mt-1 text-xs font-semibold text-black/45 sm:text-sm">{role}</p>
-                  <p className="mx-auto mt-3 max-w-[230px] text-xs leading-5 text-muted">A local expert with a gift for helping every traveller feel at home in Tanzania.</p>
                 </article>
               ))}
             </div>

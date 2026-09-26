@@ -36,10 +36,12 @@ export function TripQuoteDialog({ children, className = "" }: TripQuoteDialogPro
           <h2 id={titleId} className="mt-[10px] pr-10 text-[26px] font-semibold leading-[1.25]">
             Tell us about your family, we&apos;ll build the trip
           </h2>
-          <form className="mt-6 grid gap-3" action="/api/forms" method="post">
-            <label className="form-field"><span>First Name</span><input name="firstName" autoComplete="given-name" placeholder="e.g. Sofia" /></label>
-            <label className="form-field"><span>Email Address</span><input type="email" name="email" autoComplete="email" placeholder="e.g. sofia@example.com" /></label>
+          <form className="mt-6 grid gap-3" action="https://api.web3forms.com/submit" method="post">
+            <input type="hidden" name="access_key" value="9da46659-7080-4382-9076-c9e92dffe2a2" />
+            <label className="form-field"><span>First Name</span><input name="firstName" autoComplete="given-name" placeholder="e.g. Sofia" required /></label>
+            <label className="form-field"><span>Email Address</span><input type="email" name="email" autoComplete="email" placeholder="e.g. sofia@example.com" required /></label>
             <label className="form-field"><span>WhatsApp Number</span><input type="tel" name="phone" autoComplete="tel" placeholder="e.g. +1 (555) 019-2834" /></label>
+            <label className="form-field"><span>Message</span><textarea name="message" rows={3} placeholder="Tell us about your ideal trip" required /></label>
             <button type="submit" className="mt-1 min-h-[47px] w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-[16px] font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
               Start Planning My Family&apos;s Trip
             </button>

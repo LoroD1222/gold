@@ -524,10 +524,13 @@ const safariTrip = defineType({
     }),
     defineField({
       name: 'itineraryButtonLabel',
-      title: 'Itinerary button label',
+      title: 'Itinerary button label (deprecated)',
       type: 'string',
       group: 'itinerary',
-      initialValue: 'Plan your family trip',
+      deprecated: {reason: 'The itinerary CTA now uses a shared site-wide label.'},
+      readOnly: true,
+      hidden: true,
+      initialValue: undefined,
     }),
 
     defineField({

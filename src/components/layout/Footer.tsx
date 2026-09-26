@@ -60,8 +60,8 @@ export function Footer() {
             <ContactMethod
               icon="/assets/home-footer-img-group1321315499.svg"
               label="Email us at"
-              href="mailto:info@goldentrips.com"
-              value="info@goldentrips.com"
+              href="mailto:info@goldentrips.co.tz"
+              value="info@goldentrips.co.tz"
               detail="Custom itinerary in 24 hours"
             />
           </div>
@@ -102,7 +102,7 @@ export function Footer() {
                 <p className="text-[18px] font-bold uppercase leading-[1.68] tracking-[.08em] text-brand">Contact</p>
                 <address className="mt-[14px] space-y-[14px] text-[16px] not-italic leading-[1.68] text-ink">
                   <p><a href="tel:+255761575951" className="hover:text-brand">+255 761 575 951</a></p>
-                  <p><a href="mailto:info@goldentrips.com" className="break-words hover:text-brand">info@goldentrips.com</a></p>
+                  <p><a href="mailto:info@goldentrips.co.tz" className="break-words hover:text-brand">info@goldentrips.co.tz</a></p>
                   <p>WhatsApp support</p>
                   <p>Custom itinerary in 24 hours</p>
                   <p>Available 7 days a week</p>

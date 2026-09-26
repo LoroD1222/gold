@@ -61,7 +61,6 @@ export type SafariTrip = {
     meals?: string;
     accommodation?: { name?: string; gallery?: SanityImage[] };
   }>;
-  itineraryButtonLabel?: string;
   inclusions?: Array<{ _key: string; title: string; description?: PortableTextBlock[]; icon?: SanityImage }>;
   exclusions?: Array<{ _key: string; title: string; description?: PortableTextBlock[] }>;
   relatedTrips?: SafariTripCard[];
@@ -139,7 +138,6 @@ const safariTripQuery = `
       meals,
       accommodation{name, gallery[]{_key, "url": asset->url, alt}}
     },
-    itineraryButtonLabel,
     inclusions[]{_key, title, description, icon{_key, "url": asset->url, alt}},
     exclusions[]{_key, title, description},
     "relatedTrips": relatedTrips[]->${cardProjection},
