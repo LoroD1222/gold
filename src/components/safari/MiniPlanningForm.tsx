@@ -2,6 +2,7 @@ export function MiniPlanningForm() {
   return (
     <form className="min-h-[443px] rounded-[15px] border border-ink/[.09] bg-white p-[26px] shadow-none" action="https://api.web3forms.com/submit" method="post">
       <input type="hidden" name="access_key" value="9da46659-7080-4382-9076-c9e92dffe2a2" />
+      <input type="hidden" name="redirect" value="https://goldentrips.com/thank-you" />
       <p className="text-[18px] font-semibold text-brand">Get Started</p>
       <p className="mt-[10px] text-[23px] font-semibold leading-[1.3]">Tell us about your family,<br />we&apos;ll build the trip</p>
       <div className="mt-6 grid gap-3">

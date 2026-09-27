@@ -1,6 +1,12 @@
 import Image from "next/image";
 
-export function PlanningCall({ id }: { id?: string }) {
+export function PlanningCall({
+  id,
+  submitLabel = "Start Planning My Family's Trip",
+}: {
+  id?: string;
+  submitLabel?: string;
+}) {
   return (
     <section id={id} aria-labelledby={`${id ?? "planning"}-title`} className="bg-sand py-12 sm:py-20">
       <div className="narrow-container">
@@ -26,6 +32,7 @@ export function PlanningCall({ id }: { id?: string }) {
         </div>
         <form className="mt-8 rounded-[15px] border border-black/20 bg-white p-5 shadow-none lg:mt-0 lg:min-h-[454px] lg:p-6" action="https://api.web3forms.com/submit" method="post">
           <input type="hidden" name="access_key" value="9da46659-7080-4382-9076-c9e92dffe2a2" />
+          <input type="hidden" name="redirect" value="https://goldentrips.com/thank-you" />
           <p className="text-sm font-semibold text-brand lg:text-[18px]">Get Started</p>
           <p className="mt-3 text-xl font-semibold leading-tight lg:text-[23px] lg:leading-[1.3]">Tell us about your family,<br />we&apos;ll build the trip</p>
           <div className="mt-6 grid gap-3">
@@ -47,7 +54,7 @@ export function PlanningCall({ id }: { id?: string }) {
             </label>
           </div>
           <button type="submit" className="mt-4 min-h-11 w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-sm !font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
-            Start Planning My Family&apos;s Trip
+            {submitLabel}
           </button>
         </form>
         </div>

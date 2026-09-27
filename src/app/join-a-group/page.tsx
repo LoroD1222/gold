@@ -228,7 +228,7 @@ export default async function JoinAGroupPage() {
           </div>
         </section>
 
-        <PlanningCall id="planning-again" />
+        <PlanningCall id="planning-again" submitLabel="Start Planning My Group Safari" />
 
         <section id="destinations" className="bg-[#fffdf8] py-20 sm:py-28" aria-labelledby="destinations-title">
           <div className="site-container">

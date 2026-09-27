@@ -38,6 +38,7 @@ export function TripQuoteDialog({ children, className = "" }: TripQuoteDialogPro
           </h2>
           <form className="mt-6 grid gap-3" action="https://api.web3forms.com/submit" method="post">
             <input type="hidden" name="access_key" value="9da46659-7080-4382-9076-c9e92dffe2a2" />
+            <input type="hidden" name="redirect" value="https://goldentrips.com/thank-you" />
             <label className="form-field"><span>First Name</span><input name="firstName" autoComplete="given-name" placeholder="e.g. Sofia" required /></label>
             <label className="form-field"><span>Email Address</span><input type="email" name="email" autoComplete="email" placeholder="e.g. sofia@example.com" required /></label>
             <label className="form-field"><span>WhatsApp Number</span><input type="tel" name="phone" autoComplete="tel" placeholder="e.g. +1 (555) 019-2834" /></label>
