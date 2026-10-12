@@ -5,6 +5,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     { url: base, changeFrequency: "monthly", priority: 1 },
     { url: `${base}/tanzania-safaris`, changeFrequency: "monthly", priority: 0.9 },
+    { url: `${base}/tanzania-group-safari`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/tanzania-safaris/great-migration-river-crossing-serengeti`, changeFrequency: "monthly", priority: 0.8 },
   ];
 }
