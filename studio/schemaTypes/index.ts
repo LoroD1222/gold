@@ -106,8 +106,8 @@ const safariTrip = defineType({
     }),
     defineField({
       name: 'groupTrip',
-      title: 'Group trip',
-      description: 'Show this trip on the Join a group page.',
+      title: 'Show on Join a Group page',
+      description: 'Turn this on to list this trip on the Join a Group page.',
       type: 'boolean',
       group: 'basic',
       initialValue: false,

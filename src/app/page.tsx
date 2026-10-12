@@ -84,13 +84,13 @@ export default async function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <main>
-        <section className="relative overflow-hidden bg-ink text-white lg:min-h-[707px]" aria-labelledby="home-title">
-          <Image src="/assets/home-hero.png" alt="Family watching elephants during a private Tanzania safari" fill priority sizes="100vw" className="object-cover object-[70%_center] lg:object-[56%_center]" />
-          <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(20,27,20,.94)_0%,rgba(20,27,20,.69)_35%,rgba(20,27,20,.08)_77%),linear-gradient(180deg,rgba(17,23,17,.62)_0%,transparent_42%)]" />
+        <section className="relative min-h-[720px] overflow-hidden bg-ink text-white sm:min-h-[680px] lg:min-h-[707px]" aria-labelledby="home-title">
+          <Image src="/assets/home-hero.png" alt="Family watching elephants during a private Tanzania safari" fill priority quality={100} sizes="100vw" className="object-cover object-[74%_center] sm:object-[70%_center] lg:object-[56%_center]" />
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,27,20,.88)_0%,rgba(20,27,20,.63)_46%,rgba(20,27,20,.9)_100%)] sm:bg-[linear-gradient(90deg,rgba(20,27,20,.94)_0%,rgba(20,27,20,.69)_35%,rgba(20,27,20,.08)_77%),linear-gradient(180deg,rgba(17,23,17,.62)_0%,transparent_42%)]" />
           <Header overlay />
-          <div className="site-container relative z-10 flex flex-col justify-start pb-[50px] pt-[100px] lg:min-h-[603px] lg:justify-center lg:pt-[200px]">
+          <div className="site-container relative z-10 flex min-h-[720px] flex-col justify-end pb-10 pt-32 sm:min-h-[680px] sm:pb-[50px] sm:pt-[100px] lg:min-h-[603px] lg:justify-center lg:pt-[200px]">
             <div className="max-w-[610px]">
-              <h1 id="home-title" className="mt-[70px] text-[42px] font-semibold leading-[1.07] tracking-[-0.045em] sm:text-[56px] lg:mt-0 lg:text-[64px]">
+              <h1 id="home-title" className="text-[38px] font-semibold leading-[1.07] tracking-[-0.045em] sm:mt-[70px] sm:text-[56px] lg:mt-0 lg:text-[64px]">
                 <span className="text-brand">Family safaris</span> in Tanzania, made for every generation.
               </h1>
               <p className="mt-6 max-w-[540px] text-base leading-7 text-white/85 sm:text-lg">See Tanzania together on a private safari designed around the way your family wants to travel.</p>
@@ -101,7 +101,7 @@ export default async function HomePage() {
                 </ButtonLink>
               </div>
             </div>
-            <div className="mt-16 flex flex-wrap gap-x-10 gap-y-5 text-xs font-medium sm:text-sm">
+            <div className="mt-10 flex flex-wrap gap-x-10 gap-y-5 text-xs font-medium sm:mt-16 sm:text-sm">
               <div className="flex items-center gap-3">
                 <Image src="/assets/home-reviews-img-ellipse1.png" width={47} height={47} alt="Tripadvisor" />
                 <p>5/5 &nbsp;<span className="text-brand tracking-[.1em]">★★★★★</span><span className="block">Based on 191 verified reviews</span></p>
@@ -141,7 +141,8 @@ export default async function HomePage() {
                 src="/assets/why-travel-golden-trips-tanzania.png"
                 alt="Golden Trips Tanzania collage of safari guests, guides, and wildlife"
                 fill
-                sizes="(max-width: 1024px) 90vw, 634px"
+                quality={100}
+                sizes="(max-width: 640px) min(90vw, 634px), 634px"
                 className="object-contain"
               />
             </div>
