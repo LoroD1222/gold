@@ -9,6 +9,7 @@ import { Header } from "@/components/layout/Header";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { destinations } from "@/data/destinations";
+import { tripadvisorProfileUrl } from "@/data/externalLinks";
 import type { Trip } from "@/data/trips";
 import { getGroupSafariTripCards } from "@/lib/safariTrips";
 
@@ -134,7 +135,7 @@ export default async function JoinAGroupPage() {
           <Image src="/assets/join-group-hero.jpg" alt="Friends enjoying a Tanzania safari together" fill priority sizes="100vw" className="object-cover object-[50%_58%]" />
           <div className="absolute inset-0 bg-black/[.35]" />
           <div className="absolute inset-x-0 bottom-14 z-10 mx-auto flex max-w-xl flex-col items-center px-6 pb-10 text-center sm:bottom-16">
-            <p className="text-base font-semibold sm:text-lg">5/5 · Based on 123+ reviews on Tripadvisor</p>
+            <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" className="text-base font-semibold underline decoration-white/70 underline-offset-4 transition hover:text-brand focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand sm:text-lg">5/5 · Based on 190+ reviews on TripAdvisor</a>
             <p aria-hidden="true" className="mt-2 text-lg tracking-[.2em] text-brand">★★★★★</p>
           </div>
           <div className="absolute bottom-0 left-1/2 z-20 -translate-x-1/2 translate-y-1/2">
@@ -239,7 +240,7 @@ export default async function JoinAGroupPage() {
                   <Image src={destination.image} alt={`${destination.name} landscape in Tanzania`} fill sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 306px" className="object-cover transition duration-500 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0)_34%,rgba(38,28,12,.76)_100%)]" />
                   <p className="absolute right-3 top-3 inline-flex items-center gap-1 rounded-[3px] bg-brand px-2 py-1 text-xs font-medium text-black"><DestinationAreaIcon />{destination.area}</p>
-                  <div className="absolute bottom-5 left-4 right-4"><h3 className="text-lg font-semibold leading-[1.2]">{destination.name}</h3><p className="mt-2 text-sm leading-5 text-white/80">{destination.description}</p><span aria-hidden className="mt-3 inline-grid size-8 place-items-center rounded-full border border-brand text-lg text-brand">→</span></div>
+                  <div className="absolute bottom-5 left-4 right-4"><h3 className="text-lg font-semibold leading-[1.2]">{destination.name}</h3><p className="mt-2 text-sm leading-5 text-white/80">{destination.description}</p></div>
                 </article>
               ))}
             </div>
