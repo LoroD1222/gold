@@ -75,6 +75,7 @@ export type SafariTripCard = {
   categories?: string[];
   groupTrip?: boolean;
   durationDays?: number;
+  difficulty?: string;
   startingPrice?: number;
   image?: string;
 };
@@ -87,6 +88,7 @@ const cardProjection = `{
   categories,
   groupTrip,
   durationDays,
+  difficulty,
   startingPrice,
   "image": gallery[0].asset->url
 }`;
@@ -163,6 +165,7 @@ export async function getSafariTripCards(): Promise<Trip[]> {
     slug: trip.slug,
     title: trip.title,
     duration: trip.durationDays,
+    difficulty: trip.difficulty,
     priceFrom: trip.startingPrice,
     image: trip.image,
     category: trip.categories?.join(" ") ?? "",
@@ -176,6 +179,7 @@ export async function getGroupSafariTripCards(): Promise<Trip[]> {
     slug: trip.slug,
     title: trip.title,
     duration: trip.durationDays,
+    difficulty: trip.difficulty,
     priceFrom: trip.startingPrice,
     image: trip.image,
     category: trip.categories?.join(" ") ?? "",
@@ -188,6 +192,7 @@ export function asTripCard(trip: SafariTripCard): Trip {
     slug: trip.slug,
     title: trip.title,
     duration: trip.durationDays,
+    difficulty: trip.difficulty,
     priceFrom: trip.startingPrice,
     image: trip.image,
     category: trip.categories?.join(" ") ?? "",

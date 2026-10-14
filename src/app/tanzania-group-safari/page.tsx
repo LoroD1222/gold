@@ -83,12 +83,14 @@ const guides = [
 ] as const;
 
 function formatPrice(price?: number) {
-  return new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(price ?? 792);
+  return typeof price === "number" ? new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(price) : null;
 }
 
 function GroupTripCard({ trip }: { trip: Trip }) {
   const duration = trip.duration ?? 4;
   const summary = trip.shortDescription || "A welcoming, carefully planned Tanzania safari for travellers who want to share the journey.";
+  const price = formatPrice(trip.priceFrom);
+  const difficulty = trip.difficulty?.replace(/ level$/i, "");
 
   return (
     <Link
@@ -96,18 +98,26 @@ function GroupTripCard({ trip }: { trip: Trip }) {
       className="group flex min-h-[550px] flex-col rounded-[20px] bg-white/85 p-3 shadow-[0_8px_24px_rgba(51,39,20,.05)] ring-1 ring-black/[.03] transition hover:-translate-y-1 hover:shadow-[0_16px_38px_rgba(51,39,20,.12)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand sm:min-h-[590px]"
     >
       <div className="relative aspect-[361/250] overflow-hidden rounded-[10px]">
-        <Image src="/assets/join-group-card-elephants.png" alt="Elephants on a Tanzania group safari" fill sizes="(max-width: 640px) calc(100vw - 3rem), (max-width: 1024px) 45vw, 361px" className="object-cover transition duration-500 group-hover:scale-105" />
+        {trip.image ? (
+          <Image src={trip.image} alt={`${trip.title} in Tanzania`} fill sizes="(max-width: 640px) calc(100vw - 3rem), (max-width: 1024px) 45vw, 361px" className="object-cover transition duration-500 group-hover:scale-105" />
+        ) : (
+          <div className="grid h-full place-items-center bg-ink px-6 text-center text-sm font-semibold text-white/80">Add a cover photo in Sanity</div>
+        )}
       </div>
       <div className="flex flex-1 flex-col px-4 pb-4 pt-4">
         <h2 className="min-h-[3.3rem] text-[21px] font-bold leading-[1.25] tracking-[-0.03em] text-ink">{trip.title}</h2>
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold text-ink">
           <span>{duration} {duration === 1 ? "Day" : "Days"}</span>
           <span aria-label="Five out of five stars" className="tracking-[.08em] text-brand">★★★★★</span>
-          <span className="ml-auto inline-flex items-center gap-1 text-black/75"><span className="flex h-4 items-end gap-0.5" aria-hidden><i className="block h-1.5 w-1 rounded-sm bg-brand" /><i className="block h-2.5 w-1 rounded-sm bg-brand/55" /><i className="block h-4 w-1 rounded-sm bg-brand/30" /></span> Moderate</span>
+          {difficulty ? <span className="ml-auto inline-flex items-center gap-1 text-black/75"><span className="flex h-4 items-end gap-0.5" aria-hidden><i className="block h-1.5 w-1 rounded-sm bg-brand" /><i className="block h-2.5 w-1 rounded-sm bg-brand/55" /><i className="block h-4 w-1 rounded-sm bg-brand/30" /></span> {difficulty}</span> : null}
         </div>
         <p className="mt-4 line-clamp-4 text-[15px] leading-[1.45] text-black/60">{summary}</p>
         <div className="mt-auto flex items-end justify-between gap-3 pt-5">
-          <p className="text-sm font-semibold leading-tight text-ink">From<span className="mt-1 block text-[30px] leading-none text-brand">${formatPrice(trip.priceFrom)}</span><span className="mt-1 block">/ Person</span></p>
+          {price ? (
+            <p className="text-sm font-semibold leading-tight text-ink">From<span className="mt-1 block text-[30px] leading-none text-brand">${price}</span><span className="mt-1 block">/ Person</span></p>
+          ) : (
+            <p className="text-sm font-semibold leading-tight text-ink">Price<span className="mt-1 block text-[21px] leading-none text-brand">On request</span></p>
+          )}
           <span className="inline-flex min-h-12 items-center gap-2 rounded-[8px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 text-sm font-semibold text-ink transition group-hover:brightness-95">View This Trip <span aria-hidden className="text-lg leading-none">→</span></span>
         </div>
       </div>

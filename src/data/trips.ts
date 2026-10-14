@@ -2,6 +2,7 @@ export type Trip = {
   slug: string;
   title: string;
   duration?: number;
+  difficulty?: string;
   priceFrom?: number;
   image?: string;
   category: string;

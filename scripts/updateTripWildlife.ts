@@ -7,6 +7,7 @@ const apiVersion = '2026-09-22'
 
 type Availability = 'Abundant' | 'Common' | 'Rare'
 type AnimalId =
+  | 'elephant'
   | 'wildebeest'
   | 'zebra'
   | 'lion'
@@ -32,22 +33,22 @@ const wildlifeHeading = 'Wildlife you may encounter'
 const profiles: Record<string, WildlifeProfile> = {
   serengeti: {
     Abundant: ['wildebeest', 'zebra', 'lion', 'hyena', 'antelope'],
-    Common: ['giraffe', 'african-buffalo', 'cheetah', 'leopard', 'warthog', 'hippopotamus', 'ostrich', 'baboon', 'crocodile'],
+    Common: ['elephant', 'giraffe', 'african-buffalo', 'cheetah', 'leopard', 'warthog', 'hippopotamus', 'ostrich', 'baboon', 'crocodile'],
     Rare: ['rhinoceros', 'african-wild-dog'],
   },
   ngorongoro: {
     Abundant: ['wildebeest', 'zebra', 'african-buffalo', 'lion', 'hyena'],
-    Common: ['hippopotamus', 'warthog', 'ostrich', 'baboon', 'cheetah', 'giraffe', 'antelope'],
+    Common: ['elephant', 'hippopotamus', 'warthog', 'ostrich', 'baboon', 'cheetah', 'giraffe', 'antelope'],
     Rare: ['rhinoceros', 'leopard', 'african-wild-dog', 'crocodile'],
   },
   tarangire: {
-    Abundant: ['giraffe', 'zebra', 'wildebeest', 'african-buffalo', 'antelope'],
+    Abundant: ['elephant', 'giraffe', 'zebra', 'wildebeest', 'african-buffalo', 'antelope'],
     Common: ['lion', 'leopard', 'hyena', 'warthog', 'baboon', 'ostrich'],
     Rare: ['cheetah', 'african-wild-dog'],
   },
   lakeManyara: {
     Abundant: ['baboon', 'african-buffalo'],
-    Common: ['giraffe', 'zebra', 'wildebeest', 'hippopotamus', 'antelope', 'warthog', 'lion'],
+    Common: ['elephant', 'giraffe', 'zebra', 'wildebeest', 'hippopotamus', 'antelope', 'warthog', 'lion'],
     Rare: ['leopard', 'cheetah', 'hyena', 'african-wild-dog', 'ostrich'],
   },
   arusha: {
@@ -91,7 +92,7 @@ const profileMatchers: Array<{name: keyof typeof profiles; pattern: RegExp}> = [
 
 const availabilityRank: Record<Availability, number> = {Abundant: 3, Common: 2, Rare: 1}
 const animalOrder: AnimalId[] = [
-  'wildebeest', 'zebra', 'lion', 'hyena', 'antelope', 'giraffe', 'african-buffalo', 'cheetah',
+  'elephant', 'wildebeest', 'zebra', 'lion', 'hyena', 'antelope', 'giraffe', 'african-buffalo', 'cheetah',
   'leopard', 'warthog', 'hippopotamus', 'ostrich', 'baboon', 'crocodile', 'rhinoceros', 'african-wild-dog',
 ]
 
@@ -135,15 +136,31 @@ function wildlifeFor(profilesForTrip: Array<keyof typeof profiles>, sourceKey: s
 
 async function main() {
   const execute = process.argv.includes('--execute')
+  const outputMutations = process.argv.includes('--mutations')
   const token = process.env.SANITY_API_WRITE_TOKEN
   if (execute && !token) throw new Error('SANITY_API_WRITE_TOKEN is required with --execute.')
 
   const client = createClient({projectId, dataset, apiVersion, token, useCdn: false})
-  const trips = await client.fetch<Trip[]>("*[_type == 'safariTrip'] | order(title asc){_id, title, 'slug': slug.current, 'stops': itinerary[].title}")
+  const trips = await client.fetch<Trip[]>("*[_type == 'safariTrip' && groupTrip == true && !defined(wildlife)] | order(title asc){_id, title, 'slug': slug.current, 'stops': itinerary[].title}")
   const mappedTrips = trips.map((trip) => ({trip, profiles: matchingProfiles(trip)}))
   const unmapped = mappedTrips.filter(({profiles}) => !profiles.length).map(({trip}) => `${trip.title} (${trip.slug ?? trip._id})`)
 
   if (unmapped.length) throw new Error(`No supplied wildlife profile matches: ${unmapped.join(', ')}`)
+
+  const mutations = mappedTrips.map(({trip, profiles: profilesForTrip}) => ({
+    patch: {
+      id: trip._id,
+      set: {
+        wildlifeHeading,
+        wildlife: wildlifeFor(profilesForTrip, trip._id),
+      },
+    },
+  }))
+
+  if (outputMutations) {
+    process.stdout.write(JSON.stringify({mutations}))
+    return
+  }
 
   for (const {trip, profiles: profilesForTrip} of mappedTrips) {
     const wildlife = wildlifeFor(profilesForTrip, trip._id)
@@ -153,15 +170,7 @@ async function main() {
 
   if (!execute) return
 
-  const transaction = client.transaction()
-  for (const {trip, profiles: profilesForTrip} of mappedTrips) {
-    transaction.patch(trip._id, {
-      set: {
-        wildlifeHeading,
-        wildlife: wildlifeFor(profilesForTrip, trip._id),
-      },
-    })
-  }
+  const transaction = client.transaction(mutations)
   await transaction.commit()
   console.log(`Updated wildlife content for ${mappedTrips.length} trips.`)
 }
