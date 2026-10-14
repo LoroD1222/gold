@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { BugOff, UtensilsCrossed, type LucideIcon } from "lucide-react";
 import { FAQ } from "@/components/home/FAQ";
 import { PlanningCall } from "@/components/home/PlanningCall";
 import { Testimonials } from "@/components/home/Testimonials";
@@ -50,9 +51,9 @@ const comparisonRows = [
   },
 ] as const;
 
-const safetyFeatures = [
+const safetyFeatures: Array<{ icon: string | LucideIcon; title: string; description: string }> = [
   {
-    icon: "/assets/home-safety-img-group1321315423.svg",
+    icon: BugOff,
     title: "Malaria precautions",
     description: "Treated nets, repellent, and routes planned around lower risk times and altitudes.",
   },
@@ -67,11 +68,11 @@ const safetyFeatures = [
     description: "Smooth routes and unhurried pacing, so the ride is as easy as the destination.",
   },
   {
-    icon: "/assets/home-safety-img-group1321315424.svg",
+    icon: UtensilsCrossed,
     title: "Food and water safety",
     description: "Purified water and trusted meals, chosen to suit sensitive stomachs.",
   },
-] as const;
+];
 
 const guides = [
   { name: "Samson Simon", role: "Tracking & Ecosystem Expert", image: "/assets/guide-samson-simon.png", crop: "!h-[157.23%] !w-[123.07%] !left-[-11.54%] !top-[-7.25%]" },
@@ -81,6 +82,15 @@ const guides = [
   { name: "Anitha Martine", role: "Tour Consultant", image: "/assets/guide-anitha-martine.png", crop: "!h-[237.68%] !w-[153.82%] !left-[-26.77%] !top-[-50.01%]" },
   { name: "Gladness Msela", role: "Accountant", image: "/assets/guide-gladness-msela.png", crop: "!h-[241.33%] !w-[114.73%] !left-[-7.37%] !top-[-28.83%]" },
 ] as const;
+
+function SafetyFeatureIcon({ icon }: { icon: string | LucideIcon }) {
+  if (typeof icon === "string") {
+    return <Image src={icon} width={47} height={32} alt="" className="max-h-[34px] w-auto" />;
+  }
+
+  const Icon = icon;
+  return <Icon aria-hidden="true" className="size-8 stroke-[2.5] text-brand" />;
+}
 
 function formatPrice(price?: number) {
   return typeof price === "number" ? new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 }).format(price) : null;
@@ -209,13 +219,17 @@ export default async function JoinAGroupPage() {
               <ButtonLink href="#planning" className="shrink-0">Plan your family trip</ButtonLink>
             </div>
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {safetyFeatures.map(({ icon, title, description }) => (
-                <article key={title} className="rounded-[10px] bg-cream p-6">
-                  <div className="grid size-[58px] place-items-center rounded-[5px] border border-brand/20 bg-brand/[.14]"><Image src={icon} width={47} height={32} alt="" className="max-h-[34px] w-auto" /></div>
-                  <h3 className="mt-5 font-semibold text-ink">{title}</h3>
-                  <p className="mt-3 text-sm leading-6 text-muted">{description}</p>
-                </article>
-              ))}
+              {safetyFeatures.map(({ icon, title, description }) => {
+                return (
+                  <article key={title} className="rounded-[10px] bg-cream p-6">
+                    <div className="grid size-[58px] place-items-center rounded-[5px] border border-brand/20 bg-brand/[.14]">
+                      <SafetyFeatureIcon icon={icon} />
+                    </div>
+                    <h3 className="mt-5 font-semibold text-ink">{title}</h3>
+                    <p className="mt-3 text-sm leading-6 text-muted">{description}</p>
+                  </article>
+                );
+              })}
             </div>
           </div>
         </section>
