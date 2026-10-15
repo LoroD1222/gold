@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { ButtonLink } from "@/components/ui/ButtonLink";
@@ -13,13 +12,6 @@ export const metadata: Metadata = {
 export default function ThankYouPage() {
   return (
     <>
-      <Script src="https://www.googletagmanager.com/gtag/js?id=AW-18474438542" strategy="afterInteractive" />
-      <Script id="google-ads-tag" strategy="afterInteractive">
-        {`window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'AW-18474438542');`}
-      </Script>
       <Header />
       <main className="bg-cream">
         <section className="site-container flex min-h-[calc(100dvh-280px)] items-center justify-center py-20 sm:py-28" aria-labelledby="thank-you-title">
