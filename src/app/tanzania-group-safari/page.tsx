@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { BugOff, UtensilsCrossed, type LucideIcon } from "lucide-react";
 import { FAQ } from "@/components/home/FAQ";
 import { PlanningCall } from "@/components/home/PlanningCall";
@@ -149,6 +150,7 @@ export default async function JoinAGroupPage() {
 
   return (
     <>
+      <Script id="contentsquare-group-safari" src="https://t.contentsquare.net/uxa/775d014b5e7f4.js" strategy="afterInteractive" />
       <Header />
       <main>
         <section className="relative isolate h-[360px] overflow-visible bg-ink text-white sm:h-[480px]" aria-label="Friends enjoying a Tanzania safari together">
