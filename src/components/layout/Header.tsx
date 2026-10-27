@@ -5,6 +5,7 @@ import { MobileMenu } from "./MobileMenu";
 const links = [
   ["All family trips", "/tanzania-safaris"],
   ["Join a group", "/tanzania-group-safari"],
+  ["Blog", "/blog"],
   ["Reviews", "/#reviews"],
   ["Destinations", "/#destinations"],
   ["Contact", "/#contact"],
@@ -17,7 +18,7 @@ export function Header({ overlay = false }: { overlay?: boolean }) {
         <Link href="/" aria-label="Golden Trips Tanzania home" className="relative block h-[58px] w-[154px] shrink-0 sm:h-[64px] sm:w-[168px]">
           <Image src={overlay ? "/assets/golden-trips-white-logo.png" : "/assets/home-header-img-image1.png"} alt="Golden Trips Tanzania" fill sizes="168px" className="object-contain" priority />
         </Link>
-        <nav aria-label="Primary navigation" className="hidden items-center gap-8 text-sm font-medium lg:flex">
+        <nav aria-label="Primary navigation" className="hidden items-center gap-8 text-sm font-medium xl:flex">
           {links.map(([label, href]) => (
             <Link key={label} href={href} className="rounded-sm py-2 transition hover:text-brand focus-visible:outline-2 focus-visible:outline-brand">
               {label}

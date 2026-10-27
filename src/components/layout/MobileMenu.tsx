@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 const links = [
   ["All family trips", "/tanzania-safaris"],
   ["Join a group", "/tanzania-group-safari"],
+  ["Blog", "/blog"],
   ["Reviews", "/#reviews"],
   ["Destinations", "/#destinations"],
   ["Contact", "/#contact"],
@@ -22,7 +23,7 @@ export function MobileMenu({ light = false }: { light?: boolean }) {
   }, [open]);
 
   return (
-    <div className="lg:hidden">
+    <div className="xl:hidden">
       <button
         type="button"
         aria-expanded={open}

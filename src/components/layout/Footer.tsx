@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 const exploreLinks = [
   ["All Trips", "/tanzania-safaris"],
   ["Safaris", "/tanzania-safaris"],
+  ["Blog", "/blog"],
   ["Kilimanjaro", "/#destinations"],
   ["Zanzibar", "/#destinations"],
   ["Contact", "/#contact"],
