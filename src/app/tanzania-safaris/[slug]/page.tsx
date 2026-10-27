@@ -132,7 +132,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
 
         <TourFeatures trip={trip} />
 
-        <section className="bg-[linear-gradient(to_bottom,#fffbf3_0%,#fffbf3_54%,#f4ede1_54%,#f4ede1_100%)] pb-12 sm:pb-24" aria-labelledby="wildlife-title">
+        <section className="hidden bg-[linear-gradient(to_bottom,#fffbf3_0%,#fffbf3_54%,#f4ede1_54%,#f4ede1_100%)] pb-12 sm:block sm:pb-24" aria-labelledby="wildlife-title">
           <div className="site-container max-w-[1200px]">
             <div className="rounded-[10px] border border-ink/[.08] bg-[#fffefc] px-5 py-10 sm:px-8 lg:min-h-[440px] lg:px-8 lg:pb-[45px] lg:pt-16">
               <h2 id="wildlife-title" className="pb-5 text-center text-[26px] font-semibold leading-tight tracking-[-0.03em]">{trip.wildlifeHeading ?? "Wildlife you may encounter"}</h2>
