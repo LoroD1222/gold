@@ -30,19 +30,19 @@ export function PlanningCall({
             <p><span className="block text-[19px] leading-[1.37] tracking-[.13em] text-brand">★★★★★</span><span className="mt-[5px] block text-[17px] leading-[1.4]">191 verified reviews on TripAdvisor</span></p>
           </div>
         </div>
-        <form className="mt-8 rounded-[15px] border border-black/20 bg-white p-5 shadow-none lg:mt-0 lg:min-h-[454px] lg:p-6" action="https://api.web3forms.com/submit" method="post">
-          <input type="hidden" name="access_key" value="9da46659-7080-4382-9076-c9e92dffe2a2" />
+        <form className="mt-8 rounded-[15px] border border-black/20 bg-white p-5 shadow-none lg:mt-0 lg:min-h-[454px] lg:p-6" action="https://safari-digital-portal.vercel.app/api/inquiries" method="post" data-inquiry-form data-redirect="/thank-you">
+          <input type="hidden" name="key" value="sdf_0szf-ca_naLURplsT9y-iMVO" />
           <input type="hidden" name="redirect" value="https://goldentrips.com/thank-you" />
           <p className="text-sm font-semibold text-brand lg:text-[18px]">Get Started</p>
           <p className="mt-3 text-xl font-semibold leading-tight lg:text-[23px] lg:leading-[1.3]">Tell us about your family,<br />we&apos;ll build the trip</p>
           <div className="mt-6 grid gap-3">
             <label className="form-field text-[13px] font-semibold">
-              <span>First Name</span>
-              <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" name="firstName" autoComplete="given-name" placeholder="e.g. Sofia" required />
+              <span>Name</span>
+              <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" name="name" autoComplete="name" placeholder="e.g. Sofia" required />
             </label>
             <label className="form-field text-[13px] font-semibold">
               <span>Email Address</span>
-              <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" type="email" name="email" autoComplete="email" placeholder="e.g. sofia@example.com" required />
+              <input className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" type="email" name="email" autoComplete="email" placeholder="e.g. sofia@example.com" />
             </label>
             <label className="form-field text-[13px] font-semibold">
               <span>WhatsApp Number</span>
@@ -50,12 +50,14 @@ export function PlanningCall({
             </label>
             <label className="form-field text-[13px] font-semibold">
               <span>Message</span>
-              <textarea className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" name="message" rows={3} placeholder="Tell us about your ideal trip" required />
+              <textarea className="!rounded-[8px] !border-[#f3e7d4] !shadow-none" name="message" rows={3} placeholder="Tell us about your ideal trip" />
             </label>
           </div>
+          <input name="_gotcha" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
           <button type="submit" className="mt-4 min-h-11 w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-sm !font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
             {submitLabel}
           </button>
+          <p data-inquiry-status role="status" className="mt-3 min-h-5 text-sm text-muted" />
         </form>
         </div>
       </div>

@@ -9,6 +9,7 @@ import "@fontsource/league-spartan/latin-500.css";
 import "@fontsource/league-spartan/latin-600.css";
 import "@fontsource/league-spartan/latin-700.css";
 import { WhatsAppChatWidget } from "@/components/layout/WhatsAppChatWidget";
+import { InquiryFormHandler } from "@/components/forms/InquiryFormHandler";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ gtag('js', new Date());
 gtag('config', 'AW-18474438542');`}
         </Script>
         {children}
+        <InquiryFormHandler />
         <WhatsAppChatWidget />
       </body>
     </html>
