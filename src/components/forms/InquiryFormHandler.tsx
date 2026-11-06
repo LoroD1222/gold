@@ -2,9 +2,15 @@
 
 import { useEffect } from "react";
 
-const inquiryEndpoint = "https://safari-digital-portal.vercel.app/api/inquiries";
+const inquiryEndpoint = "/api/forms";
 const formKey = "sdf_0szf-ca_naLURplsT9y-iMVO";
 const attributionKeys = ["utm_source", "utm_medium", "utm_campaign", "fbclid"] as const;
+
+declare global {
+  interface Window {
+    fbq?: (action: "track", eventName: string, parameters?: Record<string, never>, options?: { eventID: string }) => void;
+  }
+}
 
 function readCookie(name: string) {
   return document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`))?.[1];
@@ -63,6 +69,7 @@ export function InquiryFormHandler() {
 
       try {
         keepAttribution();
+        const eventId = crypto.randomUUID();
         const response = await fetch(inquiryEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -80,10 +87,12 @@ export function InquiryFormHandler() {
             ...storedAttribution(),
             fbc: readCookie("_fbc"),
             fbp: readCookie("_fbp"),
+            event_id: eventId,
           }),
         });
 
         if (!response.ok) throw new Error("The inquiry service returned an error.");
+        window.fbq?.("track", "Lead", {}, { eventID: eventId });
         window.location.assign(form.dataset.redirect ?? "/thank-you");
       } catch {
         if (status) status.textContent = "We couldn’t send your inquiry just now. Please try again.";
