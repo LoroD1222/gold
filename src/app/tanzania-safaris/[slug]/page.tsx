@@ -181,7 +181,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
 
                       <div className="flex min-w-0 flex-col">
                         <div>
-                          <p className="inline-flex h-[35px] items-center rounded-[4px] bg-brand/[.12] px-[18px] text-[18px] font-bold uppercase leading-none text-brand">{day.dayRange}</p>
+                          <p className="inline-flex min-h-[35px] max-w-full items-center rounded-[4px] bg-brand/[.12] px-[18px] py-[6px] text-[18px] font-bold uppercase leading-[1.15] text-brand">{day.dayRange}</p>
                           <h3 className="mt-[21px] text-[32px] font-semibold leading-[1.3] tracking-[-0.035em] sm:text-[36px]">{day.title}</h3>
                           {day.region ? <p className="mt-[21px] text-[21px] font-bold leading-none text-black/[.6] sm:text-[23px]">({day.region})</p> : null}
                           <PortableText value={day.description} className="mt-[25px] max-w-[487px] min-h-[48px] space-y-4 text-[16px] leading-[1.51] text-black/[.73]" />
