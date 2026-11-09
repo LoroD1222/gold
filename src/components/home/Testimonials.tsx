@@ -3,7 +3,19 @@ import { CompactTestimonialsCarousel } from "@/components/home/CompactTestimonia
 import { testimonials } from "@/data/testimonials";
 import { tripadvisorProfileUrl } from "@/data/externalLinks";
 
-export function Testimonials({ compact = false, sectionId }: { compact?: boolean; sectionId?: string }) {
+export function Testimonials({
+  compact = false,
+  sectionId,
+  eyebrow = "Verified Family Reviews",
+  title = "The trips that became family stories",
+  imageAlt = "Family safari experience",
+}: {
+  compact?: boolean;
+  sectionId?: string;
+  eyebrow?: string;
+  title?: string;
+  imageAlt?: string;
+}) {
   const reviewCards = (
     <div className="grid gap-6 md:grid-cols-2 md:gap-[27px]">
       {testimonials.map((review) => (
@@ -11,7 +23,7 @@ export function Testimonials({ compact = false, sectionId }: { compact?: boolean
           <div className="grid grid-cols-2 gap-3.5">
             {review.images.map((src, index) => (
               <div key={src} className="relative aspect-[1.11] overflow-hidden rounded-lg sm:h-[199px] sm:aspect-auto">
-                <Image src={src} alt={index === 0 ? `Family safari experience shared by ${review.name}` : "Tanzania landscape from a family safari"} fill sizes="(max-width: 768px) 40vw, 221px" className="object-cover" />
+                <Image src={src} alt={index === 0 ? `${imageAlt} shared by ${review.name}` : "Tanzania safari landscape"} fill sizes="(max-width: 768px) 40vw, 221px" className="object-cover" />
               </div>
             ))}
           </div>
@@ -61,13 +73,13 @@ export function Testimonials({ compact = false, sectionId }: { compact?: boolean
       <div className="site-container">
         {compact ? (
           <div className="mx-auto text-center">
-            <p className="eyebrow !tracking-[0px]">Verified Family Reviews</p>
-            <h2 id="reviews-title" className="mt-4 text-4xl font-semibold leading-tight tracking-[0px] text-ink lg:text-[46px]">The trips that became family stories</h2>
+            <p className="eyebrow !tracking-[0px]">{eyebrow}</p>
+            <h2 id="reviews-title" className="mt-4 text-4xl font-semibold leading-tight tracking-[0px] text-ink lg:text-[46px]">{title}</h2>
           </div>
         ) : (
           <div className="mx-auto text-center">
-            <p className="text-[18px] font-bold uppercase leading-5 tracking-[0px] text-[#f2a93b]">Verified Family Reviews</p>
-            <h2 id="reviews-title" className="mt-[23px] text-4xl font-semibold leading-tight tracking-[0px] text-ink lg:text-[53px]">The trips that became family stories</h2>
+            <p className="text-[18px] font-bold uppercase leading-5 tracking-[0px] text-[#f2a93b]">{eyebrow}</p>
+            <h2 id="reviews-title" className="mt-[23px] text-4xl font-semibold leading-tight tracking-[0px] text-ink lg:text-[53px]">{title}</h2>
           </div>
         )}
         <p className={`${compact ? "mt-5 text-sm font-semibold" : "mt-8 text-base font-medium"} text-center`}><span aria-hidden="true" className="mr-1 inline-block align-[-3px] text-[26px] leading-none text-brand">★</span>190 Reviews on <a href={tripadvisorProfileUrl} target="_blank" rel="noreferrer" className="font-bold underline">Trip advisor</a></p>

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import Script from "next/script";
-import { BugOff, UtensilsCrossed, type LucideIcon } from "lucide-react";
+import { Binoculars, CircleDollarSign, MapPinned, UsersRound, type LucideIcon } from "lucide-react";
 import { FAQ } from "@/components/home/FAQ";
 import { PlanningCall } from "@/components/home/PlanningCall";
 import { Testimonials } from "@/components/home/Testimonials";
@@ -18,12 +18,12 @@ import { getGroupSafariTripCards } from "@/lib/safariTrips";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Join a Group Safari in Tanzania",
-  description: "Travel together and save together on a welcoming Tanzania group safari planned by local family-travel experts.",
+  title: { absolute: "Tanzania Group Safaris | Join Shared Safari Tours | Golden Trips" },
+  description: "Join a Tanzania group safari and explore Serengeti, Ngorongoro and more. Affordable shared safari adventures for solo travelers, couples and friends.",
   alternates: { canonical: "/tanzania-group-safari" },
   openGraph: {
-    title: "Join a Group Safari in Tanzania | Golden Trips Tanzania",
-    description: "Find a Tanzania group safari and share a remarkable journey with fellow travellers.",
+    title: "Tanzania Group Safaris | Join Shared Safari Tours | Golden Trips",
+    description: "Join a Tanzania group safari and explore Serengeti, Ngorongoro and more with fellow travelers.",
     url: "/tanzania-group-safari",
     images: [{ url: "/assets/join-group-hero.jpg", width: 3600, height: 2400, alt: "Friends enjoying a Tanzania safari together" }],
   },
@@ -31,49 +31,84 @@ export const metadata: Metadata = {
 
 const comparisonRows = [
   {
-    feature: "Vehicle comfort",
-    golden: "A private vehicle for your family only, on smoother, safer routes.",
+    feature: "Shared safari vehicle",
+    golden: "Travel together in a comfortable vehicle with fellow adventurers and an expert local guide.",
   },
   {
-    feature: "Flexible pacing",
-    golden: "Drive times and breaks planned around your family.",
+    feature: "Better value",
+    golden: "Share the journey and enjoy Tanzania's wildlife experiences without arranging a private safari.",
   },
   {
-    feature: "Family-friendly lodges",
-    golden: "Carefully chosen stays with space for every generation.",
+    feature: "Friendly travel companions",
+    golden: "Join solo travelers, couples, and friends from around the world who share your sense of adventure.",
   },
   {
-    feature: "Personal route planning",
-    golden: "A route built around your interests, ages, and timing.",
+    feature: "Iconic wildlife routes",
+    golden: "Explore celebrated parks such as Serengeti, Ngorongoro Crater, and Tarangire on the itinerary you choose.",
   },
   {
-    feature: "Support before and during travel",
-    golden: "A local team available throughout your journey.",
+    feature: "Local support",
+    golden: "Our Tanzania team is here to help you find the right shared safari and prepare for departure.",
   },
 ] as const;
 
 const safetyFeatures: Array<{ icon: string | LucideIcon; title: string; description: string }> = [
   {
-    icon: BugOff,
-    title: "Malaria precautions",
-    description: "Treated nets, repellent, and routes planned around lower risk times and altitudes.",
+    icon: CircleDollarSign,
+    title: "Travel Together, Spend Less",
+    description: "Join a shared safari and experience Tanzania's wildlife without the cost of arranging an entire private trip.",
   },
   {
-    icon: "/assets/home-safety-img-group1321315430.svg",
-    title: "Medical care on hand",
-    description: "Trained guides and a clear emergency plan, so your family is always looked after.",
+    icon: UsersRound,
+    title: "Perfect for Solo Travelers & Couples",
+    description: "You do not need to organize your own group. Join fellow adventurers and explore Tanzania together.",
   },
   {
-    icon: "/assets/home-safety-img-group1321315431.svg",
-    title: "Comfortable, careful travel",
-    description: "Smooth routes and unhurried pacing, so the ride is as easy as the destination.",
+    icon: MapPinned,
+    title: "Small Groups, Big Adventures",
+    description: "Enjoy a friendly safari atmosphere with experienced local guides and like-minded travelers.",
   },
   {
-    icon: UtensilsCrossed,
-    title: "Food and water safety",
-    description: "Purified water and trusted meals, chosen to suit sensitive stomachs.",
+    icon: Binoculars,
+    title: "Unforgettable Wildlife Experiences",
+    description: "Discover Serengeti, Ngorongoro Crater, Tarangire, and Tanzania's spectacular wildlife.",
   },
 ];
+
+const groupSafariFaqs = [
+  {
+    question: "Can I join a group safari as a solo traveler?",
+    answer: "Yes. Solo travelers are welcome to inquire about joining a shared safari with other travelers.",
+  },
+  {
+    question: "How many people are in a group?",
+    answer: "Group size can vary by departure and itinerary. Ask us about the trip you are considering and we will confirm the current details.",
+  },
+  {
+    question: "What is included in the safari price?",
+    answer: "Your final proposal clearly lists transport, accommodation, park fees, meals, guiding, and support, along with any exclusions, before you book.",
+  },
+  {
+    question: "Are accommodations included?",
+    answer: "Accommodation details are included in your final proposal. We will explain the stays and any applicable exclusions before you reserve.",
+  },
+  {
+    question: "How do I find available departure dates?",
+    answer: "Choose a group safari that interests you and send an inquiry. Our local team will help you check availability for your preferred travel dates.",
+  },
+  {
+    question: "Can couples and friends join together?",
+    answer: "Yes. Couples and friends can inquire together and our team will help match you with a suitable shared safari departure.",
+  },
+  {
+    question: "What national parks will we visit?",
+    answer: "Routes vary by itinerary. Group safaris can include Tanzania's iconic parks, such as Serengeti, Ngorongoro Crater, and Tarangire.",
+  },
+  {
+    question: "How do I reserve my place?",
+    answer: "Send us an inquiry with your preferred trip and travel dates. We will confirm the available options and guide you through the next steps.",
+  },
+] as const;
 
 const guides = [
   { name: "Samson Simon", role: "Tracking & Ecosystem Expert", image: "/assets/guide-samson-simon.png", crop: "!h-[157.23%] !w-[123.07%] !left-[-11.54%] !top-[-7.25%]" },
@@ -174,7 +209,12 @@ export default async function JoinAGroupPage() {
             </nav>
             <div className="mx-auto mt-5 max-w-5xl text-center">
               <p className="text-sm font-semibold text-brand">Travel Together, Save Together</p>
-              <h1 id="group-trips-title" className="mt-3 text-4xl font-semibold leading-[1.06] tracking-[-0.045em] text-ink sm:text-[50px]">Join a family group tour and save up to 50%</h1>
+              <h1 id="group-trips-title" className="mt-3 text-4xl font-semibold leading-[1.06] tracking-[-0.045em] text-ink sm:text-[50px]">Join a Tanzania Group Safari &amp; Experience the Wild Together</h1>
+              <p className="mx-auto mt-5 max-w-4xl text-base leading-7 text-muted sm:text-lg">Explore Serengeti, Ngorongoro and Tanzania&apos;s most incredible national parks on an unforgettable shared safari. Meet fellow travelers, enjoy expert local guides and experience the adventure at a more affordable price.</p>
+              <div className="mt-7 flex flex-wrap justify-center gap-3">
+                <ButtonLink href="#planning">Find My Group Safari</ButtonLink>
+                <ButtonLink href="#group-trips" variant="text">Explore Group Safaris</ButtonLink>
+              </div>
             </div>
             {groupTrips.length > 0 ? (
               <div className="mx-auto mt-12 grid max-w-[1199px] gap-5 md:grid-cols-2 xl:grid-cols-3">
@@ -186,17 +226,22 @@ export default async function JoinAGroupPage() {
           </div>
         </section>
 
-        <PlanningCall id="planning" />
+        <PlanningCall
+          id="planning"
+          submitLabel="Get My Safari Quote"
+          description="Schedule a 30-minute call for honest advice about Tanzania group safaris, shared departures, and the best seasons to travel."
+          formPrompt={<>Tell us what you&apos;re looking for,<br />we&apos;ll help you find a group</>}
+        />
 
         <section className="bg-[#fffdf8] py-20 sm:py-28" aria-labelledby="comparison-title">
           <div className="site-container">
-            <SectionHeading eyebrow="Made for family travel" title="The safari that fits your whole family" id="comparison-title" description={<p className="max-w-4xl">Every family is different, with different ages, energy levels, and needs, and a standard safari itinerary rarely accounts for that. Golden Trips&apos; family safaris are built around your whole group, so grandparents, parents, and children can all enjoy the same adventure at a pace that works for everyone.</p>} />
+            <SectionHeading eyebrow="Made for shared adventures" title="A Tanzania safari is even better together" id="comparison-title" description={<p className="max-w-4xl">You do not need to organize a private safari to experience Tanzania at its best. Join fellow travelers for a welcoming shared adventure, with expert local guidance, iconic wildlife routes, and more value in every unforgettable day.</p>} />
             <div className="mt-10 overflow-x-auto">
               <table className="min-w-[780px] w-full border-collapse text-left">
                 <thead>
                   <tr className="border-b border-black/[.08]">
                     <th className="w-[28%] px-0 pb-5 align-middle"><Image src="/assets/home-compare-img-image1.png" width={214} height={81} alt="Golden Trips Tanzania" className="h-auto w-[150px] sm:w-[190px]" /></th>
-                    <th className="w-[52%] bg-white/80 px-5 pb-5 text-center text-base font-bold text-ink sm:text-lg">Family safari with <span className="text-brand">Golden Trips Tanzania</span></th>
+                    <th className="w-[52%] bg-white/80 px-5 pb-5 text-center text-base font-bold text-ink sm:text-lg">Group safari with <span className="text-brand">Golden Trips Tanzania</span></th>
                     <th className="w-[20%] px-5 pb-5 text-center text-base font-bold text-ink sm:text-lg">Other general safari</th>
                   </tr>
                 </thead>
@@ -214,11 +259,11 @@ export default async function JoinAGroupPage() {
           </div>
         </section>
 
-        <section id="safety" className="bg-sand py-20 sm:py-28" aria-labelledby="safety-title">
+        <section id="why-group" className="bg-sand py-20 sm:py-28" aria-labelledby="why-group-title">
           <div className="site-container">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-              <SectionHeading eyebrow="Extra care on safety" title="Safety, built around every generation." id="safety-title" description={<p className="max-w-3xl">Traveling with grandparents and young children means thinking ahead. Our team plans every detail with their comfort and wellbeing in mind.</p>} />
-              <ButtonLink href="#planning" className="shrink-0">Plan your family trip</ButtonLink>
+              <SectionHeading eyebrow="Why join a group" title="Travel with new people. Come home with great stories." id="why-group-title" description={<p className="max-w-3xl">Whether you&apos;re traveling solo, as a couple, or with friends, a shared safari makes it easy to see Tanzania&apos;s wild places alongside people who came for the same sense of wonder.</p>} />
+              <ButtonLink href="#planning" className="shrink-0">Check Availability</ButtonLink>
             </div>
             <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {safetyFeatures.map(({ icon, title, description }) => {
@@ -236,11 +281,11 @@ export default async function JoinAGroupPage() {
           </div>
         </section>
 
-        <Testimonials sectionId="reviews" />
+        <Testimonials sectionId="reviews" eyebrow="Verified Traveler Reviews" title="The safari stories travelers remember" imageAlt="Tanzania safari experience" />
 
         <section id="guides" className="bg-sand py-20 sm:py-28" aria-labelledby="guides-title">
           <div className="site-container">
-            <SectionHeading eyebrow="Meet the team" title="Your ultimate Tanzania vacation experts" id="guides-title" align="center" className="max-w-[980px]" description={<p>Meet the people who turn a safari into a story your family tells for years.</p>} />
+            <SectionHeading eyebrow="Meet the team" title="Your Tanzania safari experts" id="guides-title" align="center" className="max-w-[980px]" description={<p>Meet the local team who help turn a shared Tanzania safari into an unforgettable adventure.</p>} />
             <div className="mx-auto mt-12 grid max-w-[1269px] grid-cols-2 gap-x-4 gap-y-12 text-center sm:mt-16 sm:gap-x-6 sm:gap-y-16 lg:grid-cols-3">
               {guides.map(({ name, role, image, crop }) => (
                 <article key={name} className="mx-auto w-full max-w-[300px]">
@@ -255,11 +300,16 @@ export default async function JoinAGroupPage() {
           </div>
         </section>
 
-        <PlanningCall id="planning-again" submitLabel="Start Planning My Group Safari" />
+        <PlanningCall
+          id="planning-again"
+          submitLabel="Join a Group Safari"
+          description="Tell us when you would like to travel and we will help you find a Tanzania group safari that suits your plans."
+          formPrompt={<>Ready to travel together?<br />Let&apos;s find your safari</>}
+        />
 
         <section id="destinations" className="bg-[#fffdf8] py-20 sm:py-28" aria-labelledby="destinations-title">
           <div className="site-container">
-            <SectionHeading eyebrow="Tanzania destinations" title="Iconic destinations in Tanzania" id="destinations-title" align="center" className="max-w-[920px]" description={<p>From open plains to white-sand beaches, Tanzania&apos;s most iconic destinations offer something for every generation to discover together.</p>} />
+            <SectionHeading eyebrow="Tanzania destinations" title="Iconic destinations in Tanzania" id="destinations-title" align="center" className="max-w-[920px]" description={<p>From open plains to dramatic craters, Tanzania&apos;s most iconic destinations are waiting to be explored together.</p>} />
             <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-[18px]">
               {destinations.map((destination) => (
                 <article key={destination.name} className="group relative isolate h-[300px] overflow-hidden rounded-[10px] text-white sm:h-[340px]">
@@ -273,7 +323,11 @@ export default async function JoinAGroupPage() {
           </div>
         </section>
 
-        <FAQ />
+        <FAQ
+          items={groupSafariFaqs}
+          intro="Answers to common questions about joining a Tanzania group safari."
+          ctaLabel="Find My Group Safari"
+        />
       </main>
       <Footer />
     </>

@@ -1,11 +1,16 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 
 export function PlanningCall({
   id,
   submitLabel = "Start Planning My Family's Trip",
+  description = "Schedule a 30-minute call to get honest advice about safaris, Kilimanjaro routes, and the best travel seasons for your family.",
+  formPrompt = <>Tell us about your family,<br />we&apos;ll build the trip</>,
 }: {
   id?: string;
   submitLabel?: string;
+  description?: string;
+  formPrompt?: ReactNode;
 }) {
   return (
     <section id={id} aria-labelledby={`${id ?? "planning"}-title`} className="bg-sand py-12 sm:py-20">
@@ -23,7 +28,7 @@ export function PlanningCall({
             Free planning call with our Tanzania expert
           </h2>
           <p className="mt-5 text-lg leading-8 text-muted lg:mt-[22px] lg:text-[clamp(18px,1.8vw,23px)] lg:leading-[1.4]">
-            Schedule a 30-minute call to get honest advice about safaris, Kilimanjaro routes, and the best travel seasons for your family.
+            {description}
           </p>
           <div className="mt-6 flex items-center gap-3 text-sm font-semibold lg:mt-[22px] lg:gap-[13px]">
             <Image src="/assets/home-consult-img-ellipse2.png" width={47} height={47} alt="" className="size-[46.5px]" />
@@ -34,7 +39,7 @@ export function PlanningCall({
           <input type="hidden" name="key" value="sdf_0szf-ca_naLURplsT9y-iMVO" />
           <input type="hidden" name="redirect" value="https://goldentrips.com/thank-you" />
           <p className="text-sm font-semibold text-brand lg:text-[18px]">Get Started</p>
-          <p className="mt-3 text-xl font-semibold leading-tight lg:text-[23px] lg:leading-[1.3]">Tell us about your family,<br />we&apos;ll build the trip</p>
+          <p className="mt-3 text-xl font-semibold leading-tight lg:text-[23px] lg:leading-[1.3]">{formPrompt}</p>
           <div className="mt-6 grid gap-3">
             <label className="form-field text-[13px] font-semibold">
               <span>Name</span>

@@ -52,6 +52,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
     ...usableImages(trip.gallery),
     ...(trip.itinerary?.flatMap((day) => usableImages(day.images)) ?? []),
   ]);
+  const bestTime = trip.tourStart?.trim() || "All year";
   const priceFrom = trip.pricingTiers?.reduce<number | undefined>((lowest, tier) => {
     return lowest === undefined || tier.pricePerPerson < lowest ? tier.pricePerPerson : lowest;
   }, undefined) ?? trip.startingPrice;
@@ -90,7 +91,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                   190 Reviews
                 </a>
                 <dl className="mt-7 space-y-[21px] border-b border-ink/[.08] pb-[33px]">
-                  <Fact label="Best time" value={trip.tourStart} icon="calendar" />
+                  <Fact label="Best time" value={bestTime} icon="calendar" />
                   <Fact label="Duration" value={trip.durationDays ? `${trip.durationDays} days` : undefined} icon="clock" />
                   <Fact label="Difficulty" value={trip.difficulty} icon="difficulty" />
                 </dl>
@@ -163,13 +164,20 @@ export default async function SafariTripPage({ params }: TripPageProps) {
               <div className="flex flex-col gap-[63px]">
                 {trip.itinerary?.map((day) => {
                   const images = usableImages(day.images);
+                  const itineraryImages = images.slice(0, 2);
                   const accommodationImages = usableImages(day.accommodation?.gallery);
                   const accommodationGallery = accommodationImages.length ? accommodationImages : images;
                   return (
-                    <article key={day._key} className="grid gap-8 md:grid-cols-[299px_minmax(0,1fr)] md:gap-[30px]">
-                      <div className="grid grid-rows-[254px_243px] gap-[18px]">
-                        {[0, 1].map((index) => <div key={index} className="relative overflow-hidden rounded-[5px]">{images[index] && <Image src={images[index].url} alt={images[index].alt ?? day.title} fill sizes="299px" className="object-cover" />}</div>)}
-                      </div>
+                    <article key={day._key} className={`grid gap-8 ${itineraryImages.length ? "md:grid-cols-[299px_minmax(0,1fr)] md:gap-[30px]" : ""}`}>
+                      {itineraryImages.length > 0 ? (
+                        <div className={`grid gap-[18px] ${itineraryImages.length > 1 ? "grid-rows-[254px_243px]" : "h-[254px]"}`}>
+                          {itineraryImages.map((image) => (
+                            <div key={image.url} className="relative overflow-hidden rounded-[5px]">
+                              <Image src={image.url} alt={image.alt ?? day.title} fill sizes="299px" className="object-cover" />
+                            </div>
+                          ))}
+                        </div>
+                      ) : null}
 
                       <div className="flex min-w-0 flex-col">
                         <div>
