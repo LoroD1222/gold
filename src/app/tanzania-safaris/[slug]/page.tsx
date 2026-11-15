@@ -167,6 +167,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                   const itineraryImages = images.slice(0, 2);
                   const accommodationImages = usableImages(day.accommodation?.gallery);
                   const accommodationGallery = accommodationImages.length ? accommodationImages : images;
+                  const descriptionAlreadyListsMeals = portableTextContainsLabel(day.description, "meals");
                   return (
                     <article key={day._key} className={`grid gap-8 ${itineraryImages.length ? "md:grid-cols-[299px_minmax(0,1fr)] md:gap-[30px]" : ""}`}>
                       {itineraryImages.length > 0 ? (
@@ -185,7 +186,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                           <h3 className="mt-[21px] text-[32px] font-semibold leading-[1.3] tracking-[-0.035em] sm:text-[36px]">{day.title}</h3>
                           {day.region ? <p className="mt-[21px] text-[21px] font-bold leading-none text-black/[.6] sm:text-[23px]">({day.region})</p> : null}
                           <PortableText value={day.description} className="mt-[25px] max-w-[487px] min-h-[48px] space-y-4 text-[16px] leading-[1.51] text-black/[.73]" />
-                          {day.meals && <p className="mt-5 text-[16px] font-semibold text-black/[.73]">Meals: <span className="font-normal">{day.meals}</span></p>}
+                          {day.meals && !descriptionAlreadyListsMeals ? <p className="mt-5 text-[16px] font-semibold text-black/[.73]">Meals: <span className="font-normal">{day.meals}</span></p> : null}
                         </div>
 
                         {day.accommodation?.name ? (
@@ -249,6 +250,11 @@ function usableImages(images?: SanityImage[]) {
 
 function uniqueImages(images: Array<SanityImage & { url: string }>) {
   return images.filter((image, index) => images.findIndex((candidate) => candidate.url === image.url) === index);
+}
+
+function portableTextContainsLabel(blocks: Array<{ children: Array<{ text: string }> }> | undefined, label: string) {
+  const text = blocks?.flatMap((block) => block.children.map((child) => child.text)).join(" ") ?? "";
+  return new RegExp(`\\b${label}\\s*:`, "i").test(text);
 }
 
 function Fact({ label, value, icon }: { label: string; value?: string; icon: "calendar" | "clock" | "difficulty" }) {

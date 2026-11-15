@@ -72,6 +72,7 @@ export type SafariTripCard = {
   title: string;
   slug: string;
   summary?: string;
+  overviewText?: string;
   categories?: string[];
   groupTrip?: boolean;
   durationDays?: number;
@@ -85,6 +86,7 @@ const cardProjection = `{
   title,
   "slug": slug.current,
   summary,
+  "overviewText": pt::text(overview),
   categories,
   groupTrip,
   durationDays,
@@ -183,7 +185,7 @@ export async function getGroupSafariTripCards(): Promise<Trip[]> {
     priceFrom: trip.startingPrice,
     image: trip.image,
     category: trip.categories?.join(" ") ?? "",
-    shortDescription: trip.summary ?? "",
+    shortDescription: (trip.overviewText || trip.summary || "").replace(/\s+/g, " ").trim(),
   }));
 }
 

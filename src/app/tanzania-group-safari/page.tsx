@@ -154,7 +154,10 @@ function GroupTripCard({ trip }: { trip: Trip }) {
         <h2 className="min-h-[3.3rem] text-[21px] font-bold leading-[1.25] tracking-[-0.03em] text-ink">{trip.title}</h2>
         <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold text-ink">
           <span>{duration} {duration === 1 ? "Day" : "Days"}</span>
-          <span aria-label="Five out of five stars" className="tracking-[.08em] text-brand">★★★★★</span>
+          <span aria-label="5.0 rated on TripAdvisor" className="inline-flex items-center gap-2">
+            <span aria-hidden="true" className="tracking-[.06em] text-brand">★★★★★</span>
+            <span className="text-xs font-semibold text-black/55">5.0 on TripAdvisor</span>
+          </span>
           {difficulty ? <span className="ml-auto inline-flex items-center gap-1 text-black/75"><span className="flex h-4 items-end gap-0.5" aria-hidden><i className="block h-1.5 w-1 rounded-sm bg-brand" /><i className="block h-2.5 w-1 rounded-sm bg-brand/55" /><i className="block h-4 w-1 rounded-sm bg-brand/30" /></span> {difficulty}</span> : null}
         </div>
         <p className="mt-4 line-clamp-4 text-[15px] leading-[1.45] text-black/60">{summary}</p>
