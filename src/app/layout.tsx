@@ -15,10 +15,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL("https://goldentrips.com"),
   title: {
-    default: "Golden Trips Tanzania | Private Family Safaris",
+    default: "Golden Trips Tanzania | Tailor-Made Safaris",
     template: "%s | Golden Trips Tanzania",
   },
-  description: "Private Tanzania family safaris designed around every generation, with flexible pacing, local guides, and personal planning.",
+  description: "Tailor-made Tanzania safaris, Kilimanjaro climbs, and Zanzibar escapes with local guides and personal planning.",
   applicationName: "Golden Trips Tanzania",
   icons: {
     icon: [{ url: "/favicon.png", type: "image/png", sizes: "32x32" }],
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "Golden Trips Tanzania",
-    title: "Golden Trips Tanzania | Private Family Safaris",
-    description: "Private Tanzania family safaris designed around every generation.",
-    images: [{ url: "/assets/home-hero.png", width: 1916, height: 821, alt: "A family watching elephants on safari in Tanzania" }],
+    title: "Golden Trips Tanzania | Tailor-Made Safaris",
+    description: "Tailor-made Tanzania safaris, Kilimanjaro climbs, and Zanzibar escapes.",
+    images: [{ url: "/assets/home-hero.png", width: 1916, height: 821, alt: "Travelers watching elephants on safari in Tanzania" }],
   },
 };
 

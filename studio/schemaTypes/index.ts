@@ -456,7 +456,7 @@ const safariTrip = defineType({
       title: 'Itinerary heading',
       type: 'string',
       group: 'itinerary',
-      initialValue: 'Family itinerary day by day',
+      initialValue: 'Your itinerary day by day',
     }),
     defineField({
       name: 'itinerary',

@@ -13,7 +13,7 @@ const exploreLinks = [
 ] as const;
 
 const planLinks = [
-  ["Family Safaris", "/tanzania-safaris"],
+  ["Tailor-Made Safaris", "/tanzania-safaris"],
   ["Safety First", "/#safety"],
   ["Destinations", "/#destinations"],
   ["Guides", "/#guides"],
@@ -45,7 +45,7 @@ export function Footer() {
                 Our tanzania travel experts craft personalized, tailor-made itineraries designed just for you.
               </p>
               <ButtonLink href="/#planning" className="mt-7 min-h-[51px] w-[248px] rounded-[5px] px-4 py-2 text-[18px] !bg-[linear-gradient(to_right,#f2a93b,#f5be2b)] hover:brightness-95">
-                Plan your family trip
+                Plan your trip
               </ButtonLink>
             </div>
           </div>
@@ -83,7 +83,7 @@ export function Footer() {
                 />
               </Link>
               <p className="mt-4 text-[16px] leading-[1.68] text-black/[.64]">
-                Family safaris designed around your whole group, with private vehicles, flexible pacing, and guides who explain the journey in a way every age can enjoy.
+                Tailor-made Tanzania journeys with private safaris, group adventures, Kilimanjaro climbs, and Zanzibar escapes planned around the way you want to travel.
               </p>
               <a
                 href={tripadvisorProfileUrl}

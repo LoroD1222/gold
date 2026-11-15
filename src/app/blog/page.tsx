@@ -7,7 +7,7 @@ import {getBlogPosts} from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Practical Tanzania safari inspiration, family travel advice, and stories from Golden Trips Tanzania.',
+  description: 'Practical Tanzania safari inspiration, travel advice, and stories from Golden Trips Tanzania.',
   alternates: {canonical: '/blog'},
 };
 
@@ -24,7 +24,7 @@ export default async function BlogPage() {
           <div className="narrow-container max-w-[900px] text-center">
             <p className="eyebrow">Golden Trips Tanzania</p>
             <h1 id="blog-title" className="mt-6 text-[46px] font-semibold leading-[1.02] tracking-[-0.055em] sm:text-[62px]">Blog</h1>
-            <p className="mx-auto mt-7 max-w-[650px] text-[17px] leading-[1.7] text-ink/65 sm:text-[19px]">Safari inspiration, thoughtful family travel advice, and stories from Tanzania&apos;s wild places.</p>
+            <p className="mx-auto mt-7 max-w-[650px] text-[17px] leading-[1.7] text-ink/65 sm:text-[19px]">Safari inspiration, thoughtful travel advice, and stories from Tanzania&apos;s wild places.</p>
           </div>
         </section>
 

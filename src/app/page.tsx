@@ -16,20 +16,20 @@ import { getSafariTripCards } from "@/lib/safariTrips";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Private Family Safaris in Tanzania",
-  description: "Plan a private Tanzania family safari made for every generation, with flexible routes, trusted local guides, and expert advice.",
+  title: "Tailor-Made Tanzania Safaris",
+  description: "Plan a tailor-made Tanzania safari, Kilimanjaro climb, or Zanzibar escape with trusted local guides and expert advice.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Private Family Safaris in Tanzania",
-    description: "See Tanzania together on a private safari designed around the way your family wants to travel.",
+    title: "Tailor-Made Tanzania Safaris",
+    description: "See Tanzania your way with a private safari designed around how you want to travel.",
     url: "/",
-    images: [{ url: "/assets/home-hero.png", width: 1916, height: 821, alt: "Family watching elephants from a safari vehicle in Tanzania" }],
+    images: [{ url: "/assets/join-group-hero.jpg", alt: "Friends enjoying a Tanzania safari together" }],
   },
 };
 
 const comparisonRows = Array.from({ length: 5 }, (_, index) => ({
-  feature: index === 0 ? "Private family vehicle" : index === 1 ? "Flexible pacing" : index === 2 ? "Family-friendly lodges" : index === 3 ? "Personal route planning" : "Support before and during travel",
-  golden: index === 0 ? "A private vehicle for your family only, on smoother, safer routes." : index === 1 ? "Drive times and breaks planned around your family." : index === 2 ? "Carefully chosen stays with space for every generation." : index === 3 ? "A route built around your interests, ages, and timing." : "A local team available throughout your journey.",
+  feature: index === 0 ? "Private vehicle and guide" : index === 1 ? "Flexible pacing" : index === 2 ? "Handpicked stays" : index === 3 ? "Personal route planning" : "Support before and during travel",
+  golden: index === 0 ? "Your own vehicle and guide, with a route shaped around your travel style." : index === 1 ? "Drive times, activities, and breaks planned around you." : index === 2 ? "Carefully chosen lodges and camps to suit your comfort and budget." : index === 3 ? "A route built around your interests, timing, and wish list." : "A local team available throughout your journey.",
 }));
 
 function DestinationAreaIcon() {
@@ -43,7 +43,7 @@ function DestinationAreaIcon() {
 
 const safetyFeatures = [
   { icon: "/assets/home-safety-img-group1321315423.svg", title: "Malaria precautions", description: "Treated nets, repellent, and routes planned around lower risk times and altitudes.", iconFrame: false, iconClass: "h-[71px] w-[70px]" },
-  { icon: "/assets/home-safety-img-group1321315430.svg", title: "Medical care on hand", description: "Trained guides and a clear emergency plan, so your family is always looked after.", iconFrame: true, iconClass: "h-[30px] w-[37px]" },
+  { icon: "/assets/home-safety-img-group1321315430.svg", title: "Medical care on hand", description: "Trained guides and a clear emergency plan, so you are always looked after.", iconFrame: true, iconClass: "h-[30px] w-[37px]" },
   { icon: "/assets/home-safety-img-group1321315431.svg", title: "Comfortable, careful travel", description: "Smooth routes and unhurried pacing, so the ride is as easy as the destination.", iconFrame: true, iconClass: "h-[28px] w-[47px]" },
   { icon: "/assets/home-safety-img-group1321315424.svg", title: "Food and water safety", description: "Purified water and trusted meals, chosen to suit sensitive stomachs.", iconFrame: false, iconClass: "h-[71px] w-[70px]" },
 ] as const;
@@ -85,17 +85,17 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
       <main>
         <section className="relative min-h-[720px] overflow-hidden bg-ink text-white sm:min-h-[680px] lg:min-h-[707px]" aria-labelledby="home-title">
-          <Image src="/assets/home-hero.png" alt="Family watching elephants during a private Tanzania safari" fill priority quality={100} sizes="100vw" className="object-cover object-[74%_center] sm:object-[70%_center] lg:object-[56%_center]" />
+          <Image src="/assets/join-group-hero.jpg" alt="Friends enjoying a Tanzania safari together" fill priority quality={100} sizes="100vw" className="object-cover object-[74%_center] sm:object-[70%_center] lg:object-[56%_center]" />
           <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(20,27,20,.88)_0%,rgba(20,27,20,.63)_46%,rgba(20,27,20,.9)_100%)] sm:bg-[linear-gradient(90deg,rgba(20,27,20,.94)_0%,rgba(20,27,20,.69)_35%,rgba(20,27,20,.08)_77%),linear-gradient(180deg,rgba(17,23,17,.62)_0%,transparent_42%)]" />
           <Header overlay />
           <div className="site-container relative z-10 flex min-h-[720px] flex-col justify-end pb-10 pt-32 sm:min-h-[680px] sm:pb-[50px] sm:pt-[100px] lg:min-h-[603px] lg:justify-center lg:pt-[200px]">
             <div className="max-w-[610px]">
               <h1 id="home-title" className="text-[38px] font-semibold leading-[1.07] tracking-[-0.045em] sm:mt-[70px] sm:text-[56px] lg:mt-0 lg:text-[64px]">
-                <span className="text-brand">Family safaris</span> in Tanzania, made for every generation.
+                <span className="text-brand">Tanzania travel</span>, made around you.
               </h1>
-              <p className="mt-6 max-w-[540px] text-base leading-7 text-white/85 sm:text-lg">See Tanzania together on a private safari designed around the way your family wants to travel.</p>
+              <p className="mt-6 max-w-[540px] text-base leading-7 text-white/85 sm:text-lg">Discover Tanzania on a safari, Kilimanjaro climb, or Zanzibar escape designed around the way you want to travel.</p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <ButtonLink href="#planning">Plan your family trip</ButtonLink>
+                <ButtonLink href="#planning">Plan your Tanzania trip</ButtonLink>
                 <ButtonLink href="https://wa.me/255761575951?text=Hello%21%20I%27m%20interested%20in%20booking%20a%20safari.%20Can%20you%20help%20me%3F" variant="outline" className="!border-0">
                   <Image src="/assets/home-hero-img-vector.svg" width={18} height={18} alt="" className="mr-2 brightness-0 invert" /> Chat on WhatsApp
                 </ButtonLink>
@@ -118,8 +118,8 @@ export default async function HomePage() {
           <div className="site-container grid items-center gap-12 lg:grid-cols-2 lg:gap-8">
             <div className="max-w-[620px]">
               <p className="eyebrow">Why travel with us</p>
-              <h2 id="built-title" className="mt-5 text-4xl font-semibold leading-[1.12] tracking-[-0.045em] sm:text-[52px]">Built around the way your family travels.</h2>
-              <p className="mt-7 leading-7 text-muted">The best family trips are not about trying to keep everyone on the same schedule. They are about creating a journey where everyone finds something they love.</p>
+              <h2 id="built-title" className="mt-5 text-4xl font-semibold leading-[1.12] tracking-[-0.045em] sm:text-[52px]">Built around the way you travel.</h2>
+              <p className="mt-7 leading-7 text-muted">The best journeys make room for the experiences that matter to you, from wildlife encounters and summit days to slow afternoons on the coast.</p>
               <div className="mt-6 flex flex-wrap gap-x-9 gap-y-3 text-sm font-bold">
                 <span className="flex items-center gap-2">
                   <Image src="/assets/home-intro-img-path1.svg" width={22} height={26} alt="" aria-hidden className="h-[19px] w-[16px] shrink-0" />
@@ -130,9 +130,9 @@ export default async function HomePage() {
                   Local team, personal support
                 </span>
               </div>
-              <p className="mt-7 leading-7 text-muted">One person may be waiting for their first lion sighting. Someone else may remember breakfast overlooking the Serengeti, watching elephants from the lodge, or the afternoon spent relaxing by the pool. That is why we do not force your family into a standard itinerary. We build the safari around you.</p>
+              <p className="mt-7 leading-7 text-muted">You may be waiting for your first lion sighting, a sunrise over the Serengeti, or an afternoon on the beach. That is why we do not force you into a standard itinerary. We build the journey around you.</p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink href="#planning">Plan your family trip</ButtonLink>
+                <ButtonLink href="#planning">Plan your Tanzania trip</ButtonLink>
                 <ButtonLink href="/tanzania-safaris" variant="outline" className="!border-brand !bg-transparent !text-brand hover:!bg-brand/10">View all trips</ButtonLink>
               </div>
             </div>
@@ -151,7 +151,7 @@ export default async function HomePage() {
 
         <section className="bg-cream py-20 sm:py-28" aria-labelledby="comparison-title">
           <div className="site-container">
-            <SectionHeading eyebrow="Made for family travel" title="The safari that fits your whole family" id="comparison-title" description={<p>Every family is different, with different ages, energy levels, and needs, and a standard safari itinerary rarely accounts for that. Golden Trip&apos;s family safari is built from the ground up around your whole group, so grandparents, parents, and children can all enjoy the same adventure, at a pace that works for everyone.</p>} />
+            <SectionHeading eyebrow="Made for your travel style" title="A Tanzania journey that fits you" id="comparison-title" description={<p>Every traveler brings a different pace, wish list, and idea of adventure. Rather than putting you on a standard route, we shape each journey around what you want to see, how you want to stay, and the time you have.</p>} />
             <div className="mt-10 md:hidden">
               <table className="w-full table-fixed border-collapse text-left">
                 <colgroup>
@@ -165,7 +165,7 @@ export default async function HomePage() {
                       <Image src="/assets/home-compare-img-image1.png" width={214} height={81} alt="Golden Trips Tanzania" className="h-auto w-full" />
                     </th>
                     <th scope="col" className="px-1 pb-3 text-center align-middle text-[12px] font-bold leading-4 text-ink">
-                      Family safari with <span className="text-brand">Golden Trips Tanzania</span>
+                      Tanzania travel with <span className="text-brand">Golden Trips Tanzania</span>
                     </th>
                     <th scope="col" className="pb-3 pl-1 text-center align-middle text-[12px] font-bold leading-4 text-ink">Other safari</th>
                   </tr>
@@ -202,7 +202,7 @@ export default async function HomePage() {
                     </th>
                     <th scope="col" className="p-0 align-middle">
                       <p className="ml-[54px] w-[486px] text-center text-[23px] font-bold leading-[1.38] text-ink">
-                        Family safari with <span className="text-brand">Golden Trips Tanzania</span>
+                        Tanzania travel with <span className="text-brand">Golden Trips Tanzania</span>
                       </p>
                     </th>
                     <th scope="col" className="p-0 text-center align-middle text-[23px] font-bold leading-[1.3] text-ink">Other general safari</th>
@@ -240,7 +240,7 @@ export default async function HomePage() {
                 View all tours
               </Link>
               <Image src="/assets/home-fit-img-path1.svg" width={68} height={42} alt="" className="mx-auto mt-[30px] block h-[42px] w-[68px]" />
-              <p className="mt-4 text-lg font-semibold">Not sure which family journey fits you best?</p>
+              <p className="mt-4 text-lg font-semibold">Not sure which Tanzania journey fits you best?</p>
               <p className="mx-auto mt-4 max-w-3xl text-sm leading-6 text-muted">Tell us when you want to travel, who is coming, how long you have. We&apos;ll recommend the route that makes the most sense.</p>
               <Link href="#planning" className="mt-5 inline-block text-sm font-semibold text-brand underline underline-offset-4">Get our safari recommendation</Link>
             </div>
@@ -254,7 +254,7 @@ export default async function HomePage() {
             <div className="mx-auto max-w-[987px] text-center">
               <p className="eyebrow">Tanzania Destinations</p>
               <h2 id="destinations-title" className="mt-5 text-4xl font-semibold leading-[.95] tracking-[-0.035em] text-ink lg:text-[53px]">Iconic destinations in Tanzania</h2>
-              <p className="mx-auto mt-5 max-w-[729px] text-base leading-7 text-muted sm:text-lg">From open plains to white sand beaches, Tanzania&apos;s most iconic destinations offer something for every generation to discover together.</p>
+              <p className="mx-auto mt-5 max-w-[729px] text-base leading-7 text-muted sm:text-lg">From open plains to white-sand beaches, Tanzania&apos;s most iconic destinations offer wildlife, culture, adventure, and time to unwind.</p>
             </div>
             <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-[18px]">
               {destinations.map((destination) => (
@@ -278,8 +278,8 @@ export default async function HomePage() {
         <section id="safety" className="bg-sand py-20 sm:py-28" aria-labelledby="safety-title">
           <div className="site-container">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-              <SectionHeading eyebrow="Extra care on safety" title="Safety, built around every generation." id="safety-title" description={<p className="max-w-3xl">Traveling with grandparents and young children means thinking ahead, our team plans every detail with their comfort and wellbeing in mind.</p>} />
-              <ButtonLink href="#planning" className="shrink-0">Plan your family trip</ButtonLink>
+              <SectionHeading eyebrow="Extra care on safety" title="Safety, built into every journey." id="safety-title" description={<p className="max-w-3xl">From carefully maintained vehicles to experienced guides and clear emergency plans, we think ahead so you can travel with confidence.</p>} />
+              <ButtonLink href="#planning" className="shrink-0">Plan your Tanzania trip</ButtonLink>
             </div>
             <div className="mt-12 grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-4">
               {safetyFeatures.map(({ icon, title, description, iconFrame, iconClass }) => (
@@ -304,7 +304,7 @@ export default async function HomePage() {
 
         <section id="guides" className="bg-cream py-20 sm:py-28" aria-labelledby="guides-title">
           <div className="site-container">
-            <SectionHeading eyebrow="Meet The Team" title="Your ultimate Tanzania vacation experts" id="guides-title" align="center" className="max-w-[980px]" description={<p>Meet the people who turn a safari into a story your family tells for years.</p>} />
+            <SectionHeading eyebrow="Meet The Team" title="Your Tanzania travel experts" id="guides-title" align="center" className="max-w-[980px]" description={<p>Meet the local team who turn your Tanzania plans into a journey you will remember for years.</p>} />
             <div className="mx-auto mt-12 grid max-w-[1269px] grid-cols-2 gap-x-4 gap-y-10 text-center sm:mt-[62px] sm:gap-x-[23px] sm:gap-y-[62px] lg:grid-cols-3">
               {guides.map(({ name, role, image, crop }) => (
                 <article key={name} className="mx-auto min-w-0 w-full max-w-[300px]">

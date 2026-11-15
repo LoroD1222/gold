@@ -133,9 +133,9 @@ export function PopularTripsCarousel({ trips }: PopularTripsCarouselProps) {
     <>
       <div className="flex flex-col gap-7 sm:flex-row sm:items-end sm:justify-between">
         <h2 id="popular-title" className="text-4xl font-semibold tracking-[-0.04em] sm:text-[46px]">
-          Our Popular Family Adventures
+          Our Popular Tanzania Adventures
         </h2>
-        <div role="tablist" aria-label="Filter popular family adventures" className="flex gap-[15px]">
+        <div role="tablist" aria-label="Filter popular Tanzania adventures" className="flex gap-[15px]">
           {tabs.map((tab, index) => {
             const isActive = tab.id === filter;
             const tabClassName = (tab.id === "all" ? "w-[67px]" : tab.id === "safari" ? "w-[101px]" : "w-[123px]") + " h-[52px] cursor-pointer rounded-[5px] bg-white text-[20px] font-semibold leading-[1.68] transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand " + (isActive ? "border border-brand text-[#ff8d28]" : "border border-transparent text-black hover:border-brand/40");

@@ -159,7 +159,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
 
         <section id="itinerary" className="scroll-mt-28 bg-sand py-20 sm:py-24 lg:py-28" aria-labelledby="itinerary-title">
           <div className="site-container max-w-[1200px]">
-            <h2 id="itinerary-title" className="text-[44px] font-semibold leading-[1.12] tracking-[-0.04em] sm:text-[56px] lg:text-[64px]">{trip.itineraryHeading ?? "Family itinerary day by day"}</h2>
+            <h2 id="itinerary-title" className="text-[44px] font-semibold leading-[1.12] tracking-[-0.04em] sm:text-[56px] lg:text-[64px]">{trip.itineraryHeading ?? "Your itinerary day by day"}</h2>
             <div className="mt-16 grid gap-12 lg:items-start lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-12 xl:grid-cols-[minmax(0,856px)_337px] xl:gap-12">
               <div className="flex flex-col gap-[63px]">
                 {trip.itinerary?.map((day) => {
@@ -207,7 +207,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
                   <div className="relative aspect-[302/262] w-full overflow-hidden rounded-[10px]">
                     <Image src="/assets/trip-itinerary-sidebar-map.png" width={362} height={272} alt="Illustrated map of Tanzania" sizes="(min-width: 1280px) 302px, 100vw" className="absolute -left-[16.08%] top-0 h-[102.89%] w-[119.01%] max-w-none object-cover" />
                   </div>
-                  <TripQuoteDialog selectedTour={trip.title} className="flex min-h-[51px] w-full items-center justify-center rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-2 text-[17px] font-semibold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand">Plan your family trip</TripQuoteDialog>
+                  <TripQuoteDialog selectedTour={trip.title} className="flex min-h-[51px] w-full items-center justify-center rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-2 text-[17px] font-semibold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand">Plan your trip</TripQuoteDialog>
                 </div>
               </aside>
             </div>

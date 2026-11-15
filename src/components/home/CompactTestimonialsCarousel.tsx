@@ -94,7 +94,7 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
           ref={trackRef}
           id="testimonials-carousel-track"
           role="region"
-          aria-label="Family reviews carousel"
+          aria-label="Traveler reviews carousel"
           aria-roledescription="carousel"
           tabIndex={0}
           onScroll={updateProgress}
@@ -111,7 +111,7 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
                 <div className="grid grid-cols-2 gap-3.5">
                   {review.images.map((src, index) => (
                     <div key={src} className="relative aspect-[1.11] overflow-hidden rounded-lg sm:h-[199px] sm:aspect-auto">
-                      <Image src={src} alt={index === 0 ? `Family safari experience shared by ${review.name}` : "Tanzania landscape from a family safari"} fill sizes="(max-width: 640px) 42vw, 221px" className="object-cover" />
+                      <Image src={src} alt={index === 0 ? `Tanzania safari experience shared by ${review.name}` : "Tanzania safari landscape"} fill sizes="(max-width: 640px) 42vw, 221px" className="object-cover" />
                     </div>
                   ))}
                 </div>
@@ -157,7 +157,7 @@ export function CompactTestimonialsCarousel({ reviews }: CompactTestimonialsCaro
           />
         </div>
       </div>
-      <p className="sr-only">Use the previous and next buttons, swipe, drag, or use the left and right arrow keys to browse family reviews.</p>
+      <p className="sr-only">Use the previous and next buttons, swipe, drag, or use the left and right arrow keys to browse traveler reviews.</p>
     </div>
   );
 }

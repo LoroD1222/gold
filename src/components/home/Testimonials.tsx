@@ -6,9 +6,9 @@ import { tripadvisorProfileUrl } from "@/data/externalLinks";
 export function Testimonials({
   compact = false,
   sectionId,
-  eyebrow = "Verified Family Reviews",
-  title = "The trips that became family stories",
-  imageAlt = "Family safari experience",
+  eyebrow = "Verified Traveler Reviews",
+  title = "The trips travelers remember",
+  imageAlt = "Tanzania safari experience",
 }: {
   compact?: boolean;
   sectionId?: string;

@@ -6,8 +6,8 @@ type FAQItem = { question: string; answer: string };
 
 export function FAQ({
   items = faqs,
-  intro = "Answers to the questions families ask us most before booking a safari.",
-  ctaLabel = "Plan your family trip",
+  intro = "Answers to the questions travelers ask us most before booking a Tanzania safari.",
+  ctaLabel = "Plan your trip",
 }: {
   items?: readonly FAQItem[];
   intro?: string;

@@ -4,7 +4,7 @@ import { GroupSafariInquiryForm } from "@/components/forms/GroupSafariInquiryFor
 export function PlanningCall({
   id,
   selectedTour,
-  description = "Schedule a 30-minute call to get honest advice about safaris, Kilimanjaro routes, and the best travel seasons for your family.",
+  description = "Schedule a 30-minute call for honest advice about safaris, Kilimanjaro routes, Zanzibar, and the best travel seasons for you.",
 }: {
   id?: string;
   selectedTour?: string;
