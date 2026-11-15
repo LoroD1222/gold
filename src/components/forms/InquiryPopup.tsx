@@ -44,7 +44,7 @@ export function InquiryPopup() {
         </button>
         <h2 id={titleId} className="sr-only">Group safari inquiry</h2>
         <div className="pt-9">
-          <GroupSafariInquiryForm className="!border-0 !p-0 !shadow-none" />
+          <GroupSafariInquiryForm className="!overflow-visible !rounded-none !border-0 !p-0 !shadow-none" />
         </div>
       </section>
     </dialog>

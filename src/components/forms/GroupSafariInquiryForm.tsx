@@ -3,36 +3,46 @@
 import { useEffect, useId, useRef, useState } from "react";
 import {
   BadgeCheck,
-  Binoculars,
   CalendarDays,
-  Check,
   ChevronDown,
   CircleDollarSign,
-  Compass,
   LoaderCircle,
   Mail,
   MapPin,
   MessageSquare,
-  Mountain,
   Phone,
-  ShieldCheck,
   Sparkles,
   User,
   Users,
-  type LucideIcon,
 } from "lucide-react";
 
 const inquiryEndpoint = "/api/forms";
 const formKey = "sdf_0szf-ca_naLURplsT9y-iMVO";
 const attributionKeys = ["utm_source", "utm_medium", "utm_campaign", "fbclid"] as const;
-const durations: Array<{ value: string; description: string; icon: LucideIcon; popular?: boolean }> = [
-  { value: "3 Days", description: "Short safari getaway", icon: CalendarDays },
-  { value: "4 Days", description: "Most popular choice", icon: Compass, popular: true },
-  { value: "5 Days", description: "More parks, more wildlife", icon: Binoculars },
-  { value: "6+ Days", description: "The full safari experience", icon: Mountain },
-  { value: "Help me choose", description: "Get a personal recommendation", icon: Sparkles },
+const durations: Array<{ value: string; description: string; popular?: boolean }> = [
+  { value: "3 Days", description: "Short safari getaway" },
+  { value: "4 Days", description: "Most popular choice", popular: true },
+  { value: "5 Days", description: "More parks, more wildlife" },
+  { value: "6+ Days", description: "The full safari experience" },
+  { value: "Help me choose", description: "Get a personal recommendation" },
 ];
 const travellerCounts = ["1", "2", "3", "4", "5+"] as const;
+const travelMonths = [
+  { value: "01", label: "Jan" },
+  { value: "02", label: "Feb" },
+  { value: "03", label: "Mar" },
+  { value: "04", label: "Apr" },
+  { value: "05", label: "May" },
+  { value: "06", label: "Jun" },
+  { value: "07", label: "Jul" },
+  { value: "08", label: "Aug" },
+  { value: "09", label: "Sep" },
+  { value: "10", label: "Oct" },
+  { value: "11", label: "Nov" },
+  { value: "12", label: "Dec" },
+] as const;
+const currentYear = new Date().getFullYear();
+const travelYears = Array.from({ length: 6 }, (_, index) => String(currentYear + index));
 const progressSteps = [
   { full: "Your Safari", short: "Safari" },
   { full: "Travel Plans", short: "Plans" },
@@ -83,7 +93,8 @@ function FieldError({ id, message }: { id: string; message?: string }) {
 export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSafariInquiryFormProps) {
   const [step, setStep] = useState<Step>(1);
   const [duration, setDuration] = useState("");
-  const [travelMonth, setTravelMonth] = useState("");
+  const [travelMonthNumber, setTravelMonthNumber] = useState("");
+  const [travelYear, setTravelYear] = useState(String(currentYear));
   const [flexibleDates, setFlexibleDates] = useState(false);
   const [travellers, setTravellers] = useState("");
   const [name, setName] = useState("");
@@ -97,6 +108,7 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
   const [isComplete, setIsComplete] = useState(false);
   const headingId = useId();
   const submissionLock = useRef(false);
+  const travelMonth = travelMonthNumber ? `${travelYear}-${travelMonthNumber}` : "";
   const durationError = step === 1 && error.startsWith("Choose your preferred") ? error : undefined;
   const monthError = step === 2 && error.startsWith("Select a travel month") ? error : undefined;
   const travellersError = step === 2 && error.startsWith("Choose the number") ? error : undefined;
@@ -207,9 +219,9 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
   }
 
   return (
-    <form className={`flex min-h-[590px] flex-col overflow-hidden rounded-[22px] border border-ink/10 bg-[#fffefb] p-5 shadow-[0_18px_45px_rgba(50,38,19,.08)] sm:p-6 ${className}`} onSubmit={submitInquiry} aria-busy={isSubmitting} aria-labelledby={headingId} noValidate>
+    <form className={`flex min-h-[590px] flex-col rounded-[22px] border border-ink/10 bg-[#fffefb] p-5 shadow-[0_18px_45px_rgba(50,38,19,.08)] sm:p-6 ${className}`} onSubmit={submitInquiry} aria-busy={isSubmitting} aria-labelledby={headingId} noValidate>
       <div className="flex items-center justify-between gap-3">
-        <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[.08em] text-brand-dark"><ShieldCheck className="size-4" aria-hidden="true" />No-obligation inquiry</p>
+        <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[.08em] text-brand-dark"><BadgeCheck className="size-4" aria-hidden="true" />No-obligation inquiry</p>
         <p className="text-[11px] font-semibold text-muted">Step {step} of 3</p>
       </div>
 
@@ -235,14 +247,12 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
             <legend id={headingId} className="text-[22px] font-semibold leading-[1.2] tracking-[-.02em]">What kind of safari are you looking for?</legend>
             <p className="mt-1.5 text-xs text-muted">Choose your preferred safari duration.</p>
             <div className="mt-4 grid grid-cols-2 gap-2.5">
-              {durations.map(({ value, description, icon: Icon, popular }) => {
+              {durations.map(({ value, description, popular }) => {
                 const selected = duration === value;
                 return (
-                  <button key={value} type="button" aria-pressed={selected} onClick={() => { setDuration(value); setError(""); }} className={`group relative min-h-[104px] rounded-[12px] border p-3 text-left transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${value === "Help me choose" ? "col-span-2 min-h-[84px]" : ""} ${selected ? "border-brand bg-[#fff7e8] shadow-[0_5px_16px_rgba(99,64,12,.07)]" : "border-ink/10 bg-white hover:-translate-y-0.5 hover:border-brand/50 hover:shadow-[0_5px_16px_rgba(99,64,12,.06)]"}`}>
-                    <span className={`grid size-8 place-items-center rounded-[8px] transition-colors ${selected ? "bg-brand text-white" : "bg-brand/[.12] text-brand-dark group-hover:bg-brand/[.18]"}`}><Icon className="size-[17px]" strokeWidth={1.9} aria-hidden="true" /></span>
-                    <span className="mt-2 flex items-center gap-1.5 pr-5 text-[13px] font-semibold leading-4 text-ink">{value}{popular ? <span className="rounded-full bg-brand/[.13] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[.06em] text-brand-dark">Popular</span> : null}</span>
-                    <span className="mt-0.5 block text-[10px] leading-4 text-muted">{description}</span>
-                    {selected ? <span className="absolute right-2.5 top-2.5 grid size-5 place-items-center rounded-full bg-brand text-white"><Check className="size-3.5" strokeWidth={3} aria-hidden="true" /></span> : null}
+                  <button key={value} type="button" aria-pressed={selected} onClick={() => { setDuration(value); setError(""); }} className={`group relative flex min-h-[82px] flex-col justify-center rounded-[12px] border p-3.5 text-left transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${value === "Help me choose" ? "col-span-2 min-h-[72px]" : ""} ${selected ? "border-brand bg-[#fff7e8] shadow-[0_5px_16px_rgba(99,64,12,.07)]" : "border-ink/10 bg-white hover:-translate-y-0.5 hover:border-brand/50 hover:shadow-[0_5px_16px_rgba(99,64,12,.06)]"}`}>
+                    <span className="flex items-center gap-1.5 pr-5 text-[13px] font-semibold leading-4 text-ink">{value}{popular ? <span className="rounded-full bg-brand/[.13] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[.06em] text-brand-dark">Popular</span> : null}</span>
+                    <span className="mt-1 block text-[10px] leading-4 text-muted">{description}</span>
                   </button>
                 );
               })}
@@ -254,10 +264,21 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
         {step === 2 ? (
           <fieldset className="inquiry-step mt-5 min-w-0">
             <legend id={headingId} className="text-[22px] font-semibold leading-[1.2] tracking-[-.02em]">When would you like to travel?</legend>
-            <label className="mt-5 block text-xs font-semibold text-ink" htmlFor={`${headingId}-month`}>Preferred travel month</label>
-            <div className="relative mt-2">
-              <CalendarDays className="pointer-events-none absolute left-3.5 top-1/2 z-10 size-[18px] -translate-y-1/2 text-brand-dark" aria-hidden="true" />
-              <input id={`${headingId}-month`} type="month" value={travelMonth} onChange={(event) => { setTravelMonth(event.target.value); setError(""); }} disabled={flexibleDates} aria-describedby={`${headingId}-month-help ${headingId}-month-error`} aria-invalid={Boolean(monthError)} className="min-h-12 min-w-0 w-full rounded-[10px] border border-ink/10 bg-white py-3 pl-11 pr-3 text-sm text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10 disabled:cursor-not-allowed disabled:bg-sand/60 disabled:text-muted" />
+            <div className="mt-5 flex items-center justify-between gap-3">
+              <div id={`${headingId}-month-label`} className="flex items-center gap-2 text-xs font-semibold text-ink"><CalendarDays className="size-[18px] text-brand-dark" aria-hidden="true" />Preferred travel month</div>
+              <label className="relative shrink-0">
+                <span className="sr-only">Travel year</span>
+                <select value={travelYear} onChange={(event) => { setTravelYear(event.target.value); setError(""); }} disabled={flexibleDates} className="min-h-10 appearance-none rounded-[9px] border border-ink/10 bg-white py-2 pl-3 pr-9 text-xs font-semibold text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10 disabled:cursor-not-allowed disabled:bg-sand/60 disabled:text-muted">
+                  {travelYears.map((year) => <option key={year} value={year}>{year}</option>)}
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-3.5 -translate-y-1/2 text-muted" aria-hidden="true" />
+              </label>
+            </div>
+            <div role="group" aria-labelledby={`${headingId}-month-label`} aria-describedby={`${headingId}-month-help ${headingId}-month-error`} className={`mt-3 grid grid-cols-4 gap-2 transition-opacity ${flexibleDates ? "pointer-events-none opacity-45" : ""}`}>
+              {travelMonths.map((month) => {
+                const selected = travelMonthNumber === month.value;
+                return <button key={month.value} type="button" aria-pressed={selected} disabled={flexibleDates} onClick={() => { setTravelMonthNumber(month.value); setError(""); }} className={`min-h-10 rounded-[9px] border text-xs font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${selected ? "border-brand bg-[#fff7e8] text-brand-dark shadow-[0_3px_10px_rgba(99,64,12,.06)]" : "border-ink/10 bg-white hover:border-brand/50 hover:bg-brand/[.05]"}`}>{month.label}</button>;
+              })}
             </div>
             <p id={`${headingId}-month-help`} className="mt-2 text-[11px] leading-4 text-muted">We&apos;ll help you find the best available group departures.</p>
             <FieldError id={`${headingId}-month-error`} message={monthError} />
