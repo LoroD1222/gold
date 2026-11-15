@@ -9,6 +9,7 @@ import "@fontsource/league-spartan/latin-500.css";
 import "@fontsource/league-spartan/latin-600.css";
 import "@fontsource/league-spartan/latin-700.css";
 import { WhatsAppChatWidget } from "@/components/layout/WhatsAppChatWidget";
+import { InquiryPopup } from "@/components/forms/InquiryPopup";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -74,6 +75,7 @@ fbq('track', 'PageView');`}
           />
         </noscript>
         {children}
+        <InquiryPopup />
         <WhatsAppChatWidget />
       </body>
     </html>

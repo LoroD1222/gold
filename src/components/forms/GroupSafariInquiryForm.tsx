@@ -1,12 +1,43 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import {
+  BadgeCheck,
+  Binoculars,
+  CalendarDays,
+  Check,
+  ChevronDown,
+  CircleDollarSign,
+  Compass,
+  LoaderCircle,
+  Mail,
+  MapPin,
+  MessageSquare,
+  Mountain,
+  Phone,
+  ShieldCheck,
+  Sparkles,
+  User,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 
 const inquiryEndpoint = "/api/forms";
 const formKey = "sdf_0szf-ca_naLURplsT9y-iMVO";
 const attributionKeys = ["utm_source", "utm_medium", "utm_campaign", "fbclid"] as const;
-const durations = ["3 Days", "4 Days", "5 Days", "6+ Days", "Help me choose"] as const;
+const durations: Array<{ value: string; description: string; icon: LucideIcon; popular?: boolean }> = [
+  { value: "3 Days", description: "Short safari getaway", icon: CalendarDays },
+  { value: "4 Days", description: "Most popular choice", icon: Compass, popular: true },
+  { value: "5 Days", description: "More parks, more wildlife", icon: Binoculars },
+  { value: "6+ Days", description: "The full safari experience", icon: Mountain },
+  { value: "Help me choose", description: "Get a personal recommendation", icon: Sparkles },
+];
 const travellerCounts = ["1", "2", "3", "4", "5+"] as const;
+const progressSteps = [
+  { full: "Your Safari", short: "Safari" },
+  { full: "Travel Plans", short: "Plans" },
+  { full: "Contact Details", short: "Contact" },
+] as const;
 
 type Step = 1 | 2 | 3;
 
@@ -45,6 +76,10 @@ function getAttribution() {
   }
 }
 
+function FieldError({ id, message }: { id: string; message?: string }) {
+  return <p id={id} role={message ? "alert" : undefined} aria-hidden={message ? undefined : true} className={`min-h-5 pt-1 text-[11px] font-medium leading-4 transition-colors ${message ? "text-red-700" : "text-transparent"}`}>{message ?? "\u00a0"}</p>;
+}
+
 export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSafariInquiryFormProps) {
   const [step, setStep] = useState<Step>(1);
   const [duration, setDuration] = useState("");
@@ -62,6 +97,12 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
   const [isComplete, setIsComplete] = useState(false);
   const headingId = useId();
   const submissionLock = useRef(false);
+  const durationError = step === 1 && error.startsWith("Choose your preferred") ? error : undefined;
+  const monthError = step === 2 && error.startsWith("Select a travel month") ? error : undefined;
+  const travellersError = step === 2 && error.startsWith("Choose the number") ? error : undefined;
+  const nameError = step === 3 && error.startsWith("Enter your first name") ? error : undefined;
+  const emailError = step === 3 && error.startsWith("Enter") && !nameError ? error : undefined;
+  const submissionError = error.startsWith("We couldn’t") ? error : undefined;
 
   useEffect(() => {
     storeAttribution();
@@ -155,75 +196,119 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
 
   if (isComplete) {
     return (
-      <section className={`rounded-[15px] border border-brand/30 bg-white p-6 text-center sm:p-8 ${className}`} aria-live="polite">
-        <p className="text-lg font-semibold text-brand">Inquiry received</p>
-        <h2 className="mt-3 text-2xl font-semibold leading-tight">Thank you! Our team will get in touch to help you find your group safari.</h2>
+      <section className={`grid min-h-[590px] place-items-center rounded-[22px] border border-brand/30 bg-[#fffefb] p-7 text-center shadow-[0_18px_45px_rgba(50,38,19,.08)] sm:p-9 ${className}`} aria-live="polite">
+        <div>
+          <span className="mx-auto grid size-14 place-items-center rounded-full bg-brand/[.14] text-brand-dark"><BadgeCheck className="size-7" aria-hidden="true" /></span>
+          <p className="mt-5 text-sm font-semibold uppercase tracking-[.08em] text-brand-dark">Inquiry received</p>
+          <h2 className="mx-auto mt-3 max-w-sm text-2xl font-semibold leading-tight">Thank you! Our team will get in touch to help you find your group safari.</h2>
+        </div>
       </section>
     );
   }
 
   return (
-    <form className={`rounded-[15px] border border-black/15 bg-white p-5 shadow-none sm:p-6 ${className}`} onSubmit={submitInquiry} aria-busy={isSubmitting} aria-labelledby={headingId} noValidate>
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-sm font-semibold text-brand">Group safari inquiry</p>
-        <p className="text-xs font-semibold text-muted">Step {step} of 3</p>
+    <form className={`flex min-h-[590px] flex-col overflow-hidden rounded-[22px] border border-ink/10 bg-[#fffefb] p-5 shadow-[0_18px_45px_rgba(50,38,19,.08)] sm:p-6 ${className}`} onSubmit={submitInquiry} aria-busy={isSubmitting} aria-labelledby={headingId} noValidate>
+      <div className="flex items-center justify-between gap-3">
+        <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[.08em] text-brand-dark"><ShieldCheck className="size-4" aria-hidden="true" />No-obligation inquiry</p>
+        <p className="text-[11px] font-semibold text-muted">Step {step} of 3</p>
       </div>
-      <ol className="mt-3 flex gap-2" aria-label={`Step ${step} of 3`}>
-        {[1, 2, 3].map((item) => <li key={item} className={`h-1 flex-1 rounded-full ${item <= step ? "bg-brand" : "bg-ink/10"}`} aria-current={item === step ? "step" : undefined} />)}
+
+      <ol className="mt-4 grid grid-cols-3 gap-1.5" aria-label={`Step ${step} of 3`}>
+        {progressSteps.map((progressStep, index) => {
+          const item = index + 1;
+          const isCurrent = item === step;
+          const isCompleteStep = item < step;
+          return (
+            <li key={progressStep.full} aria-current={isCurrent ? "step" : undefined}>
+              <span className={`block h-1.5 rounded-full transition-colors duration-200 ${isCompleteStep ? "bg-brand" : isCurrent ? "bg-brand-dark" : "bg-ink/10"}`} />
+              <span className={`mt-1.5 block truncate text-[10px] font-semibold ${isCurrent ? "text-ink" : isCompleteStep ? "text-brand-dark" : "text-muted/70"}`}><span className="sm:hidden">{progressStep.short}</span><span className="hidden sm:inline">{progressStep.full}</span></span>
+            </li>
+          );
+        })}
       </ol>
 
-      {selectedTour ? <p className="mt-4 rounded-[8px] bg-sand px-3 py-2 text-sm text-muted">Selected safari: <strong className="font-semibold text-ink">{selectedTour}</strong></p> : null}
+      {selectedTour ? <p className="mt-3 rounded-[9px] border border-brand/15 bg-brand/[.07] px-3 py-2 text-xs text-muted">Selected safari: <strong className="font-semibold text-ink">{selectedTour}</strong></p> : null}
 
-      {step === 1 ? (
-        <fieldset className="inquiry-step mt-6">
-          <legend id={headingId} className="text-[22px] font-semibold leading-[1.25]">What kind of safari are you looking for?</legend>
-          <p className="mt-2 text-sm text-muted">Preferred safari duration</p>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            {durations.map((option) => (
-              <button key={option} type="button" aria-pressed={duration === option} onClick={() => { setDuration(option); setError(""); }} className={`min-h-16 rounded-[10px] border px-3 text-left text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${duration === option ? "border-brand bg-brand/[.12] text-ink" : "border-ink/[.12] bg-white hover:border-brand/60"}`}>
-                {option}
-              </button>
-            ))}
-          </div>
-        </fieldset>
-      ) : null}
+      <div className="flex flex-1 flex-col">
+        {step === 1 ? (
+          <fieldset className="inquiry-step mt-5 min-w-0">
+            <legend id={headingId} className="text-[22px] font-semibold leading-[1.2] tracking-[-.02em]">What kind of safari are you looking for?</legend>
+            <p className="mt-1.5 text-xs text-muted">Choose your preferred safari duration.</p>
+            <div className="mt-4 grid grid-cols-2 gap-2.5">
+              {durations.map(({ value, description, icon: Icon, popular }) => {
+                const selected = duration === value;
+                return (
+                  <button key={value} type="button" aria-pressed={selected} onClick={() => { setDuration(value); setError(""); }} className={`group relative min-h-[104px] rounded-[12px] border p-3 text-left transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${value === "Help me choose" ? "col-span-2 min-h-[84px]" : ""} ${selected ? "border-brand bg-[#fff7e8] shadow-[0_5px_16px_rgba(99,64,12,.07)]" : "border-ink/10 bg-white hover:-translate-y-0.5 hover:border-brand/50 hover:shadow-[0_5px_16px_rgba(99,64,12,.06)]"}`}>
+                    <span className={`grid size-8 place-items-center rounded-[8px] transition-colors ${selected ? "bg-brand text-white" : "bg-brand/[.12] text-brand-dark group-hover:bg-brand/[.18]"}`}><Icon className="size-[17px]" strokeWidth={1.9} aria-hidden="true" /></span>
+                    <span className="mt-2 flex items-center gap-1.5 pr-5 text-[13px] font-semibold leading-4 text-ink">{value}{popular ? <span className="rounded-full bg-brand/[.13] px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[.06em] text-brand-dark">Popular</span> : null}</span>
+                    <span className="mt-0.5 block text-[10px] leading-4 text-muted">{description}</span>
+                    {selected ? <span className="absolute right-2.5 top-2.5 grid size-5 place-items-center rounded-full bg-brand text-white"><Check className="size-3.5" strokeWidth={3} aria-hidden="true" /></span> : null}
+                  </button>
+                );
+              })}
+            </div>
+            <FieldError id={`${headingId}-duration-error`} message={durationError} />
+          </fieldset>
+        ) : null}
 
-      {step === 2 ? (
-        <fieldset className="inquiry-step mt-6">
-          <legend id={headingId} className="text-[22px] font-semibold leading-[1.25]">When would you like to travel?</legend>
-          <label className="form-field mt-5 text-sm font-semibold"><span>Preferred travel month</span><input type="month" value={travelMonth} onChange={(event) => { setTravelMonth(event.target.value); setError(""); }} disabled={flexibleDates} aria-describedby="month-help" /></label>
-          <p id="month-help" className="mt-2 text-xs text-muted">A month helps us suggest suitable options; it does not reserve a departure.</p>
-          <label className="mt-4 flex cursor-pointer items-center gap-3 text-sm font-medium"><input type="checkbox" checked={flexibleDates} onChange={(event) => { setFlexibleDates(event.target.checked); setError(""); }} className="size-5 accent-brand" />I&apos;m flexible with dates</label>
-          <p className="mt-5 text-sm font-semibold">Number of travelers</p>
-          <div className="mt-3 grid grid-cols-5 gap-2">
-            {travellerCounts.map((option) => <button key={option} type="button" aria-pressed={travellers === option} onClick={() => { setTravellers(option); setError(""); }} className={`min-h-12 rounded-[8px] border text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${travellers === option ? "border-brand bg-brand/[.12]" : "border-ink/[.12] hover:border-brand/60"}`}>{option}</button>)}
-          </div>
-        </fieldset>
-      ) : null}
+        {step === 2 ? (
+          <fieldset className="inquiry-step mt-5 min-w-0">
+            <legend id={headingId} className="text-[22px] font-semibold leading-[1.2] tracking-[-.02em]">When would you like to travel?</legend>
+            <label className="mt-5 block text-xs font-semibold text-ink" htmlFor={`${headingId}-month`}>Preferred travel month</label>
+            <div className="relative mt-2">
+              <CalendarDays className="pointer-events-none absolute left-3.5 top-1/2 z-10 size-[18px] -translate-y-1/2 text-brand-dark" aria-hidden="true" />
+              <input id={`${headingId}-month`} type="month" value={travelMonth} onChange={(event) => { setTravelMonth(event.target.value); setError(""); }} disabled={flexibleDates} aria-describedby={`${headingId}-month-help ${headingId}-month-error`} aria-invalid={Boolean(monthError)} className="min-h-12 min-w-0 w-full rounded-[10px] border border-ink/10 bg-white py-3 pl-11 pr-3 text-sm text-ink outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10 disabled:cursor-not-allowed disabled:bg-sand/60 disabled:text-muted" />
+            </div>
+            <p id={`${headingId}-month-help`} className="mt-2 text-[11px] leading-4 text-muted">We&apos;ll help you find the best available group departures.</p>
+            <FieldError id={`${headingId}-month-error`} message={monthError} />
+            <label className="mt-1 flex min-h-12 cursor-pointer items-center gap-3 rounded-[10px] border border-ink/10 bg-white px-3.5 text-sm font-medium transition hover:border-brand/40">
+              <input type="checkbox" checked={flexibleDates} onChange={(event) => { setFlexibleDates(event.target.checked); setError(""); }} className="size-5 shrink-0 accent-brand" />I&apos;m flexible with dates
+            </label>
+            <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-ink"><Users className="size-[18px] text-brand-dark" aria-hidden="true" />Number of travelers</div>
+            <div className="mt-2.5 grid grid-cols-5 gap-2">
+              {travellerCounts.map((option) => <button key={option} type="button" aria-pressed={travellers === option} onClick={() => { setTravellers(option); setError(""); }} className={`min-h-12 rounded-[10px] border text-sm font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${travellers === option ? "border-brand bg-[#fff7e8] text-brand-dark shadow-[0_3px_10px_rgba(99,64,12,.06)]" : "border-ink/10 bg-white hover:-translate-y-0.5 hover:border-brand/50"}`}>{option}</button>)}
+            </div>
+            <FieldError id={`${headingId}-travellers-error`} message={travellersError} />
+          </fieldset>
+        ) : null}
 
-      {step === 3 ? (
-        <fieldset className="inquiry-step mt-6">
-          <legend id={headingId} className="text-[22px] font-semibold leading-[1.25]">Where should we send your safari options?</legend>
-          <div className="mt-5 grid gap-4">
-            <label className="form-field text-sm font-semibold"><span>First name</span><input value={name} onChange={(event) => { setName(event.target.value); setError(""); }} autoComplete="given-name" placeholder="e.g. Sofia" required /></label>
-            <label className="form-field text-sm font-semibold"><span>Email address</span><input type="email" value={email} onChange={(event) => { setEmail(event.target.value); setError(""); }} autoComplete="email" placeholder="e.g. sofia@example.com" required /></label>
-            <label className="form-field text-sm font-semibold"><span>WhatsApp number <em className="font-normal text-muted">(optional)</em></span><input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" placeholder="e.g. +1 555 019 2834" /></label>
-          </div>
-          <details className="mt-4 rounded-[8px] border border-ink/[.1] p-3">
-            <summary className="cursor-pointer text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-brand">Additional requests <span className="font-normal text-muted">(optional)</span></summary>
-            <label className="form-field mt-3 text-sm"><span className="sr-only">Additional requests</span><textarea value={message} onChange={(event) => setMessage(event.target.value)} rows={3} placeholder="Anything else we should know?" /></label>
-          </details>
-        </fieldset>
-      ) : null}
+        {step === 3 ? (
+          <fieldset className="inquiry-step mt-5 min-w-0">
+            <legend id={headingId} className="text-[22px] font-semibold leading-[1.2] tracking-[-.02em]">Where should we send your safari options?</legend>
+            <div className="mt-4 grid gap-1">
+              <label className="text-xs font-semibold text-ink" htmlFor={`${headingId}-name`}>First name</label>
+              <div className="relative"><User className="pointer-events-none absolute left-3.5 top-1/2 size-[17px] -translate-y-1/2 text-brand-dark" aria-hidden="true" /><input id={`${headingId}-name`} value={name} onChange={(event) => { setName(event.target.value); setError(""); }} autoComplete="given-name" placeholder="e.g. Sofia" required aria-invalid={Boolean(nameError)} aria-describedby={`${headingId}-name-error`} className="min-h-11 w-full rounded-[10px] border border-ink/10 bg-white py-2.5 pl-11 pr-3 text-sm outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" /></div>
+              <FieldError id={`${headingId}-name-error`} message={nameError} />
+
+              <label className="text-xs font-semibold text-ink" htmlFor={`${headingId}-email`}>Email address</label>
+              <div className="relative"><Mail className="pointer-events-none absolute left-3.5 top-1/2 size-[17px] -translate-y-1/2 text-brand-dark" aria-hidden="true" /><input id={`${headingId}-email`} type="email" value={email} onChange={(event) => { setEmail(event.target.value); setError(""); }} autoComplete="email" placeholder="e.g. sofia@example.com" required aria-invalid={Boolean(emailError)} aria-describedby={`${headingId}-email-error`} className="min-h-11 w-full rounded-[10px] border border-ink/10 bg-white py-2.5 pl-11 pr-3 text-sm outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" /></div>
+              <FieldError id={`${headingId}-email-error`} message={emailError} />
+
+              <label className="text-xs font-semibold text-ink" htmlFor={`${headingId}-phone`}>WhatsApp number <span className="font-normal text-muted">(optional)</span></label>
+              <div className="relative"><Phone className="pointer-events-none absolute left-3.5 top-1/2 size-[17px] -translate-y-1/2 text-brand-dark" aria-hidden="true" /><input id={`${headingId}-phone`} type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" placeholder="e.g. +1 555 019 2834" className="min-h-11 w-full rounded-[10px] border border-ink/10 bg-white py-2.5 pl-11 pr-3 text-sm outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" /></div>
+            </div>
+            <details className="group mt-3 rounded-[10px] border border-ink/10 bg-white transition open:border-brand/30 open:bg-[#fffdf8]">
+              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3.5 text-xs font-semibold text-ink focus-visible:outline-2 focus-visible:outline-brand"><MessageSquare className="size-[17px] text-brand-dark" aria-hidden="true" />Additional requests <span className="font-normal text-muted">(optional)</span><ChevronDown className="ml-auto size-4 text-muted transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
+              <label className="block px-3.5 pb-3"><span className="sr-only">Additional requests</span><textarea value={message} onChange={(event) => setMessage(event.target.value)} rows={3} placeholder="Anything else we should know?" className="w-full resize-y rounded-[8px] border border-ink/10 bg-white p-3 text-sm outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" /></label>
+            </details>
+          </fieldset>
+        ) : null}
+      </div>
 
       <label className="sr-only" aria-hidden="true">Leave this field empty<input value={honeypot} onChange={(event) => setHoneypot(event.target.value)} tabIndex={-1} autoComplete="off" /></label>
-      {error ? <p role="alert" className="mt-4 text-sm font-medium text-red-700">{error}</p> : null}
-      {status ? <p role="status" className="mt-4 text-sm text-muted">{status}</p> : null}
-      <div className="mt-6 flex items-center gap-3">
-        {step > 1 ? <button type="button" onClick={() => { setStep((current) => (current - 1) as Step); setError(""); }} disabled={isSubmitting} className="min-h-12 rounded-[5px] border border-ink/20 px-4 text-sm font-semibold transition hover:bg-sand focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Back</button> : null}
-        {step < 3 ? <button type="button" onClick={continueToNextStep} className="min-h-12 flex-1 rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 text-sm font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Continue</button> : <button type="submit" disabled={isSubmitting} className="min-h-12 flex-1 rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 text-sm font-semibold transition hover:brightness-95 disabled:cursor-not-allowed disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">{isSubmitting ? "Finding your safari…" : "Find My Group Safari"}</button>}
+      <p role={submissionError ? "alert" : undefined} aria-hidden={submissionError ? undefined : true} className={`min-h-5 text-[11px] font-medium leading-4 ${submissionError ? "text-red-700" : "text-transparent"}`}>{submissionError ?? "\u00a0"}</p>
+      {status ? <p role="status" className="sr-only">{status}</p> : null}
+      <div className="mt-1 flex items-center gap-2.5">
+        {step > 1 ? <button type="button" onClick={() => { setStep((current) => (current - 1) as Step); setError(""); }} disabled={isSubmitting} className="min-h-12 rounded-[9px] border border-ink/15 bg-white px-4 text-sm font-semibold transition duration-200 hover:border-brand/40 hover:bg-sand/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Back</button> : null}
+        {step < 3 ? <button type="button" onClick={continueToNextStep} className="min-h-12 flex-1 rounded-[9px] bg-brand px-4 text-sm font-semibold text-ink shadow-[0_5px_14px_rgba(245,166,35,.2)] transition duration-200 hover:-translate-y-0.5 hover:bg-brand-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Continue</button> : <button type="submit" disabled={isSubmitting} className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-[9px] bg-brand px-4 text-sm font-semibold text-ink shadow-[0_5px_14px_rgba(245,166,35,.2)] transition duration-200 hover:-translate-y-0.5 hover:bg-brand-dark disabled:cursor-not-allowed disabled:translate-y-0 disabled:opacity-65 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">{isSubmitting ? <><LoaderCircle className="size-4 animate-spin" aria-hidden="true" />Finding your safari…</> : "Find My Group Safari"}</button>}
       </div>
-      {step === 3 ? <p className="mt-3 text-center text-xs leading-5 text-muted">No payment required. Our local team will help you find the right safari.</p> : null}
+      {step === 3 ? (
+        <div className="mt-3 grid grid-cols-3 gap-1.5 border-t border-ink/[.07] pt-3 text-center text-[9px] font-medium leading-3 text-muted">
+          <span className="flex flex-col items-center gap-1"><CircleDollarSign className="size-4 text-brand-dark" aria-hidden="true" />No payment required</span>
+          <span className="flex flex-col items-center gap-1"><MapPin className="size-4 text-brand-dark" aria-hidden="true" />Local team in Arusha</span>
+          <span className="flex flex-col items-center gap-1"><Sparkles className="size-4 text-brand-dark" aria-hidden="true" />Personal recommendations</span>
+        </div>
+      ) : null}
     </form>
   );
 }
