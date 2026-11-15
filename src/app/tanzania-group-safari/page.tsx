@@ -228,9 +228,7 @@ export default async function JoinAGroupPage() {
 
         <PlanningCall
           id="planning"
-          submitLabel="Get My Safari Quote"
           description="Schedule a 30-minute call for honest advice about Tanzania group safaris, shared departures, and the best seasons to travel."
-          formPrompt={<>Tell us what you&apos;re looking for,<br />we&apos;ll help you find a group</>}
         />
 
         <section className="bg-[#fffdf8] py-20 sm:py-28" aria-labelledby="comparison-title">
@@ -302,9 +300,7 @@ export default async function JoinAGroupPage() {
 
         <PlanningCall
           id="planning-again"
-          submitLabel="Join a Group Safari"
           description="Tell us when you would like to travel and we will help you find a Tanzania group safari that suits your plans."
-          formPrompt={<>Ready to travel together?<br />Let&apos;s find your safari</>}
         />
 
         <section id="destinations" className="bg-[#fffdf8] py-20 sm:py-28" aria-labelledby="destinations-title">

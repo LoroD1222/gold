@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 
 const inquiryEndpoint = "https://safari-digital-portal.vercel.app/api/inquiries";
 const metaPixelId = "1671525991172204";
+const formKey = "sdf_0szf-ca_naLURplsT9y-iMVO";
+const safariDurations = new Set(["3 Days", "4 Days", "5 Days", "6+ Days", "Help me choose"]);
+const travellerCounts = new Set(["1", "2", "3", "4", "5+"]);
 
 type InquiryPayload = {
   key: string;
@@ -13,6 +16,11 @@ type InquiryPayload = {
   travel_dates?: string;
   travellers?: string;
   message?: string;
+  safari_duration?: string;
+  travel_month?: string;
+  flexible_dates?: boolean;
+  selected_tour?: string;
+  current_page_url?: string;
   _gotcha?: string;
   utm_source?: string;
   utm_medium?: string;
@@ -25,6 +33,33 @@ type InquiryPayload = {
 
 function stringValue(value: unknown) {
   return typeof value === "string" ? value.trim() : "";
+}
+
+function hasValidLength(value: unknown, maxLength: number) {
+  return stringValue(value).length <= maxLength;
+}
+
+function isFlexible(value: unknown) {
+  return value === true || value === "true";
+}
+
+function isValidInquiry(inquiry: InquiryPayload) {
+  const name = stringValue(inquiry.name);
+  const email = stringValue(inquiry.email);
+  const duration = stringValue(inquiry.safari_duration);
+  const travelMonth = stringValue(inquiry.travel_month);
+  const flexibleDates = isFlexible(inquiry.flexible_dates);
+  const travellers = stringValue(inquiry.travellers);
+
+  return inquiry.key === formKey
+    && name.length > 0
+    && name.length <= 100
+    && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    && email.length <= 320
+    && safariDurations.has(duration)
+    && travellerCounts.has(travellers)
+    && (flexibleDates || /^\d{4}-(0[1-9]|1[0-2])$/.test(travelMonth))
+    && [inquiry.phone, inquiry.message, inquiry.interested_in, inquiry.selected_tour, inquiry.current_page_url].every((value) => hasValidLength(value, 2_000));
 }
 
 async function sha256(value: string) {
@@ -96,7 +131,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid inquiry payload." }, { status: 400 });
   }
 
-  if (!stringValue(inquiry.key)) {
+  if (!isValidInquiry(inquiry) || stringValue(inquiry._gotcha)) {
     return NextResponse.json({ error: "Invalid inquiry payload." }, { status: 400 });
   }
 

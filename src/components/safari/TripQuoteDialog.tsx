@@ -1,13 +1,15 @@
 "use client";
 
 import { useId, useRef, type ReactNode } from "react";
+import { GroupSafariInquiryForm } from "@/components/forms/GroupSafariInquiryForm";
 
 type TripQuoteDialogProps = {
   children: ReactNode;
   className?: string;
+  selectedTour?: string;
 };
 
-export function TripQuoteDialog({ children, className = "" }: TripQuoteDialogProps) {
+export function TripQuoteDialog({ children, className = "", selectedTour }: TripQuoteDialogProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
@@ -32,23 +34,8 @@ export function TripQuoteDialog({ children, className = "" }: TripQuoteDialogPro
           <button type="button" onClick={closeDialog} aria-label="Close quote form" className="absolute right-4 top-4 grid size-9 place-items-center rounded-full text-2xl leading-none transition hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
             ×
           </button>
-          <p className="text-[18px] font-semibold text-brand">Get Started</p>
-          <h2 id={titleId} className="mt-[10px] pr-10 text-[26px] font-semibold leading-[1.25]">
-            Tell us about your family, we&apos;ll build the trip
-          </h2>
-          <form className="mt-6 grid gap-3" action="https://safari-digital-portal.vercel.app/api/inquiries" method="post" data-inquiry-form data-redirect="/thank-you">
-            <input type="hidden" name="key" value="sdf_0szf-ca_naLURplsT9y-iMVO" />
-            <input type="hidden" name="redirect" value="https://goldentrips.com/thank-you" />
-            <label className="form-field"><span>Name</span><input name="name" autoComplete="name" placeholder="e.g. Sofia" required /></label>
-            <label className="form-field"><span>Email Address</span><input type="email" name="email" autoComplete="email" placeholder="e.g. sofia@example.com" /></label>
-            <label className="form-field"><span>WhatsApp Number</span><input type="tel" name="phone" autoComplete="tel" placeholder="e.g. +1 (555) 019-2834" /></label>
-            <label className="form-field"><span>Message</span><textarea name="message" rows={3} placeholder="Tell us about your ideal trip" /></label>
-            <input name="_gotcha" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
-            <button type="submit" className="mt-1 min-h-[47px] w-full rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-3 text-[16px] font-semibold transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
-              Start Planning My Family&apos;s Trip
-            </button>
-            <p data-inquiry-status role="status" className="min-h-5 text-sm text-muted" />
-          </form>
+          <h2 id={titleId} className="sr-only">Group safari inquiry</h2>
+          <GroupSafariInquiryForm selectedTour={selectedTour} className="border-0 p-0 shadow-none" />
         </section>
       </dialog>
     </>
