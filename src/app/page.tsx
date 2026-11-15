@@ -138,7 +138,7 @@ export default async function HomePage() {
             </div>
             <div className="relative mx-auto aspect-[634/624] w-full max-w-[634px]">
               <Image
-                src="/assets/why-travel-golden-trips-tanzania.png"
+                src="/assets/why-travel-golden-trips-tanzania-v2.png"
                 alt="Golden Trips Tanzania collage of safari guests, guides, and wildlife"
                 fill
                 quality={100}
