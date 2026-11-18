@@ -472,6 +472,27 @@ const safariTrip = defineType({
             defineField({name: 'title', title: 'Location title', type: 'string', validation: (rule) => rule.required()}),
             defineField({name: 'region', title: 'Region or area', type: 'string'}),
             defineField({
+              name: 'latitude',
+              title: 'Latitude',
+              description: 'Optional. Add the exact location for the interactive itinerary map.',
+              type: 'number',
+              validation: (rule) => rule.min(-90).max(90),
+            }),
+            defineField({
+              name: 'longitude',
+              title: 'Longitude',
+              description: 'Optional. Add the exact location for the interactive itinerary map.',
+              type: 'number',
+              validation: (rule) => rule.min(-180).max(180),
+            }),
+            defineField({
+              name: 'destinationUrl',
+              title: 'Destination link',
+              description: 'Optional link shown as “Explore this destination” below this route stop.',
+              type: 'url',
+              validation: (rule) => rule.uri({scheme: ['http', 'https'], allowRelative: true}),
+            }),
+            defineField({
               name: 'description',
               title: 'Description',
               type: 'array',

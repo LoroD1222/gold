@@ -116,6 +116,39 @@ textarea {
   clip-path: polygon(22% 1%, 38% 9%, 55% 6%, 65% 18%, 82% 22%, 76% 36%, 92% 47%, 82% 58%, 85% 76%, 69% 91%, 51% 100%, 38% 90%, 24% 93%, 17% 78%, 8% 64%, 15% 48%, 4% 34%, 17% 22%);
 }
 
+.itinerary-route-marker {
+  background: transparent;
+  border: 0;
+}
+
+.itinerary-route-marker__dot {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  place-items: center;
+  border: 2px solid #fffefc;
+  border-radius: 9999px;
+  background: #161713;
+  box-shadow: 0 2px 7px rgba(22, 23, 19, 0.35);
+  color: #fff;
+  font-family: var(--font-poppins);
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.itinerary-route-marker__dot--active {
+  border-color: #161713;
+  background: #f5a623;
+  box-shadow: 0 0 0 3px rgba(245, 166, 35, 0.35), 0 2px 7px rgba(22, 23, 19, 0.35);
+  color: #161713;
+}
+
+.leaflet-control-attribution {
+  font-family: var(--font-poppins);
+  font-size: 9px;
+}
+
 summary::-webkit-details-marker {
   display: none;
 }

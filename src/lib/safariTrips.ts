@@ -56,6 +56,9 @@ export type SafariTrip = {
     dayRange: string;
     title: string;
     region?: string;
+    latitude?: number;
+    longitude?: number;
+    destinationUrl?: string;
     description?: PortableTextBlock[];
     images?: SanityImage[];
     meals?: string;
@@ -137,6 +140,9 @@ const safariTripQuery = `
       dayRange,
       title,
       region,
+      latitude,
+      longitude,
+      destinationUrl,
       description,
       images[]{_key, "url": asset->url, alt},
       meals,

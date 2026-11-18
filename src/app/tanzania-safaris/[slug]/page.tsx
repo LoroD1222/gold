@@ -12,8 +12,10 @@ import { TripDetailTabs } from "@/components/safari/TripDetailTabs";
 import { TourFeatures } from "@/components/safari/TourFeatures";
 import { TripHeroGallery } from "@/components/safari/TripHeroGallery";
 import { TripQuoteDialog } from "@/components/safari/TripQuoteDialog";
+import { ItineraryRouteMap } from "@/components/safari/ItineraryRouteMap";
 import { getSafariAnimal, isSafariAnimalId } from "@/data/safariAnimals";
 import { tripadvisorProfileUrl } from "@/data/externalLinks";
+import { itineraryToRouteStops } from "@/lib/itineraryRoute";
 import { getSafariTrip, getSafariTripCards, type SanityImage } from "@/lib/safariTrips";
 
 type TripPageProps = { params: Promise<{ slug: string }> };
@@ -59,6 +61,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
   const overviewHighlights = trip.overviewHighlights?.filter((highlight) => highlight?.title || highlight?.description) ?? [];
   const wildlife = Array.from({ length: Math.max(6, trip.wildlife?.length ?? 0) }, (_, index) => trip.wildlife?.[index]);
   const related = relatedTrips.filter((relatedTrip) => relatedTrip.slug !== trip.slug).slice(0, 3);
+  const routeStops = itineraryToRouteStops(trip.itinerary);
   const breadcrumbJsonLd = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -204,9 +207,7 @@ export default async function SafariTripPage({ params }: TripPageProps) {
               <aside aria-label="Trip planning" className="order-last h-fit rounded-[9px] bg-white p-[9px_18px_16px] lg:order-none lg:sticky lg:top-8 lg:z-10 lg:self-start">
                 <div className="flex flex-col gap-[14px]">
                   <Image src="/assets/trip-itinerary-sidebar-logo.png" width={236} height={90} alt="Golden Trips Tanzania" sizes="194px" className="mx-auto h-auto w-[194px]" />
-                  <div className="relative aspect-[302/262] w-full overflow-hidden rounded-[10px]">
-                    <Image src="/assets/trip-itinerary-sidebar-map.png" width={362} height={272} alt="Illustrated map of Tanzania" sizes="(min-width: 1280px) 302px, 100vw" className="absolute -left-[16.08%] top-0 h-[102.89%] w-[119.01%] max-w-none object-cover" />
-                  </div>
+                  <ItineraryRouteMap stops={routeStops} />
                   <TripQuoteDialog selectedTour={trip.title} className="flex min-h-[51px] w-full items-center justify-center rounded-[5px] bg-gradient-to-r from-[#f2a93b] to-[#f5be2b] px-4 py-2 text-[17px] font-semibold text-black transition hover:brightness-95 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand">Plan your trip</TripQuoteDialog>
                 </div>
               </aside>
