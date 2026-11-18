@@ -139,7 +139,7 @@ export function ItineraryRouteMap({ stops }: ItineraryRouteMapProps) {
                 <div className={`rounded-[7px] border transition ${isSelected ? "border-brand bg-brand/[.12]" : "border-transparent hover:border-ink/10 hover:bg-sand/70"}`}>
                   <button type="button" onClick={() => setSelectedId(stop.id)} aria-pressed={isSelected} className="flex w-full items-start gap-3 p-2 text-left focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">
                     <span aria-hidden className={`grid size-6 shrink-0 place-items-center rounded-full text-xs font-bold ${isSelected ? "bg-brand text-ink" : "bg-ink text-white"}`}>{stop.markerLabel ?? index + 1}</span>
-                    <span className="min-w-0"><span className="block text-sm font-semibold leading-5 text-ink">{stop.name}</span><span className="block text-xs leading-5 text-muted">{stop.dayLabel}</span>{stop.description ? <span className="mt-1 line-clamp-2 block text-xs leading-5 text-muted">{stop.description}</span> : null}</span>
+                    <span className="min-w-0"><span className="block text-sm font-semibold leading-5 text-ink">{stop.name}</span><span className="block text-xs leading-5 text-muted">{stop.dayLabel}</span></span>
                   </button>
                   {stop.href ? <a href={stop.href} className="mb-2 ml-11 inline-block text-xs font-semibold text-brand-dark underline underline-offset-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand">Explore this destination</a> : null}
                 </div>
@@ -149,12 +149,6 @@ export function ItineraryRouteMap({ stops }: ItineraryRouteMapProps) {
         </ol>
       </div>
 
-      {selectedStop?.description ? (
-        <div aria-live="polite" className="rounded-[10px] bg-sand px-3 py-3 text-sm leading-6 text-muted">
-          <p className="font-semibold text-ink">{selectedStop.name}</p>
-          <p className="mt-1">{selectedStop.description}</p>
-        </div>
-      ) : null}
     </section>
   );
 }
