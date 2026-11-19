@@ -149,6 +149,24 @@ export default async function HomePage() {
           </div>
         </section>
 
+        <section className="bg-cream py-12 sm:py-16" aria-label="Golden Trips Tanzania safari">
+          <div className="site-container">
+            <div className="relative aspect-[1.55] min-h-[280px] overflow-hidden rounded-[24px] bg-ink shadow-[0_18px_45px_rgba(22,23,19,0.12)] sm:min-h-[380px] sm:rounded-[32px] lg:min-h-[470px]">
+              <Image
+                src="/assets/home-hero.png"
+                alt="Safari guests watching elephants across the Tanzania plains at sunset"
+                fill
+                sizes="(max-width: 1272px) calc(100vw - 2.5rem), 1272px"
+                className="object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(13,22,15,.74)_0%,rgba(13,22,15,.35)_48%,rgba(13,22,15,.08)_100%)]" />
+              <div className="absolute inset-0 grid place-items-center p-8">
+                <Image src="/assets/golden-trips-white-logo.png" width={183} height={70} alt="Golden Trips Tanzania" className="h-auto w-[150px] drop-shadow-[0_3px_12px_rgba(0,0,0,.45)] sm:w-[183px]" />
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="bg-cream py-20 sm:py-28" aria-labelledby="comparison-title">
           <div className="site-container">
             <SectionHeading eyebrow="Made for your travel style" title="A Tanzania journey that fits you" id="comparison-title" description={<p>Every traveler brings a different pace, wish list, and idea of adventure. Rather than putting you on a standard route, we shape each journey around what you want to see, how you want to stay, and the time you have.</p>} />
