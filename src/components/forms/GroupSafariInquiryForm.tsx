@@ -26,7 +26,6 @@ const durations: Array<{ value: string; description: string; popular?: boolean }
   { value: "6+ Days", description: "The full safari experience" },
   { value: "Help me choose", description: "Get a personal recommendation" },
 ];
-const travellerCounts = ["1", "2", "3", "4", "5+"] as const;
 const travelMonths = [
   { value: "01", label: "Jan" },
   { value: "02", label: "Feb" },
@@ -96,7 +95,9 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
   const [travelMonthNumber, setTravelMonthNumber] = useState("");
   const [travelYear, setTravelYear] = useState(String(currentYear));
   const [flexibleDates, setFlexibleDates] = useState(false);
-  const [travellers, setTravellers] = useState("");
+  const [adults, setAdults] = useState("");
+  const [children, setChildren] = useState("0");
+  const [budgetPerPerson, setBudgetPerPerson] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -111,7 +112,7 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
   const travelMonth = travelMonthNumber ? `${travelYear}-${travelMonthNumber}` : "";
   const durationError = step === 1 && error.startsWith("Choose your preferred") ? error : undefined;
   const monthError = step === 2 && error.startsWith("Select a travel month") ? error : undefined;
-  const travellersError = step === 2 && error.startsWith("Choose the number") ? error : undefined;
+  const partyError = step === 2 && error.startsWith("Enter the number of adults") ? error : undefined;
   const nameError = step === 3 && error.startsWith("Enter your first name") ? error : undefined;
   const emailError = step === 3 && error.startsWith("Enter") && !nameError ? error : undefined;
   const submissionError = error.startsWith("We couldn’t") ? error : undefined;
@@ -123,7 +124,8 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
   function validateCurrentStep() {
     if (step === 1 && !duration) return "Choose your preferred safari duration to continue.";
     if (step === 2 && !flexibleDates && !travelMonth) return "Select a travel month or let us know that your dates are flexible.";
-    if (step === 2 && !travellers) return "Choose the number of travelers in your party.";
+    if (step === 2 && (!/^\d+$/.test(adults) || Number(adults) < 1)) return "Enter the number of adults in your party.";
+    if (step === 2 && (!/^\d+$/.test(children) || Number(children) < 0)) return "Enter the number of children in your party.";
     if (step === 3 && !name.trim()) return "Enter your first name so our team knows how to address you.";
     if (step === 3 && !email.trim()) return "Enter your email address so we can send your safari options.";
     if (step === 3 && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return "Enter a valid email address.";
@@ -161,7 +163,9 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
       const inquiryMessage = [
         `Safari duration: ${duration}`,
         `Travel month: ${flexibleDates ? "Flexible dates" : travelMonth}`,
-        `Travelers: ${travellers}`,
+        `Adults: ${adults}`,
+        `Children: ${children}`,
+        budgetPerPerson.trim() ? `Budget per person: ${budgetPerPerson.trim()}` : "",
         selectedTour ? `Selected safari: ${selectedTour}` : "",
         message.trim() ? `Additional requests: ${message.trim()}` : "",
       ].filter(Boolean).join("\n");
@@ -179,7 +183,10 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
           travel_month: travelMonth,
           flexible_dates: flexibleDates,
           travel_dates: flexibleDates ? "Flexible dates" : travelMonth,
-          travellers,
+          travellers: `${adults} adult${adults === "1" ? "" : "s"}${children !== "0" ? `, ${children} child${children === "1" ? "" : "ren"}` : ""}`,
+          adults,
+          children,
+          budget_per_person: budgetPerPerson.trim(),
           message: inquiryMessage,
           current_page_url: window.location.href,
           _gotcha: honeypot,
@@ -285,11 +292,19 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
             <label className="mt-1 flex min-h-12 cursor-pointer items-center gap-3 rounded-[10px] border border-ink/10 bg-white px-3.5 text-sm font-medium transition hover:border-brand/40">
               <input type="checkbox" checked={flexibleDates} onChange={(event) => { setFlexibleDates(event.target.checked); setError(""); }} className="size-5 shrink-0 accent-brand" />I&apos;m flexible with dates
             </label>
-            <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-ink"><Users className="size-[18px] text-brand-dark" aria-hidden="true" />Number of travelers</div>
-            <div className="mt-2.5 grid grid-cols-5 gap-2">
-              {travellerCounts.map((option) => <button key={option} type="button" aria-pressed={travellers === option} onClick={() => { setTravellers(option); setError(""); }} className={`min-h-12 rounded-[10px] border text-sm font-semibold transition duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${travellers === option ? "border-brand bg-[#fff7e8] text-brand-dark shadow-[0_3px_10px_rgba(99,64,12,.06)]" : "border-ink/10 bg-white hover:-translate-y-0.5 hover:border-brand/50"}`}>{option}</button>)}
+            <div className="mt-5 flex items-center gap-2 text-xs font-semibold text-ink"><Users className="size-[18px] text-brand-dark" aria-hidden="true" />Your group</div>
+            <div className="mt-2.5 grid grid-cols-2 gap-3">
+              <label className="grid gap-1.5 text-xs font-semibold text-ink" htmlFor={`${headingId}-adults`}>Number of adults
+                <input id={`${headingId}-adults`} type="number" inputMode="numeric" min="1" max="20" value={adults} onChange={(event) => { setAdults(event.target.value); setError(""); }} placeholder="e.g. 2" required aria-invalid={Boolean(partyError)} aria-describedby={`${headingId}-party-error`} className="min-h-11 w-full rounded-[10px] border border-ink/10 bg-white px-3 text-sm font-normal outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" />
+              </label>
+              <label className="grid gap-1.5 text-xs font-semibold text-ink" htmlFor={`${headingId}-children`}>Number of children
+                <input id={`${headingId}-children`} type="number" inputMode="numeric" min="0" max="20" value={children} onChange={(event) => { setChildren(event.target.value); setError(""); }} className="min-h-11 w-full rounded-[10px] border border-ink/10 bg-white px-3 text-sm font-normal outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" />
+              </label>
             </div>
-            <FieldError id={`${headingId}-travellers-error`} message={travellersError} />
+            <FieldError id={`${headingId}-party-error`} message={partyError} />
+            <label className="grid gap-1.5 text-xs font-semibold text-ink" htmlFor={`${headingId}-budget`}>Budget per person <span className="font-normal text-muted">(optional)</span>
+              <input id={`${headingId}-budget`} value={budgetPerPerson} onChange={(event) => setBudgetPerPerson(event.target.value)} placeholder="e.g. USD 1,500" className="min-h-11 w-full rounded-[10px] border border-ink/10 bg-white px-3 text-sm font-normal outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" />
+            </label>
           </fieldset>
         ) : null}
 
@@ -308,10 +323,7 @@ export function GroupSafariInquiryForm({ selectedTour, className = "" }: GroupSa
               <label className="text-xs font-semibold text-ink" htmlFor={`${headingId}-phone`}>WhatsApp number <span className="font-normal text-muted">(optional)</span></label>
               <div className="relative"><Phone className="pointer-events-none absolute left-3.5 top-1/2 size-[17px] -translate-y-1/2 text-brand-dark" aria-hidden="true" /><input id={`${headingId}-phone`} type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} autoComplete="tel" placeholder="e.g. +1 555 019 2834" className="min-h-11 w-full rounded-[10px] border border-ink/10 bg-white py-2.5 pl-11 pr-3 text-sm outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" /></div>
             </div>
-            <details className="group mt-3 rounded-[10px] border border-ink/10 bg-white transition open:border-brand/30 open:bg-[#fffdf8]">
-              <summary className="flex min-h-11 cursor-pointer list-none items-center gap-2 px-3.5 text-xs font-semibold text-ink focus-visible:outline-2 focus-visible:outline-brand"><MessageSquare className="size-[17px] text-brand-dark" aria-hidden="true" />Additional requests <span className="font-normal text-muted">(optional)</span><ChevronDown className="ml-auto size-4 text-muted transition-transform group-open:rotate-180" aria-hidden="true" /></summary>
-              <label className="block px-3.5 pb-3"><span className="sr-only">Additional requests</span><textarea value={message} onChange={(event) => setMessage(event.target.value)} rows={3} placeholder="Anything else we should know?" className="w-full resize-y rounded-[8px] border border-ink/10 bg-white p-3 text-sm outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" /></label>
-            </details>
+            <label className="mt-3 grid gap-1.5 text-xs font-semibold text-ink" htmlFor={`${headingId}-message`}><span className="flex items-center gap-2"><MessageSquare className="size-[17px] text-brand-dark" aria-hidden="true" />Additional requests <span className="font-normal text-muted">(optional)</span></span><textarea id={`${headingId}-message`} value={message} onChange={(event) => setMessage(event.target.value)} rows={3} placeholder="Anything else we should know?" className="w-full resize-y rounded-[10px] border border-ink/10 bg-white p-3 text-sm font-normal outline-none transition focus:border-brand focus:ring-4 focus:ring-brand/10" /></label>
           </fieldset>
         ) : null}
       </div>

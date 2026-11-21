@@ -5,7 +5,6 @@ const inquiryEndpoint = "https://safari-digital-portal.vercel.app/api/inquiries"
 const metaPixelId = "1671525991172204";
 const formKey = "sdf_0szf-ca_naLURplsT9y-iMVO";
 const safariDurations = new Set(["3 Days", "4 Days", "5 Days", "6+ Days", "Help me choose"]);
-const travellerCounts = new Set(["1", "2", "3", "4", "5+"]);
 
 type InquiryPayload = {
   key: string;
@@ -16,6 +15,9 @@ type InquiryPayload = {
   interested_in?: string;
   travel_dates?: string;
   travellers?: string;
+  adults?: string;
+  children?: string;
+  budget_per_person?: string;
   message?: string;
   safari_duration?: string;
   travel_month?: string;
@@ -44,13 +46,17 @@ function isFlexible(value: unknown) {
   return value === true || value === "true";
 }
 
+function isPartyCount(value: unknown, minimum: number) {
+  const count = stringValue(value);
+  return /^\d+$/.test(count) && Number(count) >= minimum && Number(count) <= 20;
+}
+
 function isValidInquiry(inquiry: InquiryPayload) {
   const name = stringValue(inquiry.name);
   const email = stringValue(inquiry.email);
   const duration = stringValue(inquiry.safari_duration);
   const travelMonth = stringValue(inquiry.travel_month);
   const flexibleDates = isFlexible(inquiry.flexible_dates);
-  const travellers = stringValue(inquiry.travellers);
 
   return inquiry.key === formKey
     && name.length > 0
@@ -58,9 +64,11 @@ function isValidInquiry(inquiry: InquiryPayload) {
     && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
     && email.length <= 320
     && safariDurations.has(duration)
-    && travellerCounts.has(travellers)
+    && isPartyCount(inquiry.adults, 1)
+    && isPartyCount(inquiry.children, 0)
     && (flexibleDates || /^\d{4}-(0[1-9]|1[0-2])$/.test(travelMonth))
-    && [inquiry.phone, inquiry.message, inquiry.interested_in, inquiry.selected_tour, inquiry.current_page_url].every((value) => hasValidLength(value, 2_000));
+    && [inquiry.phone, inquiry.message, inquiry.interested_in, inquiry.selected_tour, inquiry.current_page_url].every((value) => hasValidLength(value, 2_000))
+    && hasValidLength(inquiry.budget_per_person, 100);
 }
 
 async function sha256(value: string) {
