@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendInquiryEmail } from "@/lib/sendInquiryEmail";
 
 const inquiryEndpoint = "https://safari-digital-portal.vercel.app/api/inquiries";
 const metaPixelId = "1671525991172204";
@@ -133,6 +134,12 @@ export async function POST(request: Request) {
 
   if (!isValidInquiry(inquiry) || stringValue(inquiry._gotcha)) {
     return NextResponse.json({ error: "Invalid inquiry payload." }, { status: 400 });
+  }
+
+  try {
+    await sendInquiryEmail(inquiry);
+  } catch (error) {
+    console.error("Unable to send inquiry email:", error instanceof Error ? error.message : error);
   }
 
   const portalInquiry = { ...inquiry };
